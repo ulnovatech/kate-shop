@@ -76,7 +76,7 @@ Build the APK shell (C7): [ADMIN_MOBILE.md](ADMIN_MOBILE.md).
 
 ## GitHub Actions
 
-When `ADMIN_ORIGIN` is set as a **repository/organization variable**, push to `main` runs:
+When `ADMIN_ORIGIN` is set as a **repository/organization variable** (in the same **`production`** environment as the shop), push to `main` runs:
 
 - `deploy-production` → shop Worker (`kate-shop`)
 - `deploy-admin-production` → admin Worker (`kate-admin`)

@@ -114,7 +114,7 @@ Workflow: `.github/workflows/ci.yml`
 
 ### GitHub `production` environment
 
-Create **Settings → Environments → production**. Recommended:
+Create **Settings → Environments → production**. Shop and admin deploy jobs both use this environment (no separate `production-admin`).
 
 - **Required reviewers** — manual approval before deploy (documented gate).
 - **Environment secrets** — same names as `.env` plus Cloudflare:

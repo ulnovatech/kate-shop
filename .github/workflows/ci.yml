@@ -98,7 +98,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ADMIN_ORIGIN != ''
     runs-on: ubuntu-latest
     environment:
-      name: production-admin
+      name: production
       url: ${{ vars.ADMIN_ORIGIN }}
     steps:
       - uses: actions/checkout@v4

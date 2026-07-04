@@ -33,9 +33,11 @@ Add these **Variables** (not secrets — plain text URLs):
 | Variable | Example |
 |----------|---------|
 | `APP_ORIGIN` | `https://kate-shop.ulnovatech.workers.dev` |
+| `ADMIN_ORIGIN` | `https://kate-admin.ulnovatech.workers.dev` (set when ready to deploy admin) |
 | `CLOUDFLARE_WORKER_NAME` | `kate-shop` (optional; this is the default) |
+| `CLOUDFLARE_ADMIN_WORKER_NAME` | `kate-admin` (optional; this is the default) |
 
-Leave `ADMIN_ORIGIN` empty until you deploy the admin Worker.
+Shop and admin deploy jobs both use the **`production`** environment — one set of secrets, no duplicate `production-admin` environment.
 
 ### 3. Supabase auth redirects
 
@@ -59,7 +61,10 @@ Watch progress: GitHub → **Actions** → workflow **CI/CD** → latest run on 
 Successful run shows:
 
 1. **Lint, test, build** — must pass first  
-2. **Deploy production** — builds with real Supabase keys, runs `prepare-deploy.mjs`, uploads `SUPABASE_SERVICE_ROLE_KEY` as a Worker secret, deploys to Cloudflare
+2. **Deploy production** — shop Worker (`kate-shop`)
+3. **Deploy admin production** — admin Worker (`kate-admin`) when `ADMIN_ORIGIN` is set
+
+Both deploy jobs use the same GitHub **`production`** environment (shared secrets and variables).
 
 ## Verify after deploy
 
