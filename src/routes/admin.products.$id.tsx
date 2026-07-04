@@ -6,7 +6,7 @@ import {
 } from "@/components/admin/products/wizard/product-wizard-schema";
 
 export const Route = createFileRoute("/admin/products/$id")({
-  staticData: { adminPermission: "catalog" as const },
+  staticData: { adminPermission: "catalog" as const, adminRouteHeading: "Edit product" as const },
   validateSearch: (search) => adminProductWizardSearchSchema.parse(search),
   component: EditProduct,
 });

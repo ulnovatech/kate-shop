@@ -17,7 +17,7 @@ import { buildCategoryTree, getChildCategories } from "@/lib/categories";
 import { humanizeError } from "@/lib/errors";
 
 export const Route = createFileRoute("/admin/categories")({
-  staticData: { adminPermission: "catalog" as const },
+  staticData: { adminPermission: "catalog" as const, adminRouteHeading: "Categories" as const },
   component: AdminCategories,
 });
 

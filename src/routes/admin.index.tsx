@@ -21,7 +21,7 @@ import { useAdminNavBadges } from "@/hooks/use-admin-nav-badges";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin/")({
-  staticData: { adminPermission: "dashboard" as const },
+  staticData: { adminPermission: "dashboard" as const, adminRouteHeading: "Today" as const },
   component: AdminDashboard,
 });
 

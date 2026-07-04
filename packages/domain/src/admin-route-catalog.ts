@@ -16,7 +16,7 @@ export type AdminRouteCatalogEntry = {
   /** RBAC permission — omitted for public auth flows */
   permission?: AdminPermission;
   public?: boolean;
-  /** Primary h1 text (or pattern) for smoke tests */
+  /** Primary h1 text — mirrored in monolith route staticData.adminRouteHeading for parity checks */
   heading: string;
   /** Extra mobile QA notes for humans */
   mobileNotes?: string;

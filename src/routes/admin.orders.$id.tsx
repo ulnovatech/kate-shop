@@ -26,7 +26,7 @@ import { OrderDetailSkeleton } from "@/components/loading-states";
 import { AdminOrderPipeline } from "@/components/admin-order-pipeline";
 
 export const Route = createFileRoute("/admin/orders/$id")({
-  staticData: { adminPermission: "orders" as const },
+  staticData: { adminPermission: "orders" as const, adminRouteHeading: "Order" as const },
   component: AdminOrderDetail,
 });
 

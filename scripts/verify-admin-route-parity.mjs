@@ -40,8 +40,11 @@ for (const entry of ADMIN_ROUTE_CATALOG) {
   }
 
   const monoText = fs.readFileSync(monoPath, "utf8");
-  if (!monoText.includes(entry.heading)) {
-    fail(`Heading "${entry.heading}" not found in ${entry.monolithFile} — update catalog or page`);
+  const headingMarker = `adminRouteHeading: "${entry.heading}"`;
+  if (!monoText.includes(headingMarker)) {
+    fail(
+      `adminRouteHeading "${entry.heading}" not found in ${entry.monolithFile} — add to route staticData`,
+    );
   }
 
   if (entry.permission && !monoText.includes(`adminPermission: "${entry.permission}"`)) {
