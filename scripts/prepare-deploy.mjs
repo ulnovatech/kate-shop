@@ -1,9 +1,12 @@
 /**
  * Chunk 17 / C6 — patch Nitro-generated wrangler.json before deploy.
- * Injects worker name, runtime vars, and optional custom-domain routes.
+ * Injects worker name, runtime vars, observability, and optional custom-domain routes.
  */
 import fs from "node:fs";
 import path from "node:path";
+import { loadEnv } from "./load-env.mjs";
+
+loadEnv();
 
 const distRoot = process.env.KATE_DIST_DIR?.trim() || "dist";
 const wranglerPath = path.join(distRoot, "server", "wrangler.json");
@@ -28,6 +31,10 @@ cfg.name =
 if (cfg.assets?.directory) {
   cfg.assets.directory = cfg.assets.directory.replace(/\\/g, "/");
 }
+
+// Nitro stamps today's date on each build; cap so local wrangler dev stays compatible.
+cfg.compatibility_date =
+  process.env.CLOUDFLARE_COMPATIBILITY_DATE?.trim() || "2026-06-10";
 
 const vars = {};
 for (const key of [
@@ -61,6 +68,24 @@ if (zoneName && originUrl) {
   } catch {
     console.warn(`Could not parse origin URL for routes: ${originUrl}`);
   }
+}
+
+if (process.env.CLOUDFLARE_WORKER_LOGS !== "false") {
+  cfg.observability = {
+    enabled: true,
+    head_sampling_rate: 1,
+    logs: {
+      enabled: true,
+      head_sampling_rate: 1,
+      persist: true,
+      invocation_logs: true,
+    },
+    traces: {
+      enabled: false,
+      persist: true,
+      head_sampling_rate: 1,
+    },
+  };
 }
 
 fs.writeFileSync(wranglerPath, `${JSON.stringify(cfg, null, 2)}\n`);

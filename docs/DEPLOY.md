@@ -37,6 +37,9 @@ Build output: `apps/storefront/dist/` (Worker in `apps/storefront/dist/server/`,
 | `BOOTSTRAP_TOKEN` | Prod recommended | Locks `/admin/setup` |
 | `CLOUDFLARE_WORKER_NAME` | Optional | Shop worker; defaults to `kate-shop` |
 | `CLOUDFLARE_ADMIN_WORKER_NAME` | Optional | Admin worker; defaults to `kate-admin` (C6) |
+| `CLOUDFLARE_WORKER_LOGS` | Optional | Set `false` to omit observability block from wrangler.json |
+
+`scripts/prepare-deploy.mjs` runs on every deploy (local, CI, Workers Builds). It loads `.env` when present, injects runtime vars, enables Worker logs, and sets the worker name. `SUPABASE_SERVICE_ROLE_KEY` is uploaded via `wrangler secret put` (`npm run deploy` and CI) — never put it in `wrangler.json` vars.
 
 ### Manual deploy
 
@@ -54,8 +57,10 @@ Preview a Worker locally:
 
 ```bash
 npm run build
-npm run preview:worker
+npm run preview:worker   # writes .dev.vars from .env for SUPABASE_SERVICE_ROLE_KEY
 ```
+
+Expect `/health.json` → 200 and `/` → 200 when `.env` includes the service role key.
 
 ### Supabase auth redirects
 

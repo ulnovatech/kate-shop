@@ -19,16 +19,31 @@ function missing(names: string[]): never {
   );
 }
 
+/** Prefer runtime Worker vars over empty build-time Vite placeholders. */
+function readEnv(...candidates: (string | undefined)[]): string | undefined {
+  for (const candidate of candidates) {
+    const value = candidate?.trim();
+    if (value) return value;
+  }
+  return undefined;
+}
+
 /** Browser + SSR client (anon / publishable key). */
 export function getSupabasePublicConfig(): SupabasePublicConfig {
-  const url =
-    import.meta.env?.VITE_SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const publishableKey =
-    import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.SUPABASE_PUBLISHABLE_KEY;
-  const projectId =
-    import.meta.env?.VITE_SUPABASE_PROJECT_ID ?? process.env.VITE_SUPABASE_PROJECT_ID;
+  const url = readEnv(
+    process.env.VITE_SUPABASE_URL,
+    process.env.SUPABASE_URL,
+    import.meta.env?.VITE_SUPABASE_URL,
+  );
+  const publishableKey = readEnv(
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+    process.env.SUPABASE_PUBLISHABLE_KEY,
+    import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY,
+  );
+  const projectId = readEnv(
+    process.env.VITE_SUPABASE_PROJECT_ID,
+    import.meta.env?.VITE_SUPABASE_PROJECT_ID,
+  );
 
   const missingVars: string[] = [];
   if (!url) missingVars.push("VITE_SUPABASE_URL or SUPABASE_URL");
@@ -42,7 +57,7 @@ export function getSupabasePublicConfig(): SupabasePublicConfig {
 /** Server-only; service role optional until admin scripts need it. */
 export function getSupabaseServerConfig(requireServiceRole = false): SupabaseServerConfig {
   const base = getSupabasePublicConfig();
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey = readEnv(process.env.SUPABASE_SERVICE_ROLE_KEY);
   if (requireServiceRole && !serviceRoleKey) {
     missing(["SUPABASE_SERVICE_ROLE_KEY"]);
   }

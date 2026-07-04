@@ -15,6 +15,7 @@ import {
 } from "./lib/observability/logger.server";
 import { getRequestIdHeaderName, resolveRequestId } from "./lib/observability/request-id";
 import { applySecurityHeaders } from "./lib/security-headers";
+import { bindWorkerRuntimeEnv } from "./lib/worker-env.server";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -64,6 +65,8 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    bindWorkerRuntimeEnv(env);
+
     const url = new URL(request.url);
 
     if (isHealthPath(url.pathname)) {

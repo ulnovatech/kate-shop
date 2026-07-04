@@ -308,7 +308,7 @@ function CheckoutNotesSection({ form }: { form: UseFormReturn<CheckoutFormData> 
 function Checkout() {
   const items = useCart((s) => s.items);
   const online = useOnlineStatus();
-  const sessionId = useCart((s) => s.sessionId);
+  const getSessionId = useCart((s) => s.getSessionId);
   const subtotal = useCart((s) => s.total());
   const clear = useCart((s) => s.clear);
   const navigate = useNavigate();
@@ -520,7 +520,7 @@ function Checkout() {
           delivery_zone_id: delivery.zoneId,
           express_delivery: express,
           payment_provider: paymentProvider,
-          checkout_session_id: sessionId,
+          checkout_session_id: getSessionId(),
           items: items.map((i) => ({
             productId: i.productId,
             name: i.name,

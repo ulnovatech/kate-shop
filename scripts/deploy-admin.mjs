@@ -2,6 +2,10 @@
 /** Build and deploy the Kate Admin Worker (C6). */
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { loadEnv } from "./load-env.mjs";
+import { putWorkerSecret } from "./put-worker-secret.mjs";
+
+loadEnv();
 
 const root = process.cwd();
 const distDir = path.join("apps", "admin", "dist");
@@ -42,4 +46,7 @@ run("node", ["scripts/prepare-deploy.mjs"], {
   ADMIN_ORIGIN: adminOrigin,
   VITE_ADMIN_ORIGIN: buildEnv.VITE_ADMIN_ORIGIN,
 });
+if (putWorkerSecret({ distDir, name: "SUPABASE_SERVICE_ROLE_KEY", value: process.env.SUPABASE_SERVICE_ROLE_KEY })) {
+  console.log("Uploaded Worker secret SUPABASE_SERVICE_ROLE_KEY.");
+}
 run("npx", ["nitro", "deploy", "--prebuilt", "--dir", distDir]);

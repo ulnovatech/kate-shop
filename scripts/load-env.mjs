@@ -2,10 +2,17 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-
-/** Load .env into process.env (no dependency). */
+/** Load .env into process.env (no dependency). No-op on Cloudflare Workers (no filesystem / import.meta.url). */
 export function loadEnv() {
+  let metaUrl;
+  try {
+    metaUrl = import.meta.url;
+  } catch {
+    return;
+  }
+  if (!metaUrl) return;
+
+  const root = resolve(dirname(fileURLToPath(metaUrl)), "..");
   const path = resolve(root, ".env");
   if (!existsSync(path)) return;
   const text = readFileSync(path, "utf8");

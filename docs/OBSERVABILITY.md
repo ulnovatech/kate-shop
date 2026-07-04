@@ -46,6 +46,8 @@ Errors emit `event: "server_error"` or `event: "client_error"`.
 - Local: terminal running `npm run dev` / `npm run preview:worker`
 - Production: Cloudflare dashboard → Workers → your worker → Logs / Observability
 
+`scripts/prepare-deploy.mjs` sets `observability.logs.enabled: true` in the generated `wrangler.json` on every deploy, so dashboard log settings are not reset to Disabled. Set `CLOUDFLARE_WORKER_LOGS=false` to skip this block (e.g. cost-sensitive preview Workers).
+
 ## Request correlation
 
 Responses include `X-Request-Id`. Pass the same header on inbound requests to tie logs together.
