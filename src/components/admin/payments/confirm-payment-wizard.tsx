@@ -27,10 +27,7 @@ import { formatPhoneDisplay } from "@/lib/phone";
 import type { PaymentProvider } from "@/lib/db/contracts";
 import { PAYMENT_PROVIDERS } from "@/lib/db/contracts";
 import { PAYMENT_PROVIDER_LABELS, PAYMENT_STATUS_LABELS } from "@/lib/payments";
-import {
-  recordPayment,
-  type UnpaidOrderRow,
-} from "@/lib/api/payments.functions";
+import { recordPayment, type UnpaidOrderRow } from "@/lib/api/payments.functions";
 import { humanizeError } from "@/lib/errors";
 
 const WIZARD_STEPS = [

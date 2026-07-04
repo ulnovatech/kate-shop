@@ -18,6 +18,7 @@ Assume the first design is wrong.
 Suggest a better one.
 
 Benchmark against:
+
 - Linear
 - Stripe
 - Notion

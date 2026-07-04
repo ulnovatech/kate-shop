@@ -1,11 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  LogOut,
-  Menu,
-  Store,
-} from "lucide-react";
+import { LogOut, Menu, Store } from "lucide-react";
 import { AdminBrandMark, useAdminShopName } from "@/components/admin-brand-mark";
 import { AdminNavCompletionRing } from "@/components/admin/admin-nav-completion-ring";
 import { AdminSetupProgress } from "@/components/admin/admin-setup-progress";
@@ -20,11 +16,7 @@ import { useAuth } from "@/lib/auth";
 import { adminIconButton } from "@/lib/admin-mobile";
 import { ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
 import { ADMIN_PUBLIC_PATHS, adminUrl } from "@/lib/admin-routes";
-import {
-  defaultAdminPath,
-  displayRoleLabel,
-  hasPermission,
-} from "@/lib/rbac";
+import { defaultAdminPath, displayRoleLabel, hasPermission } from "@/lib/rbac";
 import { Button } from "@/components/ui/button";
 import { AdminMobileNavDrawer } from "@/components/admin-mobile-nav-drawer";
 import { AdminNavBadge } from "@/components/admin-nav-badge";
@@ -88,8 +80,7 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   const { focusMode, toggleFocusMode } = useAdminFocusMode();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  const showSetupCompletion =
-    permissions.canManageSettings || permissions.canManageCatalog;
+  const showSetupCompletion = permissions.canManageSettings || permissions.canManageCatalog;
   const { data: setupCompletion } = useAdminSetupCompletion(showSetupCompletion);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -178,15 +169,10 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
             {section.items.map((n) => {
               const active = n.exact ? path === n.to : path.startsWith(n.to);
               const badge = n.to === ORDERS_NAV_PATH ? unopenedOrders : 0;
-              const ordersLabel =
-                badge > 0 ? `${n.label}, ${badge} unopened` : n.label;
+              const ordersLabel = badge > 0 ? `${n.label}, ${badge} unopened` : n.label;
               const checkId = NAV_PATH_SETUP_CHECK[n.to];
-              const setupStatus = checkId
-                ? setupCompletion?.checksById[checkId]
-                : undefined;
-              const setupComplete = setupStatus
-                ? setupStatus.complete
-                : null;
+              const setupStatus = checkId ? setupCompletion?.checksById[checkId] : undefined;
+              const setupComplete = setupStatus ? setupStatus.complete : null;
               const setupLabel = setupStatus?.label ?? n.label;
               return (
                 <Link
@@ -217,135 +203,135 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   return (
     <StaffScreenLockProvider enabled={staffScreenLockEnabled()}>
       <AdminMobileNavOverrideProvider>
-      <div className={cn("flex min-h-dvh bg-background", focusMode && "admin-focus-mode")}>
-      <SkipLink />
-      <RouteAnnouncer />
-      <aside
-        className={cn(
-          "hidden w-60 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col",
-          focusMode && "md:hidden",
-        )}
-      >
-        <div className="border-b border-sidebar-border px-5 py-5">
-          <AdminBrandMark subtitle={`Admin · ${roleBadge}`} />
-        </div>
-        <nav className="flex-1 space-y-1 p-3">{renderNavLinks()}</nav>
-        <div className="space-y-2 border-t border-sidebar-border p-3">
-          <button
-            type="button"
-            onClick={() => setPaletteOpen(true)}
-            className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+        <div className={cn("flex min-h-dvh bg-background", focusMode && "admin-focus-mode")}>
+          <SkipLink />
+          <RouteAnnouncer />
+          <aside
+            className={cn(
+              "hidden w-60 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col",
+              focusMode && "md:hidden",
+            )}
           >
-            <span className="text-xs text-sidebar-foreground/50">⌘K</span>
-            <span className="flex-1 text-left">Command palette</span>
-          </button>
-          {viewShopLink}
-          <button
-            onClick={() => void handleSignOut()}
-            className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
-          >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
-        </div>
-      </aside>
-
-      <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col">
-        <header className="flex shrink-0 items-center gap-2 border-b bg-sidebar px-3 py-2.5 text-sidebar-foreground md:hidden">
-          <Button
-            type="button"
-            variant="outline"
-            className={`${adminIconButton} border-sidebar-border bg-sidebar-accent/30 ${navOpen ? "text-gold" : "text-sidebar-foreground"}`}
-            aria-label={navOpen ? "Close menu" : "Open menu"}
-            aria-expanded={navOpen}
-            aria-controls="admin-mobile-nav"
-            onClick={() => setNavOpen((open) => !open)}
-          >
-            <Menu aria-hidden />
-          </Button>
-          <Link
-            to={defaultAdminPath(permissions.role)}
-            className="min-w-0 flex-1 truncate font-heading text-sm font-semibold text-gold"
-          >
-            <AdminShopNameMobile roleBadge={roleBadge} />
-          </Link>
-          <Button
-            size="icon"
-            variant="outline"
-            className={`${adminIconButton} border-sidebar-border bg-sidebar-accent/30 text-sidebar-foreground`}
-            aria-label="Sign out"
-            onClick={() => void handleSignOut()}
-          >
-            <LogOut aria-hidden />
-          </Button>
-        </header>
-
-        <main
-          id="main-content"
-          tabIndex={-1}
-          className="admin-overscroll admin-scroll-root relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto p-3 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:p-6 md:p-8 md:pb-8"
-        >
-          {focusMode ? (
-            <div className="mb-4 flex justify-end">
-              <Button type="button" variant="outline" size="sm" onClick={toggleFocusMode}>
-                Exit focus mode
-              </Button>
+            <div className="border-b border-sidebar-border px-5 py-5">
+              <AdminBrandMark subtitle={`Admin · ${roleBadge}`} />
             </div>
-          ) : null}
-          <AdminPullToRefresh onRefresh={handlePullRefresh} disabled={navOpen}>
-            <AdminRefreshingBar active={refreshing} />
-            {children ?? <Outlet />}
-          </AdminPullToRefresh>
-        </main>
+            <nav className="flex-1 space-y-1 p-3">{renderNavLinks()}</nav>
+            <div className="space-y-2 border-t border-sidebar-border p-3">
+              <button
+                type="button"
+                onClick={() => setPaletteOpen(true)}
+                className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+              >
+                <span className="text-xs text-sidebar-foreground/50">⌘K</span>
+                <span className="flex-1 text-left">Command palette</span>
+              </button>
+              {viewShopLink}
+              <button
+                onClick={() => void handleSignOut()}
+                className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+              >
+                <LogOut className="h-4 w-4" /> Sign out
+              </button>
+            </div>
+          </aside>
 
-        {adminMobileQuickNavVisible(permissions) && !focusMode && (
-          <AdminMobileQuickNav
+          <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col">
+            <header className="flex shrink-0 items-center gap-2 border-b bg-sidebar px-3 py-2.5 text-sidebar-foreground md:hidden">
+              <Button
+                type="button"
+                variant="outline"
+                className={`${adminIconButton} border-sidebar-border bg-sidebar-accent/30 ${navOpen ? "text-gold" : "text-sidebar-foreground"}`}
+                aria-label={navOpen ? "Close menu" : "Open menu"}
+                aria-expanded={navOpen}
+                aria-controls="admin-mobile-nav"
+                onClick={() => setNavOpen((open) => !open)}
+              >
+                <Menu aria-hidden />
+              </Button>
+              <Link
+                to={defaultAdminPath(permissions.role)}
+                className="min-w-0 flex-1 truncate font-heading text-sm font-semibold text-gold"
+              >
+                <AdminShopNameMobile roleBadge={roleBadge} />
+              </Link>
+              <Button
+                size="icon"
+                variant="outline"
+                className={`${adminIconButton} border-sidebar-border bg-sidebar-accent/30 text-sidebar-foreground`}
+                aria-label="Sign out"
+                onClick={() => void handleSignOut()}
+              >
+                <LogOut aria-hidden />
+              </Button>
+            </header>
+
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className="admin-overscroll admin-scroll-root relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto p-3 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:p-6 md:p-8 md:pb-8"
+            >
+              {focusMode ? (
+                <div className="mb-4 flex justify-end">
+                  <Button type="button" variant="outline" size="sm" onClick={toggleFocusMode}>
+                    Exit focus mode
+                  </Button>
+                </div>
+              ) : null}
+              <AdminPullToRefresh onRefresh={handlePullRefresh} disabled={navOpen}>
+                <AdminRefreshingBar active={refreshing} />
+                {children ?? <Outlet />}
+              </AdminPullToRefresh>
+            </main>
+
+            {adminMobileQuickNavVisible(permissions) && !focusMode && (
+              <AdminMobileQuickNav
+                permissions={permissions}
+                unopenedOrders={unopenedOrders}
+                navOpen={navOpen}
+                onMenuToggle={() => setNavOpen((open) => !open)}
+              />
+            )}
+          </div>
+
+          <AdminMobileNavDrawer
+            open={navOpen}
+            onClose={() => setNavOpen(false)}
+            title={<AdminBrandMark subtitle={`Admin · ${roleBadge}`} />}
+            footer={
+              <>
+                <a
+                  href={ADMIN_BASE_PATH === "/" ? SHOP_ORIGIN : "/"}
+                  onClick={() => setNavOpen(false)}
+                  className="flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+                >
+                  <Store className="h-4 w-4" /> View shop
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNavOpen(false);
+                    void handleSignOut();
+                  }}
+                  className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+                >
+                  <LogOut className="h-4 w-4" /> Sign out
+                </button>
+              </>
+            }
+          >
+            {renderNavLinks(() => setNavOpen(false))}
+          </AdminMobileNavDrawer>
+
+          <AdminCommandPalette
+            open={paletteOpen}
+            onOpenChange={setPaletteOpen}
             permissions={permissions}
-            unopenedOrders={unopenedOrders}
-            navOpen={navOpen}
-            onMenuToggle={() => setNavOpen((open) => !open)}
+            focusMode={focusMode}
+            onToggleFocusMode={toggleFocusMode}
+            onOpenShortcuts={() => setShortcutsOpen(true)}
           />
-        )}
-      </div>
-
-      <AdminMobileNavDrawer
-        open={navOpen}
-        onClose={() => setNavOpen(false)}
-        title={<AdminBrandMark subtitle={`Admin · ${roleBadge}`} />}
-        footer={
-          <>
-            <a
-              href={ADMIN_BASE_PATH === "/" ? SHOP_ORIGIN : "/"}
-              onClick={() => setNavOpen(false)}
-              className="flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
-            >
-              <Store className="h-4 w-4" /> View shop
-            </a>
-            <button
-              type="button"
-              onClick={() => {
-                setNavOpen(false);
-                void handleSignOut();
-              }}
-              className="flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
-            >
-              <LogOut className="h-4 w-4" /> Sign out
-            </button>
-          </>
-        }
-      >
-        {renderNavLinks(() => setNavOpen(false))}
-      </AdminMobileNavDrawer>
-
-      <AdminCommandPalette
-        open={paletteOpen}
-        onOpenChange={setPaletteOpen}
-        permissions={permissions}
-        focusMode={focusMode}
-        onToggleFocusMode={toggleFocusMode}
-        onOpenShortcuts={() => setShortcutsOpen(true)}
-      />
-      <AdminKeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-      </div>
+          <AdminKeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+        </div>
       </AdminMobileNavOverrideProvider>
     </StaffScreenLockProvider>
   );

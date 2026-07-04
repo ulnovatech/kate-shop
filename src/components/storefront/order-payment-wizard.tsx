@@ -3,10 +3,7 @@ import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/copy-button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  PAYMENT_PROVIDER_LABELS,
-  type PaymentInstruction,
-} from "@/lib/payments";
+import { PAYMENT_PROVIDER_LABELS, type PaymentInstruction } from "@/lib/payments";
 import type { PaymentProvider } from "@/lib/db/contracts";
 import { formatKES, whatsappUrl } from "@/lib/shop";
 import { cn } from "@/lib/utils";
@@ -49,8 +46,7 @@ export function OrderPaymentWizard({
   );
 
   const currentStep = WIZARD_STEPS[stepIndex]?.id ?? "choose";
-  const selected =
-    instructions.find((b) => b.provider === selectedProvider) ?? instructions[0];
+  const selected = instructions.find((b) => b.provider === selectedProvider) ?? instructions[0];
   const due = amountRemaining > 0 ? amountRemaining : grandTotal;
 
   const goNext = () => setStepIndex((i) => Math.min(i + 1, WIZARD_STEPS.length - 1));
@@ -94,7 +90,10 @@ export function OrderPaymentWizard({
                 </div>
                 {index < WIZARD_STEPS.length - 1 ? (
                   <div
-                    className={cn("mb-4 h-px flex-1", stepIndex > index ? "bg-primary" : "bg-border")}
+                    className={cn(
+                      "mb-4 h-px flex-1",
+                      stepIndex > index ? "bg-primary" : "bg-border",
+                    )}
                     aria-hidden
                   />
                 ) : null}
@@ -127,18 +126,18 @@ export function OrderPaymentWizard({
 
         {currentStep === "instructions" && selected ? (
           <div className="rounded-md border bg-card/80 p-4 text-sm">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <h3 className="font-medium text-foreground">{selected.title}</h3>
-                <CopyButton
-                  text={formatPaymentBlockForCopy(selected)}
-                  label="Copy"
-                  successMessage="Payment details copied"
-                />
-              </div>
-              <ul className="mt-2 space-y-1 text-muted-foreground">
-                {selected.lines.map((line, i) => (
-                  <li key={i}>{line.replace(/\*/g, "")}</li>
-                ))}
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <h3 className="font-medium text-foreground">{selected.title}</h3>
+              <CopyButton
+                text={formatPaymentBlockForCopy(selected)}
+                label="Copy"
+                successMessage="Payment details copied"
+              />
+            </div>
+            <ul className="mt-2 space-y-1 text-muted-foreground">
+              {selected.lines.map((line, i) => (
+                <li key={i}>{line.replace(/\*/g, "")}</li>
+              ))}
             </ul>
           </div>
         ) : null}
@@ -154,7 +153,11 @@ export function OrderPaymentWizard({
               size="lg"
               className="w-full bg-gold text-gold-foreground hover:bg-gold/90"
             >
-              <a href={whatsappUrl(paymentConfirmMessage, whatsapp)} target="_blank" rel="noreferrer">
+              <a
+                href={whatsappUrl(paymentConfirmMessage, whatsapp)}
+                target="_blank"
+                rel="noreferrer"
+              >
                 <MessageCircle className="mr-2 h-4 w-4" aria-hidden />
                 I&apos;ve sent payment — confirm on WhatsApp
               </a>

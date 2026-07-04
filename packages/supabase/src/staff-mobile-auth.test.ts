@@ -11,9 +11,7 @@ describe("isStaffAuthCallbackUrl", () => {
   });
 
   it("matches web login-callback path", () => {
-    expect(isStaffAuthCallbackUrl("https://admin.example.com/login-callback?code=abc")).toBe(
-      true,
-    );
+    expect(isStaffAuthCallbackUrl("https://admin.example.com/login-callback?code=abc")).toBe(true);
     expect(isStaffAuthCallbackUrl("https://shop.example.com/admin/login-callback")).toBe(true);
   });
 
@@ -27,9 +25,7 @@ describe("resolveStaffAuthRedirectTo", () => {
     const original = globalThis.window;
     // @ts-expect-error test stub
     globalThis.window = { location: { origin: "https://admin.example.com" } };
-    expect(resolveStaffAuthRedirectTo()).toBe(
-      "https://admin.example.com/admin/login-callback",
-    );
+    expect(resolveStaffAuthRedirectTo()).toBe("https://admin.example.com/admin/login-callback");
     globalThis.window = original;
   });
 });

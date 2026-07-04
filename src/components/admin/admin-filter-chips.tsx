@@ -34,7 +34,13 @@ export function AdminFilterChips({ chips, onClearAll }: AdminFilterChipsProps) {
         </span>
       ))}
       {chips.length > 1 && onClearAll ? (
-        <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={onClearAll}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 text-xs"
+          onClick={onClearAll}
+        >
           Clear all
         </Button>
       ) : null}

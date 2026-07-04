@@ -98,8 +98,7 @@ export function AdminPullToRefresh({
     };
   }, [disabled, refreshing]);
 
-  const indicatorHeight =
-    refreshing ? 48 : pullDistance > 0 ? Math.max(pullDistance, 0) : 0;
+  const indicatorHeight = refreshing ? 48 : pullDistance > 0 ? Math.max(pullDistance, 0) : 0;
   const releaseReady = pullDistance >= PULL_THRESHOLD_PX;
 
   return (
@@ -125,8 +124,7 @@ export function AdminPullToRefresh({
       <div
         className="transition-transform duration-150"
         style={{
-          transform:
-            pullDistance > 0 && !refreshing ? `translateY(${pullDistance}px)` : undefined,
+          transform: pullDistance > 0 && !refreshing ? `translateY(${pullDistance}px)` : undefined,
         }}
       >
         {children}

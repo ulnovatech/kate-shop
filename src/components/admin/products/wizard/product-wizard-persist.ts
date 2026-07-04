@@ -122,7 +122,9 @@ export async function persistProductWizard({
     category_id: values.category_id ?? null,
   });
 
-  const beforeSnapshot = existing ? pickProductAuditFields(existing as Record<string, unknown>) : null;
+  const beforeSnapshot = existing
+    ? pickProductAuditFields(existing as Record<string, unknown>)
+    : null;
   const stockChanged =
     existing != null && Number(existing.stock_quantity) !== Number(values.stock_quantity);
 

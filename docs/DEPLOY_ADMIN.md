@@ -56,11 +56,11 @@ Set `CLOUDFLARE_ZONE_NAME=yourdomain.com` and `ADMIN_ORIGIN=https://admin.yourdo
 
 In Supabase → **Authentication** → **URL configuration**:
 
-| Field | Value |
-|-------|--------|
-| **Site URL** | `https://shop.yourdomain.com` (`APP_ORIGIN`) |
-| **Redirect URLs** | `https://shop.yourdomain.com/**` |
-| | `https://admin.yourdomain.com/**` |
+| Field             | Value                                        |
+| ----------------- | -------------------------------------------- |
+| **Site URL**      | `https://shop.yourdomain.com` (`APP_ORIGIN`) |
+| **Redirect URLs** | `https://shop.yourdomain.com/**`             |
+|                   | `https://admin.yourdomain.com/**`            |
 
 Print URLs from your env:
 
@@ -83,11 +83,11 @@ When `ADMIN_ORIGIN` is set as a **repository/organization variable** (in the sam
 
 Optional variables:
 
-| Variable | Purpose |
-|----------|---------|
-| `ADMIN_ORIGIN` | Enables admin deploy job + worker env |
-| `CLOUDFLARE_ADMIN_WORKER_NAME` | Override default `kate-admin` |
-| `CLOUDFLARE_ZONE_NAME` | Auto-inject wrangler route for shop + admin |
+| Variable                       | Purpose                                     |
+| ------------------------------ | ------------------------------------------- |
+| `ADMIN_ORIGIN`                 | Enables admin deploy job + worker env       |
+| `CLOUDFLARE_ADMIN_WORKER_NAME` | Override default `kate-admin`               |
+| `CLOUDFLARE_ZONE_NAME`         | Auto-inject wrangler route for shop + admin |
 
 ## Health
 

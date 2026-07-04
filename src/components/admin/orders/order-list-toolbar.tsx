@@ -1,7 +1,4 @@
-import {
-  AdminListToolbar,
-  OverlaySearch,
-} from "@/components/admin";
+import { AdminListToolbar, OverlaySearch } from "@/components/admin";
 import { AdminSavedViewsMenu } from "@/components/admin/admin-saved-views-menu";
 import { DateRangeFilter } from "@/components/admin/date-range-filter";
 import {
@@ -62,10 +59,7 @@ export function OrderListToolbar({
         />
       }
     >
-      <Select
-        value={draft.status}
-        onValueChange={(v) => onStatusChange(v as OrderStatus | "all")}
-      >
+      <Select value={draft.status} onValueChange={(v) => onStatusChange(v as OrderStatus | "all")}>
         <SelectTrigger
           className={cn(adminToolbarControl, "w-[min(100%,11rem)]")}
           aria-label="Order status"

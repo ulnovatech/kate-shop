@@ -23,21 +23,21 @@ Build output: `apps/storefront/dist/` (Worker in `apps/storefront/dist/server/`,
 2. Note your **Account ID** (Cloudflare dashboard).
 3. Set runtime env on the Worker (via `scripts/prepare-deploy.mjs` + GitHub secrets, or Dashboard → Worker → Settings → Variables).
 
-| Variable | Required | Notes |
-|----------|----------|-------|
-| `VITE_SUPABASE_URL` | Yes | Baked into client bundle at build time |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes | Baked into client bundle |
-| `VITE_SUPABASE_PROJECT_ID` | Recommended | |
-| `SUPABASE_URL` | Yes | SSR / server functions |
-| `SUPABASE_PUBLISHABLE_KEY` | Yes | SSR |
-| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Worker **secret** (never `VITE_`) |
-| `APP_ORIGIN` | Yes in prod | Public shop URL, e.g. `https://shop.example.com` |
-| `ADMIN_ORIGIN` | Yes when admin deployed | Staff app URL, e.g. `https://admin.example.com` |
-| `VITE_ADMIN_ORIGIN` | Yes for admin build | Same as `ADMIN_ORIGIN` (client bundle) |
-| `BOOTSTRAP_TOKEN` | Prod recommended | Locks `/admin/setup` |
-| `CLOUDFLARE_WORKER_NAME` | Optional | Shop worker; defaults to `kate-shop` |
-| `CLOUDFLARE_ADMIN_WORKER_NAME` | Optional | Admin worker; defaults to `kate-admin` (C6) |
-| `CLOUDFLARE_WORKER_LOGS` | Optional | Set `false` to omit observability block from wrangler.json |
+| Variable                        | Required                | Notes                                                      |
+| ------------------------------- | ----------------------- | ---------------------------------------------------------- |
+| `VITE_SUPABASE_URL`             | Yes                     | Baked into client bundle at build time                     |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Yes                     | Baked into client bundle                                   |
+| `VITE_SUPABASE_PROJECT_ID`      | Recommended             |                                                            |
+| `SUPABASE_URL`                  | Yes                     | SSR / server functions                                     |
+| `SUPABASE_PUBLISHABLE_KEY`      | Yes                     | SSR                                                        |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Yes                     | Worker **secret** (never `VITE_`)                          |
+| `APP_ORIGIN`                    | Yes in prod             | Public shop URL, e.g. `https://shop.example.com`           |
+| `ADMIN_ORIGIN`                  | Yes when admin deployed | Staff app URL, e.g. `https://admin.example.com`            |
+| `VITE_ADMIN_ORIGIN`             | Yes for admin build     | Same as `ADMIN_ORIGIN` (client bundle)                     |
+| `BOOTSTRAP_TOKEN`               | Prod recommended        | Locks `/admin/setup`                                       |
+| `CLOUDFLARE_WORKER_NAME`        | Optional                | Shop worker; defaults to `kate-shop`                       |
+| `CLOUDFLARE_ADMIN_WORKER_NAME`  | Optional                | Admin worker; defaults to `kate-admin` (C6)                |
+| `CLOUDFLARE_WORKER_LOGS`        | Optional                | Set `false` to omit observability block from wrangler.json |
 
 `scripts/prepare-deploy.mjs` runs on every deploy (local, CI, Workers Builds). It loads `.env` when present, injects runtime vars, enables Worker logs, and sets the worker name. `SUPABASE_SERVICE_ROLE_KEY` is uploaded via `wrangler secret put` (`npm run deploy` and CI) — never put it in `wrangler.json` vars.
 
@@ -73,9 +73,9 @@ Add your production (and preview) URLs in Supabase → Authentication → URL co
 
 Staff app deploys to **`https://admin.your-domain.com`** as Worker `kate-admin`. Full guide: **[DEPLOY_ADMIN.md](DEPLOY_ADMIN.md)**.
 
-| Host | Worker | Deploy |
-|------|--------|--------|
-| `shop.example.com` | `kate-shop` | `npm run deploy` |
+| Host                | Worker       | Deploy                 |
+| ------------------- | ------------ | ---------------------- |
+| `shop.example.com`  | `kate-shop`  | `npm run deploy`       |
 | `admin.example.com` | `kate-admin` | `npm run deploy:admin` |
 
 Both:
@@ -105,12 +105,12 @@ Cloudflare remains the **primary** host (`npm run deploy`, `.github/workflows/ci
 
 Workflow: `.github/workflows/ci.yml`
 
-| Job | When | Purpose |
-|-----|------|---------|
-| `check` | Every push / PR | `lint` → `test` → `build` (placeholder Supabase env) |
-| `deploy-production` | Push to `main` | Build with real secrets → deploy Worker |
-| `deploy-preview` | PR (optional) | Deploy `kate-shop-pr-<number>` when `CLOUDFLARE_DEPLOY_PREVIEWS=true` |
-| `e2e` | Push to `main` (optional) | Playwright when `E2E_ENABLED=true` |
+| Job                 | When                      | Purpose                                                               |
+| ------------------- | ------------------------- | --------------------------------------------------------------------- |
+| `check`             | Every push / PR           | `lint` → `test` → `build` (placeholder Supabase env)                  |
+| `deploy-production` | Push to `main`            | Build with real secrets → deploy Worker                               |
+| `deploy-preview`    | PR (optional)             | Deploy `kate-shop-pr-<number>` when `CLOUDFLARE_DEPLOY_PREVIEWS=true` |
+| `e2e`               | Push to `main` (optional) | Playwright when `E2E_ENABLED=true`                                    |
 
 ### GitHub `production` environment
 
@@ -119,28 +119,28 @@ Create **Settings → Environments → production**. Shop and admin deploy jobs 
 - **Required reviewers** — manual approval before deploy (documented gate).
 - **Environment secrets** — same names as `.env` plus Cloudflare:
 
-| Secret | Purpose |
-|--------|---------|
-| `CLOUDFLARE_API_TOKEN` | Deploy |
-| `CLOUDFLARE_ACCOUNT_ID` | Deploy |
-| `VITE_SUPABASE_URL` | Build + runtime |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Build + runtime |
-| `VITE_SUPABASE_PROJECT_ID` | Build + runtime |
-| `SUPABASE_URL` | Build + runtime |
-| `SUPABASE_PUBLISHABLE_KEY` | Build + runtime |
-| `SUPABASE_SERVICE_ROLE_KEY` | Worker secret |
-| `BOOTSTRAP_TOKEN` | Optional setup lock |
-| `E2E_ADMIN_EMAIL` / `E2E_ADMIN_PIN` | Optional E2E job |
+| Secret                              | Purpose             |
+| ----------------------------------- | ------------------- |
+| `CLOUDFLARE_API_TOKEN`              | Deploy              |
+| `CLOUDFLARE_ACCOUNT_ID`             | Deploy              |
+| `VITE_SUPABASE_URL`                 | Build + runtime     |
+| `VITE_SUPABASE_PUBLISHABLE_KEY`     | Build + runtime     |
+| `VITE_SUPABASE_PROJECT_ID`          | Build + runtime     |
+| `SUPABASE_URL`                      | Build + runtime     |
+| `SUPABASE_PUBLISHABLE_KEY`          | Build + runtime     |
+| `SUPABASE_SERVICE_ROLE_KEY`         | Worker secret       |
+| `BOOTSTRAP_TOKEN`                   | Optional setup lock |
+| `E2E_ADMIN_EMAIL` / `E2E_ADMIN_PIN` | Optional E2E job    |
 
-| Variable | Purpose |
-|----------|---------|
-| `APP_ORIGIN` | Production shop URL (environment URL + Worker var) |
-| `ADMIN_ORIGIN` | Production admin URL — enables `deploy-admin-production` CI |
-| `CLOUDFLARE_WORKER_NAME` | Override default `kate-shop` |
-| `CLOUDFLARE_ADMIN_WORKER_NAME` | Override default `kate-admin` |
-| `CLOUDFLARE_ZONE_NAME` | Optional — auto wrangler routes for shop/admin hostnames |
-| `CLOUDFLARE_DEPLOY_PREVIEWS` | Set `true` to enable PR preview Workers |
-| `E2E_ENABLED` | Set `true` to run Playwright on `main` |
+| Variable                       | Purpose                                                     |
+| ------------------------------ | ----------------------------------------------------------- |
+| `APP_ORIGIN`                   | Production shop URL (environment URL + Worker var)          |
+| `ADMIN_ORIGIN`                 | Production admin URL — enables `deploy-admin-production` CI |
+| `CLOUDFLARE_WORKER_NAME`       | Override default `kate-shop`                                |
+| `CLOUDFLARE_ADMIN_WORKER_NAME` | Override default `kate-admin`                               |
+| `CLOUDFLARE_ZONE_NAME`         | Optional — auto wrangler routes for shop/admin hostnames    |
+| `CLOUDFLARE_DEPLOY_PREVIEWS`   | Set `true` to enable PR preview Workers                     |
+| `E2E_ENABLED`                  | Set `true` to run Playwright on `main`                      |
 
 CI **fails closed**: any lint, test, or build failure blocks deploy.
 

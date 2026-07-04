@@ -1,8 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  isEmailDeliveryEnabled,
-  resetEmailOtpDeliveryForTests,
-} from "@/lib/email/otp-delivery";
+import { isEmailDeliveryEnabled, resetEmailOtpDeliveryForTests } from "@/lib/email/otp-delivery";
 
 describe("email otp-delivery", () => {
   const env = process.env;

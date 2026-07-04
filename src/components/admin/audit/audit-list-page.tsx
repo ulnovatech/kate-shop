@@ -29,7 +29,10 @@ type AuditListPageProps = {
   onDateFromChange: (value: string) => void;
   onDateToChange: (value: string) => void;
   onClearFilters: () => void;
-  onClearField: (field: keyof AdminAuditListFilters, value: AdminAuditListFilters[keyof AdminAuditListFilters]) => void;
+  onClearField: (
+    field: keyof AdminAuditListFilters,
+    value: AdminAuditListFilters[keyof AdminAuditListFilters],
+  ) => void;
 };
 
 export function AuditListPage({

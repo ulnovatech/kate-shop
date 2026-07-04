@@ -98,7 +98,10 @@ export function setupChecksById(
   );
 }
 
-export function isNavPathComplete(path: string, checksById: Record<SetupCheckId, SetupCheckStatus>): boolean | null {
+export function isNavPathComplete(
+  path: string,
+  checksById: Record<SetupCheckId, SetupCheckStatus>,
+): boolean | null {
   const checkId = NAV_PATH_SETUP_CHECK[path];
   if (!checkId) return null;
   return checksById[checkId]?.complete ?? false;

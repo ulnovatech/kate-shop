@@ -28,7 +28,11 @@ export const PasswordInput = React.forwardRef<
         aria-pressed={visible}
         onClick={() => setVisible((show) => !show)}
       >
-        {visible ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
+        {visible ? (
+          <EyeOff className="h-4 w-4" aria-hidden />
+        ) : (
+          <Eye className="h-4 w-4" aria-hidden />
+        )}
       </Button>
     </div>
   );

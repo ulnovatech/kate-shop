@@ -18,13 +18,7 @@ type AdminPinInputProps = {
   slotClassName?: string;
 };
 
-function AdminPinOTPSlot({
-  index,
-  className,
-}: {
-  index: number;
-  className?: string;
-}) {
+function AdminPinOTPSlot({ index, className }: { index: number; className?: string }) {
   const inputOTPContext = useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
   const [masked, setMasked] = useState(false);

@@ -7,6 +7,7 @@
 Kate Admin is the staff companion app for Kate Shop. Sign in with your team invite, manage orders on the go, and stay notified when customers place new orders.
 
 Features:
+
 - Order inbox and fulfillment workflow
 - Catalog and inventory tools (role-based)
 - Secure staff authentication
@@ -16,14 +17,14 @@ Kate Admin requires an active staff account. Customers should use the Kate Shop 
 
 **Category:** Business  
 **Contact email:** support@yourdomain.com  
-**Privacy policy URL:** https://yourdomain.com/privacy  
+**Privacy policy URL:** https://yourdomain.com/privacy
 
 ## Graphics (prepare before submission)
 
-| Asset | Spec |
-|-------|------|
-| App icon | 512×512 PNG |
-| Feature graphic | 1024×500 PNG |
+| Asset             | Spec                                     |
+| ----------------- | ---------------------------------------- |
+| App icon          | 512×512 PNG                              |
+| Feature graphic   | 1024×500 PNG                             |
 | Phone screenshots | 2+ from admin dashboard and order detail |
 
 ## Content rating

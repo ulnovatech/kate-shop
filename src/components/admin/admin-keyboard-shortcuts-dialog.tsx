@@ -5,10 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  ADMIN_KEYBOARD_SHORTCUTS,
-  shortcutKeysForPlatform,
-} from "@/lib/admin-keyboard-shortcuts";
+import { ADMIN_KEYBOARD_SHORTCUTS, shortcutKeysForPlatform } from "@/lib/admin-keyboard-shortcuts";
 
 type AdminKeyboardShortcutsDialogProps = {
   open: boolean;

@@ -415,9 +415,7 @@ export function VisibilitySeoStepPanel({ form }: StepPanelProps) {
       </section>
 
       <Collapsible open={seoOpen} onOpenChange={setSeoOpen}>
-        <section
-          className={cn("rounded-lg border shadow-elevated", SURFACE_CLASSES.elevated)}
-        >
+        <section className={cn("rounded-lg border shadow-elevated", SURFACE_CLASSES.elevated)}>
           <CollapsibleTrigger asChild>
             <button
               type="button"
@@ -528,8 +526,8 @@ export function ReviewStepPanel({ form, images, slug, categoryLabel }: ReviewSte
 
       {!values.is_visible ? (
         <p className="mt-stack rounded-md bg-surface-attention px-3 py-2 type-body-sm text-surface-attention-foreground">
-          This product is hidden. Choose <strong>Publish to shop</strong> to make it visible, or save
-          as a draft to finish later.
+          This product is hidden. Choose <strong>Publish to shop</strong> to make it visible, or
+          save as a draft to finish later.
         </p>
       ) : null}
 

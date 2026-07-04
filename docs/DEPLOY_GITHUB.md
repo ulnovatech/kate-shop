@@ -16,26 +16,26 @@ GitHub repo → **Settings** → **Environments** → **New environment** → na
 
 Add these **Secrets** (copy values from your local `.env` — same names):
 
-| Secret | From `.env` |
-|--------|-------------|
-| `CLOUDFLARE_API_TOKEN` | Create at [Cloudflare API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) — template **Edit Cloudflare Workers** |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard → Workers → right sidebar **Account ID** |
-| `VITE_SUPABASE_URL` | ✓ |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | ✓ |
-| `VITE_SUPABASE_PROJECT_ID` | ✓ |
-| `SUPABASE_URL` | ✓ (same as `VITE_SUPABASE_URL`) |
-| `SUPABASE_PUBLISHABLE_KEY` | ✓ (same as `VITE_SUPABASE_PUBLISHABLE_KEY`) |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✓ (service role JWT — **never** `VITE_`) |
-| `BOOTSTRAP_TOKEN` | Optional — locks `/admin/setup` |
+| Secret                          | From `.env`                                                                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`          | Create at [Cloudflare API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) — template **Edit Cloudflare Workers** |
+| `CLOUDFLARE_ACCOUNT_ID`         | Cloudflare dashboard → Workers → right sidebar **Account ID**                                                                                          |
+| `VITE_SUPABASE_URL`             | ✓                                                                                                                                                      |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | ✓                                                                                                                                                      |
+| `VITE_SUPABASE_PROJECT_ID`      | ✓                                                                                                                                                      |
+| `SUPABASE_URL`                  | ✓ (same as `VITE_SUPABASE_URL`)                                                                                                                        |
+| `SUPABASE_PUBLISHABLE_KEY`      | ✓ (same as `VITE_SUPABASE_PUBLISHABLE_KEY`)                                                                                                            |
+| `SUPABASE_SERVICE_ROLE_KEY`     | ✓ (service role JWT — **never** `VITE_`)                                                                                                               |
+| `BOOTSTRAP_TOKEN`               | Optional — locks `/admin/setup`                                                                                                                        |
 
 Add these **Variables** (not secrets — plain text URLs):
 
-| Variable | Example |
-|----------|---------|
-| `APP_ORIGIN` | `https://kate-shop.ulnovatech.workers.dev` |
-| `ADMIN_ORIGIN` | `https://kate-admin.ulnovatech.workers.dev` (set when ready to deploy admin) |
-| `CLOUDFLARE_WORKER_NAME` | `kate-shop` (optional; this is the default) |
-| `CLOUDFLARE_ADMIN_WORKER_NAME` | `kate-admin` (optional; this is the default) |
+| Variable                       | Example                                                                      |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| `APP_ORIGIN`                   | `https://kate-shop.ulnovatech.workers.dev`                                   |
+| `ADMIN_ORIGIN`                 | `https://kate-admin.ulnovatech.workers.dev` (set when ready to deploy admin) |
+| `CLOUDFLARE_WORKER_NAME`       | `kate-shop` (optional; this is the default)                                  |
+| `CLOUDFLARE_ADMIN_WORKER_NAME` | `kate-admin` (optional; this is the default)                                 |
 
 Shop and admin deploy jobs both use the **`production`** environment — one set of secrets, no duplicate `production-admin` environment.
 
@@ -60,7 +60,7 @@ Watch progress: GitHub → **Actions** → workflow **CI/CD** → latest run on 
 
 Successful run shows:
 
-1. **Lint, test, build** — must pass first  
+1. **Lint, test, build** — must pass first
 2. **Deploy production** — shop Worker (`kate-shop`)
 3. **Deploy admin production** — admin Worker (`kate-admin`) when `ADMIN_ORIGIN` is set
 
@@ -76,13 +76,13 @@ Expect HTTP **200** and `"status": "healthy"` or `"degraded"`.
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| Deploy job skipped | Push must be to `main`, not a branch |
-| Deploy job missing | `check` job failed — open the run and fix lint/test/build |
-| Worker still 500 after green deploy | Open Cloudflare → Worker → **Logs** (enabled by `prepare-deploy.mjs`) |
-| `CLOUDFLARE_API_TOKEN` invalid | Token needs **Account → Workers Scripts → Edit** |
-| Secrets not found | Secrets must be on the **`production`** environment, not only repo-level (both work, but CI uses `environment: production`) |
+| Symptom                             | Fix                                                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Deploy job skipped                  | Push must be to `main`, not a branch                                                                                        |
+| Deploy job missing                  | `check` job failed — open the run and fix lint/test/build                                                                   |
+| Worker still 500 after green deploy | Open Cloudflare → Worker → **Logs** (enabled by `prepare-deploy.mjs`)                                                       |
+| `CLOUDFLARE_API_TOKEN` invalid      | Token needs **Account → Workers Scripts → Edit**                                                                            |
+| Secrets not found                   | Secrets must be on the **`production`** environment, not only repo-level (both work, but CI uses `environment: production`) |
 
 ## What CI does (you don’t run this manually)
 

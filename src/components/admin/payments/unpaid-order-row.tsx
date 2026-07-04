@@ -15,7 +15,11 @@ type UnpaidOrderRowProps = {
   onPaymentRecorded: () => void;
 };
 
-export function UnpaidOrderRow({ order, enabledProviders, onPaymentRecorded }: UnpaidOrderRowProps) {
+export function UnpaidOrderRow({
+  order,
+  enabledProviders,
+  onPaymentRecorded,
+}: UnpaidOrderRowProps) {
   const [wizardOpen, setWizardOpen] = useState(false);
 
   return (
@@ -53,7 +57,8 @@ export function UnpaidOrderRow({ order, enabledProviders, onPaymentRecorded }: U
             </p>
             {order.amount_remaining > 0 && order.total_paid > 0 ? (
               <p className="type-caption text-muted-foreground">
-                {formatKES(order.amount_remaining)} left of {formatKES(order.grand_total ?? order.total)}
+                {formatKES(order.amount_remaining)} left of{" "}
+                {formatKES(order.grand_total ?? order.total)}
               </p>
             ) : null}
           </div>

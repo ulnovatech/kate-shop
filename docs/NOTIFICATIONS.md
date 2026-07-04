@@ -12,11 +12,11 @@ Manual customer notifications via WhatsApp. No automated API sends in V1.
 
 ### Events
 
-| Event | Trigger |
-|-------|---------|
-| `order_placed` | Guest checkout completes (`placeOrder`) |
+| Event               | Trigger                                            |
+| ------------------- | -------------------------------------------------- |
+| `order_placed`      | Guest checkout completes (`placeOrder`)            |
 | `payment_confirmed` | Payment recorded and order `payment_status = paid` |
-| `order_shipped` | Admin sets order status to `shipped` |
+| `order_shipped`     | Admin sets order status to `shipped`               |
 
 ### Templates
 
@@ -38,12 +38,12 @@ Table: `notification_outbox` — see `supabase/migrations/20260611120000_chunk15
 
 The outbox table is designed for automated delivery:
 
-| Column | Phase 2 use |
-|--------|-------------|
-| `channel` | `whatsapp` / `email` |
-| `status` | Worker marks `sent` or `failed` |
-| `metadata` | Provider message IDs, webhook payloads |
-| `error_message` | API failure details |
+| Column          | Phase 2 use                            |
+| --------------- | -------------------------------------- |
+| `channel`       | `whatsapp` / `email`                   |
+| `status`        | Worker marks `sent` or `failed`        |
+| `metadata`      | Provider message IDs, webhook payloads |
+| `error_message` | API failure details                    |
 
 ### Recommended architecture
 

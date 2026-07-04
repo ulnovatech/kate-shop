@@ -10,6 +10,7 @@ npm run test:watch
 ```
 
 **Coverage areas:**
+
 - `src/lib/phone.ts` — Uganda number normalization
 - `src/lib/delivery.ts` — zone fees, free-delivery thresholds, express/COD
 - `src/lib/orders.ts` — `KS-YYYY-NNNNNN` references, workflow transitions, CSV export
@@ -70,11 +71,11 @@ If `E2E_ADMIN_EMAIL` and `E2E_ADMIN_PIN` are unset, credential-gated specs **ski
 
 Workflow: `.github/workflows/ci.yml`
 
-| Step | Command |
-|------|---------|
-| Lint | `npm run lint` |
-| Unit tests | `npm test` |
-| Build | `npm run build` (placeholder Supabase env in `check` job) |
-| E2E (optional) | `npm run test:e2e` when repo variable `E2E_ENABLED=true` |
+| Step           | Command                                                   |
+| -------------- | --------------------------------------------------------- |
+| Lint           | `npm run lint`                                            |
+| Unit tests     | `npm test`                                                |
+| Build          | `npm run build` (placeholder Supabase env in `check` job) |
+| E2E (optional) | `npm run test:e2e` when repo variable `E2E_ENABLED=true`  |
 
 E2E job installs Chromium with `npx playwright install --with-deps chromium`. See [docs/DEPLOY.md](DEPLOY.md) for GitHub secrets.

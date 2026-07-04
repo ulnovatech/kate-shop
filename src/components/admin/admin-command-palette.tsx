@@ -1,14 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Focus,
-  Maximize2,
-  Minimize2,
-  Plus,
-  Search,
-  Store,
-} from "lucide-react";
+import { Focus, Maximize2, Minimize2, Plus, Search, Store } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -221,10 +214,7 @@ export function AdminCommandPalette({
             <span>Keyboard shortcuts</span>
             <CommandShortcut>?</CommandShortcut>
           </CommandItem>
-          <CommandItem
-            value="focus mode distraction free"
-            onSelect={() => run(onToggleFocusMode)}
-          >
+          <CommandItem value="focus mode distraction free" onSelect={() => run(onToggleFocusMode)}>
             <Focus className="text-muted-foreground" aria-hidden />
             <span>{focusMode ? "Exit focus mode" : "Enter focus mode"}</span>
             {focusMode ? (

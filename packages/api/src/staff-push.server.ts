@@ -4,9 +4,7 @@ import type { NotificationEvent } from "@/lib/notifications";
 import { sendFcmPush } from "./staff-push.fcm";
 
 export function isStaffPushEnabled(): boolean {
-  return (
-    process.env.STAFF_PUSH_ENABLED === "true" && Boolean(process.env.FCM_SERVER_KEY?.trim())
-  );
+  return process.env.STAFF_PUSH_ENABLED === "true" && Boolean(process.env.FCM_SERVER_KEY?.trim());
 }
 
 async function staffUserIdsWithOrdersView(): Promise<Set<string>> {

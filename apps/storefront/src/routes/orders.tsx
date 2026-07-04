@@ -235,10 +235,7 @@ function OrdersPage() {
                   Verify your phone to load your full order history on this device.
                 </p>
 
-                <OrdersOtpStepper
-                  current={ordersOtpStepFromVerifyStep(step)}
-                  className="mt-6"
-                />
+                <OrdersOtpStepper current={ordersOtpStepFromVerifyStep(step)} className="mt-6" />
 
                 <div className="mt-4 space-y-4">
                   <div>

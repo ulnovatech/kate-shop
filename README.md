@@ -18,17 +18,17 @@ npm run dev
 
 ## Scripts
 
-| Command | Purpose |
-|---------|---------|
-| `npm run dev` | All dev servers: storefront `:5173`, admin `:5174`, monolith `:5175` |
-| `npm run dev:storefront` | Storefront only (`http://localhost:5173`) |
-| `npm run dev:admin` | Standalone admin only (`http://localhost:5174`) |
-| `npm run dev:monolith` | Monolith shop + `/admin` (`http://localhost:5175`) |
-| `npm run build` | Production build (Cloudflare Worker via Nitro) |
-| `npm run deploy` | Deploy prebuilt `dist/` to Cloudflare |
-| `npm test` | Vitest unit tests |
-| `npm run test:e2e` | Playwright E2E (optional credentials) |
-| `npm run lint` | ESLint + Prettier |
+| Command                  | Purpose                                                              |
+| ------------------------ | -------------------------------------------------------------------- |
+| `npm run dev`            | All dev servers: storefront `:5173`, admin `:5174`, monolith `:5175` |
+| `npm run dev:storefront` | Storefront only (`http://localhost:5173`)                            |
+| `npm run dev:admin`      | Standalone admin only (`http://localhost:5174`)                      |
+| `npm run dev:monolith`   | Monolith shop + `/admin` (`http://localhost:5175`)                   |
+| `npm run build`          | Production build (Cloudflare Worker via Nitro)                       |
+| `npm run deploy`         | Deploy prebuilt `dist/` to Cloudflare                                |
+| `npm test`               | Vitest unit tests                                                    |
+| `npm run test:e2e`       | Playwright E2E (optional credentials)                                |
+| `npm run lint`           | ESLint + Prettier                                                    |
 
 ## CI/CD
 

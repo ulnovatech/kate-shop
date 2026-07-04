@@ -9,10 +9,7 @@ export const STAFF_PIN_LOCK_MINUTES = 15;
 
 export const staffPinSchema = z
   .string()
-  .regex(
-    new RegExp(`^\\d{${STAFF_PIN_LENGTH}}$`),
-    `PIN must be ${STAFF_PIN_LENGTH} digits`,
-  );
+  .regex(new RegExp(`^\\d{${STAFF_PIN_LENGTH}}$`), `PIN must be ${STAFF_PIN_LENGTH} digits`);
 
 const BCRYPT_ROUNDS = 10;
 

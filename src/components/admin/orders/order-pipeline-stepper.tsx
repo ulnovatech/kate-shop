@@ -40,7 +40,10 @@ export function OrderPipelineStepper({
                     cancelled && "border-muted-foreground/20 text-muted-foreground",
                     !cancelled && done && "border-primary bg-primary text-primary-foreground",
                     !cancelled && active && "border-primary bg-primary/10 text-primary",
-                    !cancelled && !done && !active && "border-muted-foreground/30 text-muted-foreground",
+                    !cancelled &&
+                      !done &&
+                      !active &&
+                      "border-muted-foreground/30 text-muted-foreground",
                   )}
                   aria-current={active ? "step" : undefined}
                 >

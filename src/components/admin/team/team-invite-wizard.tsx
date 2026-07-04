@@ -13,10 +13,7 @@ import { Label } from "@/components/ui/label";
 import { createAdminInvite } from "@/lib/api/invites.functions";
 import { listInvitableRoles } from "@/lib/api/roles.functions";
 import { humanizeError } from "@/lib/errors";
-import {
-  TEAM_INVITE_STEPS,
-  type TeamInviteStepId,
-} from "@/lib/team-invite-steps";
+import { TEAM_INVITE_STEPS, type TeamInviteStepId } from "@/lib/team-invite-steps";
 
 const schema = z.object({
   email: z.string().trim().email("Enter a valid email"),
@@ -259,9 +256,5 @@ export function TeamInviteWizard({
     </AdminWizardShell>
   );
 
-  return variant === "page" ? (
-    <div className="rounded-lg border bg-card p-6">{shell}</div>
-  ) : (
-    shell
-  );
+  return variant === "page" ? <div className="rounded-lg border bg-card p-6">{shell}</div> : shell;
 }

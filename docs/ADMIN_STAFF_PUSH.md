@@ -60,11 +60,11 @@ Install on a device, sign in as staff with **orders.view**, accept notification 
 
 ## Behaviour
 
-| Event | Staff push |
-|-------|------------|
-| `order_placed` | Yes — all enabled FCM tokens for users with `orders.view` |
-| `payment_confirmed` | No (future) |
-| `order_shipped` | No (future) |
+| Event               | Staff push                                                |
+| ------------------- | --------------------------------------------------------- |
+| `order_placed`      | Yes — all enabled FCM tokens for users with `orders.view` |
+| `payment_confirmed` | No (future)                                               |
+| `order_shipped`     | No (future)                                               |
 
 Notification payload includes:
 
@@ -82,11 +82,11 @@ Helpers in `@kate/domain/staff-mobile-links`.
 
 ## API (staff-authenticated)
 
-| Function | Purpose |
-|----------|---------|
+| Function                 | Purpose                           |
+| ------------------------ | --------------------------------- |
 | `registerStaffPushToken` | Upsert FCM token for current user |
-| `setStaffPushEnabled` | Opt out / disable token |
-| `getStaffPushStatus` | List registered devices |
+| `setStaffPushEnabled`    | Opt out / disable token           |
+| `getStaffPushStatus`     | List registered devices           |
 
 ## Observability
 
@@ -96,12 +96,12 @@ Invalid tokens (`NotRegistered`) are auto-disabled.
 
 ## Troubleshooting
 
-| Symptom | Check |
-|---------|--------|
-| No permission prompt | Native APK only; `google-services.json` present |
-| Token not saved | Staff signed in; migration applied |
-| No push on new order | `STAFF_PUSH_ENABLED` + `FCM_SERVER_KEY` on server |
-| Tap does nothing | `StaffMobileAuthBridge` + `StaffPushRegistration` in admin root |
+| Symptom              | Check                                                           |
+| -------------------- | --------------------------------------------------------------- |
+| No permission prompt | Native APK only; `google-services.json` present                 |
+| Token not saved      | Staff signed in; migration applied                              |
+| No push on new order | `STAFF_PUSH_ENABLED` + `FCM_SERVER_KEY` on server               |
+| Tap does nothing     | `StaffMobileAuthBridge` + `StaffPushRegistration` in admin root |
 
 ## Future
 

@@ -33,8 +33,7 @@ if (cfg.assets?.directory) {
 }
 
 // Nitro stamps today's date on each build; cap so local wrangler dev stays compatible.
-cfg.compatibility_date =
-  process.env.CLOUDFLARE_COMPATIBILITY_DATE?.trim() || "2026-06-10";
+cfg.compatibility_date = process.env.CLOUDFLARE_COMPATIBILITY_DATE?.trim() || "2026-06-10";
 
 const vars = {};
 for (const key of [

@@ -50,10 +50,7 @@ export const PRODUCT_WIZARD_STEPS: { id: ProductWizardStepId; label: string }[] 
   { id: "review", label: "Review" },
 ];
 
-export const WIZARD_STEP_FIELDS: Record<
-  ProductWizardStepId,
-  (keyof ProductWizardFormData)[]
-> = {
+export const WIZARD_STEP_FIELDS: Record<ProductWizardStepId, (keyof ProductWizardFormData)[]> = {
   photos: [],
   essentials: ["name", "description", "material", "category_id"],
   stock: ["price", "stock_quantity", "low_stock_threshold"],

@@ -6,15 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AdminPinInput, isStaffPinComplete } from "@/components/admin-pin-input";
-import {
-  AdminEmailOtpInput,
-  isStaffEmailOtpComplete,
-} from "@/components/admin-email-otp-input";
+import { AdminEmailOtpInput, isStaffEmailOtpComplete } from "@/components/admin-email-otp-input";
 import { resetStaffPinWithEmailVerification } from "@/lib/api/auth.functions";
-import {
-  requestStaffEmailOtp,
-  verifyStaffEmailOtp,
-} from "@/lib/api/staff-email-otp.functions";
+import { requestStaffEmailOtp, verifyStaffEmailOtp } from "@/lib/api/staff-email-otp.functions";
 import { humanizeError } from "@/lib/errors";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
 import { cn } from "@/lib/utils";

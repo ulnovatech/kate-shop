@@ -41,4 +41,9 @@ export function isStaffOriginPath(pathname: string, host?: string): boolean {
   return isAdminPath(pathname);
 }
 
-export { adminUrl, adminProductEditTarget, adminProductsListTarget, adminOrderDetailTarget } from "./admin-base-path";
+export {
+  adminUrl,
+  adminProductEditTarget,
+  adminProductsListTarget,
+  adminOrderDetailTarget,
+} from "./admin-base-path";

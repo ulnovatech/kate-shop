@@ -12,10 +12,7 @@ import { auditFromServer } from "@kate/api/audit.server";
 import { assertEnabledPaymentProvider } from "@kate/api/payment-methods.functions";
 import { PAYMENT_PROVIDERS } from "@kate/domain/db/contracts";
 import { isCodProvider } from "@/lib/payment-methods";
-import {
-  buildPaginatedResult,
-  normalizeListPagination,
-} from "@kate/api/list-pagination";
+import { buildPaginatedResult, normalizeListPagination } from "@kate/api/list-pagination";
 
 const cartItemSchema = z.object({
   productId: z.string().uuid(),

@@ -51,7 +51,8 @@ export function ProductImageLightbox({
       >
         <DialogTitle className="sr-only">{productName} — image viewer</DialogTitle>
         <DialogDescription className="sr-only">
-          Image {activeIndex + 1} of {images.length}. Pinch to zoom or double-tap. Use arrows to browse.
+          Image {activeIndex + 1} of {images.length}. Pinch to zoom or double-tap. Use arrows to
+          browse.
         </DialogDescription>
 
         <div className="relative flex max-h-[75vh] min-h-[50vh] items-center justify-center">

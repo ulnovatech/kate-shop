@@ -48,8 +48,7 @@ export function StaffPinSettings() {
       setConfirmPin("");
       void qc.invalidateQueries({ queryKey: ["staff-pin-status"] });
     },
-    onError: (e: unknown) =>
-      toast.error(humanizeError(e, { fallback: "Could not update PIN." })),
+    onError: (e: unknown) => toast.error(humanizeError(e, { fallback: "Could not update PIN." })),
   });
 
   const resetViaEmail = useMutation({
@@ -74,22 +73,16 @@ export function StaffPinSettings() {
       setConfirmPin("");
       void qc.invalidateQueries({ queryKey: ["staff-pin-status"] });
     },
-    onError: (e: unknown) =>
-      toast.error(humanizeError(e, { fallback: "Could not reset PIN." })),
+    onError: (e: unknown) => toast.error(humanizeError(e, { fallback: "Could not reset PIN." })),
   });
 
   const canSaveChange =
     isStaffPinComplete(currentPin) && isStaffPinComplete(pin) && pin === confirmPin;
 
-  const canSaveForgot =
-    Boolean(verificationToken) && isStaffPinComplete(pin) && pin === confirmPin;
+  const canSaveForgot = Boolean(verificationToken) && isStaffPinComplete(pin) && pin === confirmPin;
 
   if (!email) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Sign in again to manage your PIN.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">Sign in again to manage your PIN.</p>;
   }
 
   if (view === "forgot") {
@@ -97,8 +90,8 @@ export function StaffPinSettings() {
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">
           We will email a verification code to{" "}
-          <span className="font-medium text-foreground">{email}</span>, then you can choose a
-          new PIN.
+          <span className="font-medium text-foreground">{email}</span>, then you can choose a new
+          PIN.
         </p>
 
         {!verificationToken ? (
@@ -119,7 +112,11 @@ export function StaffPinSettings() {
             <div>
               <Label htmlFor="staff-pin-new-confirm">Confirm new PIN</Label>
               <div className="mt-2">
-                <AdminPinInput id="staff-pin-new-confirm" value={confirmPin} onChange={setConfirmPin} />
+                <AdminPinInput
+                  id="staff-pin-new-confirm"
+                  value={confirmPin}
+                  onChange={setConfirmPin}
+                />
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -171,8 +168,7 @@ export function StaffPinSettings() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Daily sign-in uses your email and PIN. Update it here or reset via email if you forgot
-        it.
+        Daily sign-in uses your email and PIN. Update it here or reset via email if you forgot it.
       </p>
 
       <div>

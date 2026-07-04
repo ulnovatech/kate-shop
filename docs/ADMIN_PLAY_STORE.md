@@ -4,13 +4,13 @@ Google Play distribution is **not automated yet**. This chunk adds the **AAB bui
 
 ## What is ready now
 
-| Piece | Status |
-|-------|--------|
-| Release AAB build | `npm run build:admin-aab:release` |
-| CI AAB artifact | Optional via `BUILD_ADMIN_AAB=true` |
-| Listing copy draft | [`apps/admin-mobile/play-store/listing.md`](../apps/admin-mobile/play-store/listing.md) |
-| Upload script stub | `npm run upload:play-store` (validates AAB, prints checklist) |
-| Firebase scaffold | [`google-services.json.example`](../apps/admin-mobile/android/app/google-services.json.example) |
+| Piece              | Status                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| Release AAB build  | `npm run build:admin-aab:release`                                                               |
+| CI AAB artifact    | Optional via `BUILD_ADMIN_AAB=true`                                                             |
+| Listing copy draft | [`apps/admin-mobile/play-store/listing.md`](../apps/admin-mobile/play-store/listing.md)         |
+| Upload script stub | `npm run upload:play-store` (validates AAB, prints checklist)                                   |
+| Firebase scaffold  | [`google-services.json.example`](../apps/admin-mobile/android/app/google-services.json.example) |
 
 ## Build AAB locally
 

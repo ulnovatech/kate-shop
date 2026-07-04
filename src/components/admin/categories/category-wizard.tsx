@@ -18,10 +18,7 @@ import { recordAudit } from "@/lib/api/audit.functions";
 import { pickCategoryAuditFields } from "@/lib/audit";
 import { ensureUniqueCategorySlug } from "@/lib/catalog";
 import { getChildCategories, type CategoryRecord } from "@/lib/categories";
-import {
-  CATEGORY_WIZARD_STEPS,
-  type CategoryWizardStepId,
-} from "@/lib/category-wizard-steps";
+import { CATEGORY_WIZARD_STEPS, type CategoryWizardStepId } from "@/lib/category-wizard-steps";
 import { humanizeError } from "@/lib/errors";
 import { processAndUploadProductImage } from "@/lib/media";
 import { resolveProductImageUrl } from "@/lib/shop";
@@ -39,11 +36,7 @@ type CategoryWizardProps = {
   onCancel?: () => void;
 };
 
-export function CategoryWizard({
-  variant = "modal",
-  onComplete,
-  onCancel,
-}: CategoryWizardProps) {
+export function CategoryWizard({ variant = "modal", onComplete, onCancel }: CategoryWizardProps) {
   const qc = useQueryClient();
   const [step, setStep] = useState<CategoryWizardStepId>("name");
   const [cover, setCover] = useState<CoverPhotoValue | null>(null);
@@ -231,7 +224,9 @@ export function CategoryWizard({
             </>
           ) : (
             <>
-              <AdminWizardStepGuide>Review the details below, then create your category.</AdminWizardStepGuide>
+              <AdminWizardStepGuide>
+                Review the details below, then create your category.
+              </AdminWizardStepGuide>
               <dl className={cn("space-y-3 rounded-lg border bg-muted/30 p-3 type-body-sm")}>
                 <div className="flex justify-between gap-4">
                   <dt className="text-muted-foreground">Name</dt>

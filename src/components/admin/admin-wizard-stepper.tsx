@@ -33,11 +33,7 @@ export function AdminWizardStepper({
   return (
     <nav
       aria-label="Progress"
-      className={cn(
-        hideFrom === "lg" && "lg:hidden",
-        hideFrom === "md" && "md:hidden",
-        className,
-      )}
+      className={cn(hideFrom === "lg" && "lg:hidden", hideFrom === "md" && "md:hidden", className)}
     >
       <ol className={cn("flex items-center", compact ? "gap-1" : "gap-2")}>
         {steps.map((step, index) => {
@@ -45,7 +41,9 @@ export function AdminWizardStepper({
           const active = index === resolvedIndex;
           return (
             <li key={String(step.id)} className="flex min-w-0 flex-1 items-center gap-2">
-              <div className={cn("flex min-w-0 flex-col items-center", compact ? "gap-1" : "gap-1.5")}>
+              <div
+                className={cn("flex min-w-0 flex-col items-center", compact ? "gap-1" : "gap-1.5")}
+              >
                 <span
                   className={cn(
                     "flex shrink-0 items-center justify-center rounded-full border font-semibold",

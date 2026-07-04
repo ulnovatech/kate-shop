@@ -8,28 +8,28 @@ npm run audit:admin
 
 ## Admin routes (20)
 
-| Route file | URL today | Area |
-|------------|-----------|------|
-| `admin.login.tsx` | `/admin/login` | Auth |
-| `admin.setup.tsx` | `/admin/setup` | Bootstrap |
-| `admin.accept-invite.tsx` | `/admin/accept-invite` | Team |
-| `admin.index.tsx` | `/admin` | Dashboard |
-| `admin.insights.tsx` | `/admin/insights` | Analytics |
-| `admin.orders.tsx` | `/admin/orders` | Orders |
-| `admin.orders.$id.tsx` | `/admin/orders/:id` | Orders |
-| `admin.delivery.tsx` | `/admin/delivery` | Delivery |
-| `admin.products.index.tsx` | `/admin/products` | Catalog |
-| `admin.products.new.tsx` | `/admin/products/new` | Catalog |
-| `admin.products.$id.tsx` | `/admin/products/:id` | Catalog |
-| `admin.categories.tsx` | `/admin/categories` | Catalog |
-| `admin.payments.tsx` | `/admin/payments` | Money |
-| `admin.payment-methods.tsx` | `/admin/payment-methods` | Money |
-| `admin.notifications.tsx` | `/admin/notifications` | Ops |
-| `admin.recycle.tsx` | `/admin/recycle` | Ops |
-| `admin.audit.tsx` | `/admin/audit` | Ops |
-| `admin.team.tsx` | `/admin/team` | Team |
-| `admin.roles.tsx` | `/admin/roles` | Team |
-| `admin.settings.tsx` | `/admin/settings` | Settings |
+| Route file                  | URL today                | Area      |
+| --------------------------- | ------------------------ | --------- |
+| `admin.login.tsx`           | `/admin/login`           | Auth      |
+| `admin.setup.tsx`           | `/admin/setup`           | Bootstrap |
+| `admin.accept-invite.tsx`   | `/admin/accept-invite`   | Team      |
+| `admin.index.tsx`           | `/admin`                 | Dashboard |
+| `admin.insights.tsx`        | `/admin/insights`        | Analytics |
+| `admin.orders.tsx`          | `/admin/orders`          | Orders    |
+| `admin.orders.$id.tsx`      | `/admin/orders/:id`      | Orders    |
+| `admin.delivery.tsx`        | `/admin/delivery`        | Delivery  |
+| `admin.products.index.tsx`  | `/admin/products`        | Catalog   |
+| `admin.products.new.tsx`    | `/admin/products/new`    | Catalog   |
+| `admin.products.$id.tsx`    | `/admin/products/:id`    | Catalog   |
+| `admin.categories.tsx`      | `/admin/categories`      | Catalog   |
+| `admin.payments.tsx`        | `/admin/payments`        | Money     |
+| `admin.payment-methods.tsx` | `/admin/payment-methods` | Money     |
+| `admin.notifications.tsx`   | `/admin/notifications`   | Ops       |
+| `admin.recycle.tsx`         | `/admin/recycle`         | Ops       |
+| `admin.audit.tsx`           | `/admin/audit`           | Ops       |
+| `admin.team.tsx`            | `/admin/team`            | Team      |
+| `admin.roles.tsx`           | `/admin/roles`           | Team      |
+| `admin.settings.tsx`        | `/admin/settings`        | Settings  |
 
 On subdomain (C6), URLs become `/`, `/login`, `/orders`, etc. — no `/admin` prefix.
 
@@ -58,24 +58,24 @@ On subdomain (C6), URLs become `/`, `/login`, `/orders`, etc. — no `/admin` pr
 
 ### Admin-only (→ `packages/api/admin`)
 
-| Module | Used by routes |
-|--------|----------------|
-| `audit.functions` | categories, products.index |
-| `recycle.functions` | categories, products.index, recycle |
-| `invites.functions` | team, accept-invite |
-| `analytics.functions` | index, insights |
-| `bootstrap.functions` | login, setup |
-| `settings.functions` | settings |
-| `roles.functions` | team, roles, login (via auth) |
-| `notifications.server` | notifications |
-| `payments.functions` | payments |
+| Module                 | Used by routes                      |
+| ---------------------- | ----------------------------------- |
+| `audit.functions`      | categories, products.index          |
+| `recycle.functions`    | categories, products.index, recycle |
+| `invites.functions`    | team, accept-invite                 |
+| `analytics.functions`  | index, insights                     |
+| `bootstrap.functions`  | login, setup                        |
+| `settings.functions`   | settings                            |
+| `roles.functions`      | team, roles, login (via auth)       |
+| `notifications.server` | notifications                       |
+| `payments.functions`   | payments                            |
 
 ### Shared with storefront (→ `packages/api/public`)
 
-| Module | Admin | Storefront |
-|--------|-------|------------|
-| `orders.functions` | list, detail, export | checkout, cart, order confirmation |
-| `payment-methods.functions` | admin + payments pages | checkout |
+| Module                      | Admin                  | Storefront                         |
+| --------------------------- | ---------------------- | ---------------------------------- |
+| `orders.functions`          | list, detail, export   | checkout, cart, order confirmation |
+| `payment-methods.functions` | admin + payments pages | checkout                           |
 
 ### Direct Supabase client (candidates for server functions later)
 

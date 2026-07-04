@@ -2,11 +2,7 @@ import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { adminToolbarControl } from "@/lib/admin-mobile";
 
@@ -26,9 +22,7 @@ export function DateRangeFilter({
   className,
 }: DateRangeFilterProps) {
   const active = Boolean(from || to);
-  const label = active
-    ? [from, to].filter(Boolean).join(" – ")
-    : "Date range";
+  const label = active ? [from, to].filter(Boolean).join(" – ") : "Date range";
 
   return (
     <Popover>

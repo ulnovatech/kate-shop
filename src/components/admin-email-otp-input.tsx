@@ -48,11 +48,7 @@ export function AdminEmailOtpInput({
     >
       <InputOTPGroup>
         {Array.from({ length: 6 }, (_, index) => (
-          <InputOTPSlot
-            key={index}
-            index={index}
-            className="border-border bg-background"
-          />
+          <InputOTPSlot key={index} index={index} className="border-border bg-background" />
         ))}
       </InputOTPGroup>
     </InputOTP>

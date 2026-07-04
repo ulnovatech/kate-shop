@@ -7,10 +7,7 @@ function readCachedAccessToken(): string | null {
   if (typeof window === "undefined") return null;
 
   const { projectId, url } = getSupabasePublicConfig();
-  const ref =
-    projectId ??
-    url.match(/https:\/\/([^.]+)\.supabase\.co/)?.[1] ??
-    null;
+  const ref = projectId ?? url.match(/https:\/\/([^.]+)\.supabase\.co/)?.[1] ?? null;
   if (!ref) return null;
 
   try {

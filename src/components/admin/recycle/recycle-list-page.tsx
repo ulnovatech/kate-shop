@@ -36,8 +36,7 @@ export function RecycleListPage() {
       toast.success("Restored from recently deleted");
       invalidate();
     },
-    onError: (e: unknown) =>
-      toast.error(humanizeError(e, { fallback: "Could not restore item." })),
+    onError: (e: unknown) => toast.error(humanizeError(e, { fallback: "Could not restore item." })),
   });
 
   const purge = useMutation({
@@ -86,9 +85,7 @@ export function RecycleListPage() {
                   item={item}
                   canPurge={permissions.canManageSettings}
                   busy={busy}
-                  onRestore={() =>
-                    restore.mutate({ entity_type: item.entity_type, id: item.id })
-                  }
+                  onRestore={() => restore.mutate({ entity_type: item.entity_type, id: item.id })}
                   onPurge={() => setPurgeTarget(item)}
                 />
               ))}

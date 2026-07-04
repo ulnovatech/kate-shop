@@ -55,12 +55,12 @@ Release signing and Play Store upload are **C12**.
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run android:admin` | Sync + run on device/emulator |
-| `npm run android:admin:sync` | `cap sync android` only |
-| `npm run android:admin:open` | Open `apps/admin-mobile` in Android Studio |
-| `npm run android:admin:build` | `assembleDebug` |
+| Command                       | Description                                |
+| ----------------------------- | ------------------------------------------ |
+| `npm run android:admin`       | Sync + run on device/emulator              |
+| `npm run android:admin:sync`  | `cap sync android` only                    |
+| `npm run android:admin:open`  | Open `apps/admin-mobile` in Android Studio |
+| `npm run android:admin:build` | `assembleDebug`                            |
 
 ## Server URL resolution
 
@@ -85,12 +85,12 @@ Password sign-in works in the WebView. OAuth and magic-link flows return via `/l
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| Blank WebView | Confirm `npm run dev:admin` is running; re-sync with correct `ADMIN_MOBILE_SERVER_URL` |
-| Cleartext HTTP blocked | HTTP URLs enable `cleartext` in Capacitor config automatically; use HTTPS in production |
-| `cap add android` fails | Install Android SDK; set `ANDROID_HOME` |
-| Stale URL in APK | Run `npm run android:admin:sync` after changing env |
+| Issue                   | Fix                                                                                     |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| Blank WebView           | Confirm `npm run dev:admin` is running; re-sync with correct `ADMIN_MOBILE_SERVER_URL`  |
+| Cleartext HTTP blocked  | HTTP URLs enable `cleartext` in Capacitor config automatically; use HTTPS in production |
+| `cap add android` fails | Install Android SDK; set `ANDROID_HOME`                                                 |
+| Stale URL in APK        | Run `npm run android:admin:sync` after changing env                                     |
 
 ## Related
 

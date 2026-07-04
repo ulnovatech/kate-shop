@@ -24,12 +24,12 @@ export function AdminPageHeader({
     >
       <div className="min-w-0 flex-1 space-y-1">
         <h1 className={cn(TYPOGRAPHY_TAILWIND.h1, "text-foreground")}>{title}</h1>
-        {description ? (
-          <p className="type-body-sm text-muted-foreground">{description}</p>
-        ) : null}
+        {description ? <p className="type-body-sm text-muted-foreground">{description}</p> : null}
         {meta ? <p className="type-caption text-muted-foreground">{meta}</p> : null}
       </div>
-      {actions ? <div className="flex shrink-0 flex-wrap items-center gap-inline-sm">{actions}</div> : null}
+      {actions ? (
+        <div className="flex shrink-0 flex-wrap items-center gap-inline-sm">{actions}</div>
+      ) : null}
     </header>
   );
 }

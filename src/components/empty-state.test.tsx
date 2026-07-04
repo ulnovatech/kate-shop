@@ -8,10 +8,7 @@ import { EmptyStateIllustration } from "@/components/empty-state-illustrations";
 describe("EmptyState", () => {
   it("renders title and description", () => {
     render(
-      <EmptyState
-        title="No products yet"
-        description="Add your first product to start selling."
-      />,
+      <EmptyState title="No products yet" description="Add your first product to start selling." />,
     );
     expect(screen.getByRole("status")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "No products yet" })).toBeInTheDocument();
@@ -21,12 +18,7 @@ describe("EmptyState", () => {
   it("renders primary action button", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
-    render(
-      <EmptyState
-        title="Empty"
-        primaryAction={{ label: "Add product", onClick }}
-      />,
-    );
+    render(<EmptyState title="Empty" primaryAction={{ label: "Add product", onClick }} />);
     await user.click(screen.getByRole("button", { name: "Add product" }));
     expect(onClick).toHaveBeenCalledOnce();
   });

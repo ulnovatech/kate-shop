@@ -195,13 +195,7 @@ export function serializeAdminPaymentsListFilters(
 
 // ── Admin notifications ────────────────────────────────────────────────────
 
-export const NOTIFICATION_LIST_STATUSES = [
-  "pending",
-  "sent",
-  "failed",
-  "skipped",
-  "all",
-] as const;
+export const NOTIFICATION_LIST_STATUSES = ["pending", "sent", "failed", "skipped", "all"] as const;
 
 export type NotificationListStatus = (typeof NOTIFICATION_LIST_STATUSES)[number];
 

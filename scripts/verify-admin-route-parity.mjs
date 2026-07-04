@@ -59,10 +59,7 @@ for (const extra of EXTRA_STANDALONE) {
   else ok(`Extra route present: ${extra}`);
 }
 
-const syncScript = fs.readFileSync(
-  path.join(root, "scripts", "sync-admin-app-routes.mjs"),
-  "utf8",
-);
+const syncScript = fs.readFileSync(path.join(root, "scripts", "sync-admin-app-routes.mjs"), "utf8");
 
 for (const entry of ADMIN_ROUTE_CATALOG) {
   if (!syncScript.includes(`["${entry.monolithFile}"`)) {

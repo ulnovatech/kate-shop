@@ -58,7 +58,13 @@ export function CheckoutWizardFooter({
           )}
         </Button>
       ) : (
-        <Button type="button" size="lg" className="shrink-0" onClick={onContinue} {...hapticPointerProps()}>
+        <Button
+          type="button"
+          size="lg"
+          className="shrink-0"
+          onClick={onContinue}
+          {...hapticPointerProps()}
+        >
           Continue
         </Button>
       )}

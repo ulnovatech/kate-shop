@@ -6,9 +6,9 @@ Repeatable **debug APK** artifacts from GitHub Actions; optional **signed releas
 
 Source: [`apps/admin-mobile/release.json`](../apps/admin-mobile/release.json)
 
-| Field | Purpose |
-|-------|---------|
-| `versionName` | User-visible semver (e.g. `1.0.0`) — bump with shop releases |
+| Field             | Purpose                                                          |
+| ----------------- | ---------------------------------------------------------------- |
+| `versionName`     | User-visible semver (e.g. `1.0.0`) — bump with shop releases     |
 | `versionCodeBase` | Android `versionCode` floor (must always increase on Play Store) |
 
 **CI `versionCode`** = `versionCodeBase` + `github.run_number`
@@ -61,12 +61,12 @@ base64 -i kate-admin-release.jks | tr -d '\n'
 
 Job **`build-admin-apk`** runs on push to `main` when `vars.ADMIN_ORIGIN` is set (after admin Worker deploy).
 
-| Input | Type | Required |
-|-------|------|----------|
-| `ADMIN_ORIGIN` | variable | Yes — APK loads this URL |
-| `KATE_RELEASE_VERSION` | variable | Optional — overrides `versionName` |
+| Input                     | Type     | Required                               |
+| ------------------------- | -------- | -------------------------------------- |
+| `ADMIN_ORIGIN`            | variable | Yes — APK loads this URL               |
+| `KATE_RELEASE_VERSION`    | variable | Optional — overrides `versionName`     |
 | `BUILD_ADMIN_APK_RELEASE` | variable | Set `true` for signed release artifact |
-| `ANDROID_KEYSTORE_*` | secrets | Required when release builds enabled |
+| `ANDROID_KEYSTORE_*`      | secrets  | Required when release builds enabled   |
 
 Download APK: **Actions** → workflow run → **Artifacts** → `kate-admin-apk-<run>`.
 
@@ -78,11 +78,11 @@ Record staff-facing APK notes in [`apps/admin-mobile/CHANGELOG.md`](../apps/admi
 
 ## Distribution options
 
-| Channel | C11 | C12 |
-|---------|-----|-----|
-| CI debug APK artifact | ✅ | |
-| Firebase App Distribution | Manual upload from artifact | |
-| Play Store closed track | | C12 (AAB) |
+| Channel                   | C11                         | C12       |
+| ------------------------- | --------------------------- | --------- |
+| CI debug APK artifact     | ✅                          |           |
+| Firebase App Distribution | Manual upload from artifact |           |
+| Play Store closed track   |                             | C12 (AAB) |
 
 ## Related
 

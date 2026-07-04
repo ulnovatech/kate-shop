@@ -8,8 +8,7 @@ import {
 } from "@kate/api/staff-pin.server";
 
 export const INVALID_PIN_MESSAGE = "Invalid email or PIN.";
-export const NO_PIN_MESSAGE =
-  "No PIN is set for this account. Complete setup or use Forgot PIN.";
+export const NO_PIN_MESSAGE = "No PIN is set for this account. Complete setup or use Forgot PIN.";
 
 export async function storeStaffPin(userId: string, pin: string): Promise<void> {
   const pin_hash = await hashStaffPin(pin);

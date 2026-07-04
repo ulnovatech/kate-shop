@@ -3,13 +3,7 @@ import { useMemo } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 
-const COLORS = [
-  "bg-gold",
-  "bg-primary",
-  "bg-emerald-500",
-  "bg-amber-400",
-  "bg-rose-400",
-] as const;
+const COLORS = ["bg-gold", "bg-primary", "bg-emerald-500", "bg-amber-400", "bg-rose-400"] as const;
 
 type Particle = {
   id: number;
@@ -54,11 +48,7 @@ export function ConfettiBurst({ className, count = 36 }: ConfettiBurstProps) {
       {particles.map((p) => (
         <span
           key={p.id}
-          className={cn(
-            "confetti-particle absolute top-0 rounded-sm opacity-90",
-            p.size,
-            p.color,
-          )}
+          className={cn("confetti-particle absolute top-0 rounded-sm opacity-90", p.size, p.color)}
           style={
             {
               left: p.left,

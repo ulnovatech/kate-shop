@@ -69,7 +69,8 @@ export function useProductWizard({
   const [busy, setBusy] = useState(false);
   const [slug, setSlug] = useState("");
   const [draftPromptOpen, setDraftPromptOpen] = useState(false);
-  const [pendingDraft, setPendingDraft] = useState<ReturnType<typeof loadNewProductWizardDraft>>(null);
+  const [pendingDraft, setPendingDraft] =
+    useState<ReturnType<typeof loadNewProductWizardDraft>>(null);
   const hydratedRef = useRef(false);
 
   const form = useForm<ProductWizardFormData>({
@@ -273,7 +274,17 @@ export function useProductWizard({
     } finally {
       setBusy(false);
     }
-  }, [currentStep, form, goToStep, modalMode, navigate, persist, productId, syncDraft, validateCurrentStep]);
+  }, [
+    currentStep,
+    form,
+    goToStep,
+    modalMode,
+    navigate,
+    persist,
+    productId,
+    syncDraft,
+    validateCurrentStep,
+  ]);
 
   const handleBack = useCallback(() => {
     goToStep(stepFromIndex(stepIndex(currentStep) - 1));
@@ -289,7 +300,10 @@ export function useProductWizard({
 
       setBusy(true);
       try {
-        const values = { ...form.getValues(), is_visible: publish ? true : form.getValues().is_visible };
+        const values = {
+          ...form.getValues(),
+          is_visible: publish ? true : form.getValues().is_visible,
+        };
         if (publish) form.setValue("is_visible", true);
 
         await persist(values);

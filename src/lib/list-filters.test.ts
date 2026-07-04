@@ -96,10 +96,7 @@ describe("list-filters", () => {
 
   it("builds stable query keys", () => {
     const key = buildListQueryKey("admin-products", { q: "a", status: "active" });
-    expect(key).toEqual([
-      "admin-products",
-      { q: "a", status: "active" },
-    ]);
+    expect(key).toEqual(["admin-products", { q: "a", status: "active" }]);
   });
 
   it("parses notification list filters with pending default", () => {

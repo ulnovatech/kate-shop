@@ -27,9 +27,7 @@ const adminRoutes = fs
   .filter((f) => f.startsWith("admin.") && f.endsWith(".tsx"))
   .sort();
 
-const adminComponents = walk(componentsDir, (f) =>
-  /admin/i.test(path.relative(componentsDir, f)),
-);
+const adminComponents = walk(componentsDir, (f) => /admin/i.test(path.relative(componentsDir, f)));
 
 const apiImports = new Map();
 for (const file of adminRoutes.map((f) => path.join(routesDir, f))) {

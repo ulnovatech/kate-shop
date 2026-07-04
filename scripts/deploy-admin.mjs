@@ -48,7 +48,13 @@ run("node", ["scripts/prepare-deploy.mjs"], {
   ADMIN_ORIGIN: adminOrigin,
   VITE_ADMIN_ORIGIN: buildEnv.VITE_ADMIN_ORIGIN,
 });
-if (putWorkerSecret({ distDir, name: "SUPABASE_SERVICE_ROLE_KEY", value: process.env.SUPABASE_SERVICE_ROLE_KEY })) {
+if (
+  putWorkerSecret({
+    distDir,
+    name: "SUPABASE_SERVICE_ROLE_KEY",
+    value: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  })
+) {
   console.log("Uploaded Worker secret SUPABASE_SERVICE_ROLE_KEY.");
 }
 run("npx", ["nitro", "deploy", "--prebuilt", "--dir", distDir]);

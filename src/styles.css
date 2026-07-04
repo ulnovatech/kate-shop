@@ -132,15 +132,24 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { font-family: var(--font-sans); }
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    font-family: var(--font-sans);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
     letter-spacing: -0.01em;
   }
@@ -156,7 +165,9 @@
 }
 
 @layer utilities {
-  .font-heading { font-family: var(--font-heading); }
+  .font-heading {
+    font-family: var(--font-heading);
+  }
   .gold-divider {
     background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
     height: 1px;

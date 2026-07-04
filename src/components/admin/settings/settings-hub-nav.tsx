@@ -26,9 +26,7 @@ export function SettingsHubNav({ active }: SettingsHubNavProps) {
       {SETTINGS_HUB_NAV_ITEMS.map((item) => {
         const isActive = item.id === active;
         const complete =
-          item.setupCheckId && setup
-            ? setup.checksById[item.setupCheckId]?.complete
-            : undefined;
+          item.setupCheckId && setup ? setup.checksById[item.setupCheckId]?.complete : undefined;
 
         return (
           <Link

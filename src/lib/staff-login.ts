@@ -27,9 +27,7 @@ export async function finishStaffSignIn(navigate: NavigateFn): Promise<boolean> 
   const role = pickPrimaryRole((rows ?? []).map((r) => r.role as StaffRole));
   if (!role) {
     await supabase.auth.signOut();
-    toast.error(
-      "This account does not have staff access. Use an invite link from the shop owner.",
-    );
+    toast.error("This account does not have staff access. Use an invite link from the shop owner.");
     return false;
   }
 

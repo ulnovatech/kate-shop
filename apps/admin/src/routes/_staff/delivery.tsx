@@ -153,92 +153,88 @@ function AdminDelivery() {
       title="Delivery"
       description="Kampala zones, areas, and fees. Changes apply to checkout immediately — no deploy needed."
     >
-        <form
-          className="mt-8 max-w-2xl space-y-4 rounded-lg border bg-card p-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const fd = new FormData(e.currentTarget);
-            saveRules.mutate({
-              express_delivery_fee: Number(fd.get("express_delivery_fee")),
-              cod_fee: Number(fd.get("cod_fee")),
-              free_delivery_zones_1_2_threshold: Number(
-                fd.get("free_delivery_zones_1_2_threshold"),
-              ),
-              free_delivery_all_zones_threshold: Number(
-                fd.get("free_delivery_all_zones_threshold"),
-              ),
-            });
-          }}
-        >
-          <h2 className="font-heading text-lg font-semibold">Global rules</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="express_delivery_fee">Express surcharge (UGX)</Label>
-              <Input
-                id="express_delivery_fee"
-                name="express_delivery_fee"
-                type="number"
-                defaultValue={rules.express_delivery_fee}
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="cod_fee">Cash on delivery fee (UGX)</Label>
-              <Input
-                id="cod_fee"
-                name="cod_fee"
-                type="number"
-                defaultValue={rules.cod_fee}
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="free_delivery_zones_1_2_threshold">
-                Free delivery Zones 1–2 above (UGX)
-              </Label>
-              <Input
-                id="free_delivery_zones_1_2_threshold"
-                name="free_delivery_zones_1_2_threshold"
-                type="number"
-                defaultValue={rules.free_delivery_zones_1_2_threshold}
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="free_delivery_all_zones_threshold">
-                Free delivery all zones above (UGX)
-              </Label>
-              <Input
-                id="free_delivery_all_zones_threshold"
-                name="free_delivery_all_zones_threshold"
-                type="number"
-                defaultValue={rules.free_delivery_all_zones_threshold}
-                className="mt-1.5"
-              />
-            </div>
-          </div>
-          <Button type="submit" disabled={saveRules.isPending} className={adminPrimaryTouch}>
-            Save rules
-          </Button>
-        </form>
-
-        <div className="mt-10 space-y-6">
-          <h2 className="font-heading text-lg font-semibold">Zones &amp; areas</h2>
-          {config.zones.map((zone, idx) => (
-            <ZoneCard
-              key={zone.id}
-              zone={zone}
-              index={idx}
-              total={config.zones.length}
-              newAreaValue={newArea[zone.id] ?? ""}
-              onNewAreaChange={(v) => setNewArea((s) => ({ ...s, [zone.id]: v }))}
-              onSave={(z) => saveZone.mutate(z)}
-              onReorder={(dir) => reorderZone.mutate({ id: zone.id, dir })}
-              onAddArea={(name) => addArea.mutate({ zoneId: zone.id, name })}
-              onDeleteArea={(id) => deleteArea.mutate(id)}
+      <form
+        className="mt-8 max-w-2xl space-y-4 rounded-lg border bg-card p-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const fd = new FormData(e.currentTarget);
+          saveRules.mutate({
+            express_delivery_fee: Number(fd.get("express_delivery_fee")),
+            cod_fee: Number(fd.get("cod_fee")),
+            free_delivery_zones_1_2_threshold: Number(fd.get("free_delivery_zones_1_2_threshold")),
+            free_delivery_all_zones_threshold: Number(fd.get("free_delivery_all_zones_threshold")),
+          });
+        }}
+      >
+        <h2 className="font-heading text-lg font-semibold">Global rules</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="express_delivery_fee">Express surcharge (UGX)</Label>
+            <Input
+              id="express_delivery_fee"
+              name="express_delivery_fee"
+              type="number"
+              defaultValue={rules.express_delivery_fee}
+              className="mt-1.5"
             />
-          ))}
+          </div>
+          <div>
+            <Label htmlFor="cod_fee">Cash on delivery fee (UGX)</Label>
+            <Input
+              id="cod_fee"
+              name="cod_fee"
+              type="number"
+              defaultValue={rules.cod_fee}
+              className="mt-1.5"
+            />
+          </div>
+          <div>
+            <Label htmlFor="free_delivery_zones_1_2_threshold">
+              Free delivery Zones 1–2 above (UGX)
+            </Label>
+            <Input
+              id="free_delivery_zones_1_2_threshold"
+              name="free_delivery_zones_1_2_threshold"
+              type="number"
+              defaultValue={rules.free_delivery_zones_1_2_threshold}
+              className="mt-1.5"
+            />
+          </div>
+          <div>
+            <Label htmlFor="free_delivery_all_zones_threshold">
+              Free delivery all zones above (UGX)
+            </Label>
+            <Input
+              id="free_delivery_all_zones_threshold"
+              name="free_delivery_all_zones_threshold"
+              type="number"
+              defaultValue={rules.free_delivery_all_zones_threshold}
+              className="mt-1.5"
+            />
+          </div>
         </div>
+        <Button type="submit" disabled={saveRules.isPending} className={adminPrimaryTouch}>
+          Save rules
+        </Button>
+      </form>
+
+      <div className="mt-10 space-y-6">
+        <h2 className="font-heading text-lg font-semibold">Zones &amp; areas</h2>
+        {config.zones.map((zone, idx) => (
+          <ZoneCard
+            key={zone.id}
+            zone={zone}
+            index={idx}
+            total={config.zones.length}
+            newAreaValue={newArea[zone.id] ?? ""}
+            onNewAreaChange={(v) => setNewArea((s) => ({ ...s, [zone.id]: v }))}
+            onSave={(z) => saveZone.mutate(z)}
+            onReorder={(dir) => reorderZone.mutate({ id: zone.id, dir })}
+            onAddArea={(name) => addArea.mutate({ zoneId: zone.id, name })}
+            onDeleteArea={(id) => deleteArea.mutate(id)}
+          />
+        ))}
+      </div>
     </SettingsHubShell>
   );
 }

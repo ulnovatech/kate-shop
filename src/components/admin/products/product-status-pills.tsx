@@ -13,9 +13,7 @@ export function ProductStatusPills({ product }: { product: AdminProduct }) {
         </span>
       ) : null}
       {product.is_featured ? (
-        <span className="rounded-full bg-gold/20 px-2 py-0.5 type-caption text-gold">
-          Featured
-        </span>
+        <span className="rounded-full bg-gold/20 px-2 py-0.5 type-caption text-gold">Featured</span>
       ) : null}
       <span
         className={`rounded-full px-2 py-0.5 type-caption ${

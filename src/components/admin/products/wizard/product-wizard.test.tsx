@@ -6,9 +6,7 @@ import { ProductWizard } from "./product-wizard";
 import { saveNewProductWizardDraft } from "./product-wizard-draft";
 
 vi.mock("@tanstack/react-router", () => ({
-  Link: ({ children, to }: { children: ReactNode; to: string }) => (
-    <a href={to}>{children}</a>
-  ),
+  Link: ({ children, to }: { children: ReactNode; to: string }) => <a href={to}>{children}</a>,
   useNavigate: () => vi.fn(),
 }));
 

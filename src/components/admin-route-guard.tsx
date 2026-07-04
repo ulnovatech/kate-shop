@@ -12,8 +12,7 @@ type Props = {
 export function AdminRouteGuard({ permission, children }: Props) {
   const { initialLoading, permissions } = useAuth();
   const navigate = useNavigate();
-  const allowed =
-    permissions.canAccessAdmin && hasPermission(permissions, permission);
+  const allowed = permissions.canAccessAdmin && hasPermission(permissions, permission);
 
   useEffect(() => {
     if (initialLoading) return;

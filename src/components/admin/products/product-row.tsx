@@ -82,7 +82,10 @@ export function ProductRow({
     moveThreshold: 12,
   });
 
-  const swallowClickAfterLongPress = (event: { preventDefault: () => void; stopPropagation?: () => void }) => {
+  const swallowClickAfterLongPress = (event: {
+    preventDefault: () => void;
+    stopPropagation?: () => void;
+  }) => {
     if (suppressNextClick.current) {
       event.preventDefault();
       event.stopPropagation?.();
@@ -177,7 +180,11 @@ export function ProductRow({
           </div>
         </div>
       </div>
-      <div className="mt-3" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+      <div
+        className="mt-3"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
         <ProductActionsMenu
           product={product}
           onToggleFeatured={onToggleFeatured}
@@ -207,7 +214,11 @@ export function ProductRow({
         if (selectionMode) toggleSelected();
       }}
     >
-      {!selectionMode ? <div className="hidden md:block md:w-4" aria-hidden /> : <span aria-hidden className="hidden md:block" />}
+      {!selectionMode ? (
+        <div className="hidden md:block md:w-4" aria-hidden />
+      ) : (
+        <span aria-hidden className="hidden md:block" />
+      )}
 
       <div className="flex min-w-0 gap-3 md:contents">
         {selectionMode ? (

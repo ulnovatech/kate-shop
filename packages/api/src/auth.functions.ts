@@ -78,9 +78,8 @@ const resetStaffPinSchema = z.object({
 export const resetStaffPinWithEmailVerification = createServerFn({ method: "POST" })
   .inputValidator(resetStaffPinSchema)
   .handler(async ({ data }) => {
-    const { resetStaffPinAfterEmailVerification } = await import(
-      "@kate/api/staff-pin-reset.server"
-    );
+    const { resetStaffPinAfterEmailVerification } =
+      await import("@kate/api/staff-pin-reset.server");
     await resetStaffPinAfterEmailVerification(data);
     return { ok: true as const };
   });
@@ -99,9 +98,7 @@ export const setStaffPinWithCurrentPin = createServerFn({ method: "POST" })
   .middleware([requireStaffAuth])
   .inputValidator(setStaffPinWithCurrentPinSchema)
   .handler(async ({ data, context }) => {
-    const { assertStaffPinValid, storeStaffPin } = await import(
-      "@kate/api/staff-pin-auth.server"
-    );
+    const { assertStaffPinValid, storeStaffPin } = await import("@kate/api/staff-pin-auth.server");
     const auth = context.auth as AuthContext;
     await assertStaffPinValid(auth.userId, data.currentPin);
     await storeStaffPin(auth.userId, data.pin);

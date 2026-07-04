@@ -38,7 +38,7 @@ describe("admin-setup-completion", () => {
   it("calculates partial percent", () => {
     const checks = evaluateSetupChecks({
       shopName: "Kate",
-      phone: "0700",
+      phone: "0700123456",
       whatsapp: "",
       deliveryZoneCount: 0,
       enabledPaymentMethodCount: 0,

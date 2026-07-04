@@ -21,11 +21,11 @@ Response shape:
 }
 ```
 
-| `checks.supabase` | Meaning |
-|-------------------|---------|
-| `ok` | Settings row readable via service role |
-| `error` | Supabase unreachable or query failed → overall `degraded` |
-| `skipped` | No `SUPABASE_SERVICE_ROLE_KEY` at runtime (e.g. CI build smoke) |
+| `checks.supabase` | Meaning                                                         |
+| ----------------- | --------------------------------------------------------------- |
+| `ok`              | Settings row readable via service role                          |
+| `error`           | Supabase unreachable or query failed → overall `degraded`       |
+| `skipped`         | No `SUPABASE_SERVICE_ROLE_KEY` at runtime (e.g. CI build smoke) |
 
 Paths: `/health.json` (JSON) and `/health` (same handler via Worker entry).
 
@@ -36,7 +36,16 @@ Use for uptime monitors (UptimeRobot, Better Stack, Cloudflare Health Checks).
 Every request through `src/server.ts` emits one JSON line:
 
 ```json
-{"level":"info","event":"request","ts":"...","requestId":"...","method":"GET","path":"/","status":200,"durationMs":45}
+{
+  "level": "info",
+  "event": "request",
+  "ts": "...",
+  "requestId": "...",
+  "method": "GET",
+  "path": "/",
+  "status": 200,
+  "durationMs": 45
+}
 ```
 
 Errors emit `event: "server_error"` or `event: "client_error"`.

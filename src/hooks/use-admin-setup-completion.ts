@@ -13,10 +13,7 @@ async function fetchSetupCompletionInput() {
   const [settingsRes, zonesRes, productsRes, paymentMethods] = await Promise.all([
     supabase.from("settings").select("shop_name, phone, whatsapp").maybeSingle(),
     supabase.from("delivery_zones").select("id", { count: "exact", head: true }),
-    supabase
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .is("deleted_at", null),
+    supabase.from("products").select("id", { count: "exact", head: true }).is("deleted_at", null),
     listCheckoutPaymentMethods().catch(() => []),
   ]);
 

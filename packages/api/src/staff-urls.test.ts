@@ -1,5 +1,9 @@
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
-import { buildStaffInviteUrl, staffAuthRedirectOrigins, staffAuthRedirectUrls } from "@kate/api/staff-urls";
+import {
+  buildStaffInviteUrl,
+  staffAuthRedirectOrigins,
+  staffAuthRedirectUrls,
+} from "@kate/api/staff-urls";
 
 describe("buildStaffInviteUrl", () => {
   const env = process.env;
@@ -22,6 +26,7 @@ describe("buildStaffInviteUrl", () => {
 
   it("falls back to monolith /admin path", () => {
     delete process.env.ADMIN_ORIGIN;
+    delete process.env.VITE_ADMIN_ORIGIN;
     process.env.APP_ORIGIN = "https://shop.example.com";
     expect(buildStaffInviteUrl("tok")).toBe(
       "https://shop.example.com/admin/accept-invite?token=tok",
@@ -41,6 +46,7 @@ describe("staffAuthRedirectOrigins", () => {
   });
 
   it("lists wildcard origins for Supabase", () => {
+    delete process.env.VITE_ADMIN_ORIGIN;
     process.env.APP_ORIGIN = "https://shop.example.com";
     process.env.ADMIN_ORIGIN = "https://admin.example.com";
     expect(staffAuthRedirectOrigins()).toEqual([

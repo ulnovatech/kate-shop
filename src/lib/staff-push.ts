@@ -30,9 +30,7 @@ function navigateFromNotificationData(
 ) {
   const path =
     (typeof data?.path === "string" && data.path) ||
-    (typeof data?.orderId === "string"
-      ? `/orders/${encodeURIComponent(data.orderId)}`
-      : null);
+    (typeof data?.orderId === "string" ? `/orders/${encodeURIComponent(data.orderId)}` : null);
   if (path) {
     navigate({ to: path, replace: false });
   }

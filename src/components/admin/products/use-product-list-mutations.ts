@@ -43,9 +43,7 @@ export function useProductListMutations() {
     qc.setQueriesData({ queryKey: ["admin-products"] }, (old: unknown) => {
       if (!Array.isArray(old)) return old;
       return old.map((p) =>
-        p && typeof p === "object" && "id" in p && idSet.has(String(p.id))
-          ? { ...p, ...patch }
-          : p,
+        p && typeof p === "object" && "id" in p && idSet.has(String(p.id)) ? { ...p, ...patch } : p,
       );
     });
   };
@@ -90,7 +88,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not update visibility." }));
     },
     onSettled: () => invalidate(),
@@ -110,7 +108,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not update featured status." }));
     },
     onSuccess: () => toast.success("Featured updated"),
@@ -145,7 +143,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not archive product." }));
     },
     onSuccess: () => toast.success("Product archived"),
@@ -170,7 +168,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not restore product." }));
     },
     onSuccess: () => toast.success("Product restored"),
@@ -185,7 +183,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not delete product." }));
     },
     onSuccess: () => {
@@ -209,7 +207,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not publish products." }));
     },
     onSuccess: (_data, ids) =>
@@ -248,7 +246,7 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not archive products." }));
     },
     onSuccess: (_data, products) =>
@@ -258,9 +256,7 @@ export function useProductListMutations() {
 
   const bulkDelete = useMutation({
     mutationFn: async (ids: string[]) => {
-      await Promise.all(
-        ids.map((id) => moveToRecycle({ data: { entity_type: "product", id } })),
-      );
+      await Promise.all(ids.map((id) => moveToRecycle({ data: { entity_type: "product", id } })));
     },
     onMutate: async (ids) => {
       const previous = await snapshotProducts();
@@ -268,11 +264,13 @@ export function useProductListMutations() {
       return { previous };
     },
     onError: (e, _vars, context) => {
-      context?.previous && restoreProducts(context.previous);
+      if (context?.previous) restoreProducts(context.previous);
       toast.error(humanizeError(e, { fallback: "Could not delete products." }));
     },
     onSuccess: (_data, ids) => {
-      toast.success(`Moved ${ids.length} product${ids.length === 1 ? "" : "s"} to recently deleted`);
+      toast.success(
+        `Moved ${ids.length} product${ids.length === 1 ? "" : "s"} to recently deleted`,
+      );
       void qc.invalidateQueries({ queryKey: ["admin-recycle"] });
     },
     onSettled: () => invalidate(),

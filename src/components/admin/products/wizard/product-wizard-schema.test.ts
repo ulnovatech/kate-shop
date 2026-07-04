@@ -1,8 +1,5 @@
 import { describe, expect, it, beforeEach } from "vitest";
-import {
-  resolveWizardStep,
-  PRODUCT_WIZARD_DEFAULTS,
-} from "./product-wizard-schema";
+import { resolveWizardStep, PRODUCT_WIZARD_DEFAULTS } from "./product-wizard-schema";
 import {
   clearNewProductWizardDraft,
   loadNewProductWizardDraft,

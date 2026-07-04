@@ -20,10 +20,10 @@ Open [http://localhost:5174](http://localhost:5174) for the standalone staff app
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev:admin` | Dev server on port 5174 |
-| `npm run build:admin` | Production build → `apps/admin/dist` |
+| Command                     | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| `npm run dev:admin`         | Dev server on port 5174                                        |
+| `npm run build:admin`       | Production build → `apps/admin/dist`                           |
 | `npm run sync:admin-routes` | Copy `src/routes/admin*.tsx` → `apps/admin/src/routes/_staff/` |
 
 After editing monolith admin routes, run `npm run sync:admin-routes` (or `npm run sync:routes -w @kate/admin`).

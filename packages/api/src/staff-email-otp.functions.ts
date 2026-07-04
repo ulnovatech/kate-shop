@@ -17,9 +17,7 @@ const verifySchema = z.object({
 /** Whether Gmail staff OTP delivery is configured. */
 export const getStaffEmailOtpDeliveryStatus = createServerFn({ method: "GET" }).handler(
   async () => {
-    const { getStaffEmailOtpDeliveryStatusImpl } = await import(
-      "@kate/api/staff-email-otp.server"
-    );
+    const { getStaffEmailOtpDeliveryStatusImpl } = await import("@kate/api/staff-email-otp.server");
     return getStaffEmailOtpDeliveryStatusImpl();
   },
 );

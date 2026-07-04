@@ -34,18 +34,12 @@ function removeStrayFragmentClose(s) {
 
 function closeFragmentBefore(s, anchor) {
   if (!s.includes(anchor)) return s;
-  return s.replace(
-    new RegExp(`(${escapeRe(anchor)})\\n      \\);\\n\\}`),
-    "$1\n    </>\n  );\n}",
-  );
+  return s.replace(new RegExp(`(${escapeRe(anchor)})\\n      \\);\\n\\}`), "$1\n    </>\n  );\n}");
 }
 
 function wrapMultiRootReturn(s, firstLine, anchor) {
   if (s.includes("return (\n    <>")) return s;
-  s = s.replace(
-    `  return (\n${firstLine}`,
-    `  return (\n    <>\n${firstLine}`,
-  );
+  s = s.replace(`  return (\n${firstLine}`, `  return (\n    <>\n${firstLine}`);
   return closeFragmentBefore(s, anchor);
 }
 
@@ -123,13 +117,19 @@ if (!pi.includes("    </>\n  );\n}")) {
 // roles - close at end of grid
 let roles = read("admin.roles.tsx");
 if (!roles.includes("    </>\n  );\n}")) {
-  roles = roles.replace(/\n        <\/div>\n      \);\n\}\n*$/, "\n        </div>\n    </>\n  );\n}");
+  roles = roles.replace(
+    /\n        <\/div>\n      \);\n\}\n*$/,
+    "\n        </div>\n    </>\n  );\n}",
+  );
   write("admin.roles.tsx", roles);
 }
 
 // orders - close at end
 let orders = read("admin.orders.tsx");
 if (!orders.includes("    </>\n  );\n}")) {
-  orders = orders.replace(/\n        <\/div>\n      \);\n\}\n*$/, "\n        </div>\n    </>\n  );\n}");
+  orders = orders.replace(
+    /\n        <\/div>\n      \);\n\}\n*$/,
+    "\n        </div>\n    </>\n  );\n}",
+  );
   write("admin.orders.tsx", orders);
 }

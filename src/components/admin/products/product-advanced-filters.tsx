@@ -1,9 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -100,7 +96,10 @@ export function ProductMoreFilters({
       <PopoverContent align="end" className="z-[60] w-72 space-y-4 p-4">
         <div>
           <Label>Status</Label>
-          <Select value={draft.listFilter} onValueChange={(v) => onStatusChange(v as ProductListFilter)}>
+          <Select
+            value={draft.listFilter}
+            onValueChange={(v) => onStatusChange(v as ProductListFilter)}
+          >
             <SelectTrigger className="mt-1.5">
               <SelectValue />
             </SelectTrigger>

@@ -14,11 +14,7 @@ const androidDir = join(
 );
 
 const version = resolveAdminMobileVersion();
-const lines = [
-  `VERSION_CODE=${version.versionCode}`,
-  `VERSION_NAME=${version.versionName}`,
-  "",
-];
+const lines = [`VERSION_CODE=${version.versionCode}`, `VERSION_NAME=${version.versionName}`, ""];
 const path = join(androidDir, "version.properties");
 writeFileSync(path, lines.join("\n"));
 console.log(`Applied Android version ${version.versionName} (${version.versionCode}) → ${path}`);

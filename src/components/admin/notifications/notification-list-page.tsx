@@ -2,11 +2,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, CheckCircle2, SearchX } from "lucide-react";
 import { toast } from "sonner";
-import {
-  AdminListToolbar,
-  AdminPageHeader,
-  AdminSegmentedFilter,
-} from "@/components/admin";
+import { AdminListToolbar, AdminPageHeader, AdminSegmentedFilter } from "@/components/admin";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { CardListSkeleton, InlineCountLoader } from "@/components/loading-states";
@@ -164,7 +160,9 @@ export function NotificationListPage({
         {batchMode && pendingOnPage.length > 0 ? (
           <div className="flex flex-wrap items-center gap-2">
             <Button type="button" variant="outline" size="sm" onClick={toggleSelectAllPending}>
-              {allPendingSelected ? "Clear selection" : `Select all pending (${pendingOnPage.length})`}
+              {allPendingSelected
+                ? "Clear selection"
+                : `Select all pending (${pendingOnPage.length})`}
             </Button>
             {selectedIds.size > 0 ? (
               <Button

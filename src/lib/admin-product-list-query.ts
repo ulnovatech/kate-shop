@@ -15,10 +15,7 @@ export type ProductListQuery<T> = {
   gte(column: string, value: number): T;
   lte(column: string, value: number): T;
   or(filters: string): T;
-  order(
-    column: string,
-    options: { ascending: boolean },
-  ): T;
+  order(column: string, options: { ascending: boolean }): T;
   range(from: number, to: number): T;
 };
 
@@ -67,9 +64,7 @@ export function applyAdminProductListFilters<T extends ProductListQuery<T>>(
   } else if (filters.stockFilter === "out_of_stock") {
     query = query.lte("available_stock", 0);
   } else if (filters.stockFilter === "low_stock") {
-    query = query
-      .gt("available_stock", 0)
-      .lte("available_stock", ADMIN_PRODUCT_LOW_STOCK_CEILING);
+    query = query.gt("available_stock", 0).lte("available_stock", ADMIN_PRODUCT_LOW_STOCK_CEILING);
   }
 
   const minPrice = Number.parseInt((filters.priceMin ?? "").trim(), 10);
@@ -95,7 +90,10 @@ export function applyAdminProductListPagination<T extends ProductListQuery<T>>(
   options: AdminProductListQueryOptions,
 ): T {
   if (!options.paginate) return qb;
-  const { from, to } = paginationRange(options.filters.page, options.pageSize ?? DEFAULT_LIST_PAGE_SIZE);
+  const { from, to } = paginationRange(
+    options.filters.page,
+    options.pageSize ?? DEFAULT_LIST_PAGE_SIZE,
+  );
   return qb.range(from, to);
 }
 

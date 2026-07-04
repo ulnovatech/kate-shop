@@ -27,21 +27,21 @@ Legacy Gradle output only: `npm run android:admin:build`
 
 ## Scripts (root)
 
-| Script | Action |
-|--------|--------|
-| `npm run android:admin` | `cap sync` + `cap run android` |
-| `npm run android:admin:sync` | Write server URL into native project |
-| `npm run android:admin:open` | Open Android Studio |
-| `npm run android:admin:build` | `assembleDebug` in Gradle output dir |
-| `npm run build:admin-apk` | Versioned debug APK → `dist/admin-mobile/` (C11) |
-| `npm run build:admin-apk:release` | Signed release APK (keystore env) |
+| Script                            | Action                                           |
+| --------------------------------- | ------------------------------------------------ |
+| `npm run android:admin`           | `cap sync` + `cap run android`                   |
+| `npm run android:admin:sync`      | Write server URL into native project             |
+| `npm run android:admin:open`      | Open Android Studio                              |
+| `npm run android:admin:build`     | `assembleDebug` in Gradle output dir             |
+| `npm run build:admin-apk`         | Versioned debug APK → `dist/admin-mobile/` (C11) |
+| `npm run build:admin-apk:release` | Signed release APK (keystore env)                |
 
 ## Environment
 
-| Variable | Purpose |
-|----------|---------|
-| `ADMIN_MOBILE_SERVER_URL` | Override load URL (emulator: `http://10.0.2.2:5174`) |
-| `VITE_ADMIN_ORIGIN` / `ADMIN_ORIGIN` | Admin web URL (production or local) |
+| Variable                             | Purpose                                              |
+| ------------------------------------ | ---------------------------------------------------- |
+| `ADMIN_MOBILE_SERVER_URL`            | Override load URL (emulator: `http://10.0.2.2:5174`) |
+| `VITE_ADMIN_ORIGIN` / `ADMIN_ORIGIN` | Admin web URL (production or local)                  |
 
 The APK does **not** bundle the admin app or `SUPABASE_SERVICE_ROLE_KEY` — it is a WebView pointed at your deployed admin Worker.
 

@@ -59,7 +59,9 @@ export function GoLiveChecklist({ className }: GoLiveChecklistProps) {
               to={check.to}
               className={cn(
                 "flex items-start gap-3 rounded-lg border px-3 py-3 transition-common hover:bg-muted/40",
-                !check.complete && check.id === nextIncomplete?.id && "border-primary/30 bg-primary/5",
+                !check.complete &&
+                  check.id === nextIncomplete?.id &&
+                  "border-primary/30 bg-primary/5",
               )}
             >
               {check.complete ? (

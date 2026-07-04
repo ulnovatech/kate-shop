@@ -8,7 +8,10 @@ import { appToast } from "@/lib/app-toast";
 import { triggerHaptic } from "@/lib/haptics";
 import { ShopLayout } from "@/components/shop-layout";
 import { MobileStickyBar } from "@/components/mobile-sticky-bar";
-import { CheckoutWizardStepper, CheckoutWizardStepperSidebar } from "@/components/checkout-wizard-stepper";
+import {
+  CheckoutWizardStepper,
+  CheckoutWizardStepperSidebar,
+} from "@/components/checkout-wizard-stepper";
 import { CheckoutCartReviewSection } from "@/components/storefront/checkout-cart-review";
 import { CheckoutWizardFooter } from "@/components/storefront/checkout-wizard-footer";
 import { StorefrontEmptyState } from "@/components/empty-state";
@@ -601,7 +604,10 @@ function Checkout() {
             <CheckoutWizardStepper current={wizardStep} className="mb-6" />
 
             <div className="grid gap-10 lg:grid-cols-[200px_1fr_320px]">
-              <CheckoutWizardStepperSidebar current={wizardStep} className="lg:sticky lg:top-24 lg:self-start" />
+              <CheckoutWizardStepperSidebar
+                current={wizardStep}
+                className="lg:sticky lg:top-24 lg:self-start"
+              />
 
               <div>
                 <form

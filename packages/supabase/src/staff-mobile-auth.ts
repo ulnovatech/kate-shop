@@ -1,9 +1,6 @@
 import type { Session } from "@supabase/supabase-js";
 import { ADMIN_LOGIN_CALLBACK_PATH } from "@kate/domain/admin-base-path";
-import {
-  STAFF_MOBILE_APP_ID,
-  STAFF_MOBILE_LOGIN_CALLBACK,
-} from "@kate/domain/staff-mobile-auth";
+import { STAFF_MOBILE_APP_ID, STAFF_MOBILE_LOGIN_CALLBACK } from "@kate/domain/staff-mobile-auth";
 import { supabase } from "./client";
 
 export type StaffAuthCallbackResult = {

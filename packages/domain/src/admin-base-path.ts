@@ -5,9 +5,7 @@ function normalizeAdminBase(value: string | undefined): string {
   return trimmed.replace(/\/$/, "") || "/";
 }
 
-export const ADMIN_BASE_PATH = normalizeAdminBase(
-  import.meta.env.VITE_ADMIN_BASE_PATH ?? "/admin",
-);
+export const ADMIN_BASE_PATH = normalizeAdminBase(import.meta.env.VITE_ADMIN_BASE_PATH ?? "/admin");
 
 /** Build a staff URL for the current admin client (monolith or standalone). */
 export function adminUrl(path = ""): string {
@@ -44,6 +42,7 @@ export function adminOrderDetailTarget(id: string) {
 }
 
 /** Storefront origin for “View shop” from the standalone admin app. */
-export const SHOP_ORIGIN = (
-  import.meta.env.VITE_APP_ORIGIN ?? "http://localhost:5173"
-).replace(/\/$/, "");
+export const SHOP_ORIGIN = (import.meta.env.VITE_APP_ORIGIN ?? "http://localhost:5173").replace(
+  /\/$/,
+  "",
+);

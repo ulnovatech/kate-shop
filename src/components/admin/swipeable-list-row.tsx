@@ -54,10 +54,7 @@ export function SwipeableListRow({
 
   return (
     <div className={cn("relative overflow-hidden", className)}>
-      <div
-        className="absolute inset-y-0 right-0 flex"
-        aria-hidden={offsetX === 0}
-      >
+      <div className="absolute inset-y-0 right-0 flex" aria-hidden={offsetX === 0}>
         {actions.map((action) => (
           <button
             key={action.id}

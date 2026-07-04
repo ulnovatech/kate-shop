@@ -40,7 +40,10 @@ export function PinchZoomImage({ src, alt, className }: PinchZoomImageProps) {
       const pts = [...pointers.current.values()];
       const nextScale = Math.min(
         4,
-        Math.max(1, (pinchStart.current.scale * distance(pts[0], pts[1])) / pinchStart.current.distance),
+        Math.max(
+          1,
+          (pinchStart.current.scale * distance(pts[0], pts[1])) / pinchStart.current.distance,
+        ),
       );
       setScale(nextScale);
       if (nextScale <= 1) setTranslate({ x: 0, y: 0 });

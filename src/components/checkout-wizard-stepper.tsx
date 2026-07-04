@@ -57,10 +57,7 @@ export function CheckoutWizardStepper({ current, className }: CheckoutWizardStep
 }
 
 /** Vertical checkout stepper for desktop layouts */
-export function CheckoutWizardStepperSidebar({
-  current,
-  className,
-}: CheckoutWizardStepperProps) {
+export function CheckoutWizardStepperSidebar({ current, className }: CheckoutWizardStepperProps) {
   return (
     <nav aria-label="Checkout progress" className={cn("hidden lg:block", className)}>
       <ol className="space-y-1">

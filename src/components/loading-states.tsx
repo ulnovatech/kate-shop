@@ -114,7 +114,12 @@ export function AdminRefreshingBar({ active }: { active: boolean }) {
 
 export function AdminFormSectionsSkeleton({ sections = 2 }: { sections?: number }) {
   return (
-    <div className="mt-6 grid gap-6 lg:grid-cols-2" role="status" aria-live="polite" aria-busy="true">
+    <div
+      className="mt-6 grid gap-6 lg:grid-cols-2"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       {Array.from({ length: sections }).map((_, i) => (
         <div key={i} className="space-y-5 rounded-lg border bg-card p-6">
           <Skeleton className="h-6 w-40" />
@@ -258,10 +263,7 @@ export function AdminProductListSkeleton() {
 
   return (
     <div role="status" aria-busy="true" aria-label="Loading products">
-      <div
-        className={`hidden border-b bg-muted/40 px-4 py-2.5 md:grid ${gridClass}`}
-        aria-hidden
-      >
+      <div className={`hidden border-b bg-muted/40 px-4 py-2.5 md:grid ${gridClass}`} aria-hidden>
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="h-3 w-16" />
         ))}

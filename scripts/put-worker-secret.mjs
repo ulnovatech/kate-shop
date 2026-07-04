@@ -8,17 +8,13 @@ export function putWorkerSecret({ distDir, name, value, cwd = process.cwd() }) {
   if (!secret) return false;
 
   const config = path.join(distDir, "server", "wrangler.json");
-  const result = spawnSync(
-    "npx",
-    ["wrangler", "secret", "put", name, "--config", config],
-    {
-      cwd,
-      stdio: ["pipe", "inherit", "inherit"],
-      shell: true,
-      env: process.env,
-      input: `${secret}\n`,
-    },
-  );
+  const result = spawnSync("npx", ["wrangler", "secret", "put", name, "--config", config], {
+    cwd,
+    stdio: ["pipe", "inherit", "inherit"],
+    shell: true,
+    env: process.env,
+    input: `${secret}\n`,
+  });
 
   if (result.status !== 0) {
     process.exit(result.status ?? 1);

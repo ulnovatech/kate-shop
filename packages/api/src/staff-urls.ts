@@ -4,8 +4,7 @@
 import { STAFF_MOBILE_LOGIN_CALLBACK } from "@kate/domain/staff-mobile-auth";
 
 export function buildStaffInviteUrl(token: string): string {
-  const admin =
-    process.env.ADMIN_ORIGIN?.trim() || process.env.VITE_ADMIN_ORIGIN?.trim();
+  const admin = process.env.ADMIN_ORIGIN?.trim() || process.env.VITE_ADMIN_ORIGIN?.trim();
   if (admin) {
     return `${admin.replace(/\/$/, "")}/accept-invite?token=${encodeURIComponent(token)}`;
   }

@@ -136,7 +136,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
         data: {
           token,
           password: oauthUserId ? undefined : password,
-          emailVerificationToken: oauthUserId ? undefined : emailVerificationToken ?? undefined,
+          emailVerificationToken: oauthUserId ? undefined : (emailVerificationToken ?? undefined),
           oauthUserId: oauthUserId ?? undefined,
           pin,
         },
@@ -222,8 +222,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       title="Join the team"
       description={
         <>
-          {inviteEmail} · role:{" "}
-          <span className="font-medium text-foreground">{inviteRole}</span>
+          {inviteEmail} · role: <span className="font-medium text-foreground">{inviteRole}</span>
         </>
       }
       wide
@@ -264,11 +263,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
             ) : null}
           </div>
           <AdminAuthDivider />
-          <AdminGoogleAuthButton
-            disabled={busy}
-            busy={googleBusy}
-            onClick={onGoogleInvite}
-          />
+          <AdminGoogleAuthButton disabled={busy} busy={googleBusy} onClick={onGoogleInvite} />
         </div>
       ) : null}
 
@@ -307,7 +302,8 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       {step === "welcome" ? (
         <div className="space-y-4">
           <p className="type-body-sm text-muted-foreground">
-            You are signed in as <strong>{joinedRole ?? inviteRole}</strong>. Here is where to start:
+            You are signed in as <strong>{joinedRole ?? inviteRole}</strong>. Here is where to
+            start:
           </p>
           <StaffWelcomeChecklist role={joinedRole ?? inviteRole ?? "staff"} />
         </div>
@@ -315,7 +311,13 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
 
       <div className="mt-stack-lg flex flex-col gap-2 sm:flex-row sm:justify-between">
         {!isFirst && step !== "welcome" && step !== "verify-email" ? (
-          <Button type="button" variant="outline" onClick={goBack} disabled={busy} className={adminPrimaryTouch}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={goBack}
+            disabled={busy}
+            className={adminPrimaryTouch}
+          >
             Back
           </Button>
         ) : (

@@ -19,8 +19,8 @@ export function e2eSkipCredentialsMessage(): string {
 export function e2eForgotPinOtpConfigured(): boolean {
   return Boolean(
     process.env.E2E_STAFF_FORGOT_PIN_CODE?.trim() &&
-      process.env.E2E_STAFF_NEW_PIN?.trim() &&
-      e2eConfigured(),
+    process.env.E2E_STAFF_NEW_PIN?.trim() &&
+    e2eConfigured(),
   );
 }
 

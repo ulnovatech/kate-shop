@@ -86,7 +86,16 @@ function Shop() {
 
   useEffect(() => {
     setFilterDraft(filters);
-  }, [category, q, sortParam, filters.inStockOnly, filters.featuredOnly, filters.minPrice, filters.maxPrice, filters.page]);
+  }, [
+    category,
+    q,
+    sortParam,
+    filters.inStockOnly,
+    filters.featuredOnly,
+    filters.minPrice,
+    filters.maxPrice,
+    filters.page,
+  ]);
 
   const applySearch = (term: string) => {
     const trimmed = term.trim();
@@ -380,8 +389,7 @@ function Shop() {
                 suggestionCategories[0]
                   ? {
                       label: `Shop ${suggestionCategories[0].name}`,
-                      onClick: () =>
-                        navigateFilters({ category: suggestionCategories[0].slug }),
+                      onClick: () => navigateFilters({ category: suggestionCategories[0].slug }),
                     }
                   : undefined
               }

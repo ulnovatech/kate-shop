@@ -4,15 +4,15 @@ Kate Admin is an **online-only staff client**. It has its own install identity, 
 
 ## Shop vs Admin
 
-| | Kate Shop | Kate Admin |
-|---|-----------|------------|
-| **Origin** | `shop.yourdomain.com` | `admin.yourdomain.com` |
-| **Manifest** | `/manifest.webmanifest` | `/manifest.webmanifest` (admin app) or `/admin-manifest.webmanifest` (monolith) |
-| **Icon** | `/pwa-icon.svg` | `/admin-icon.svg` |
-| **Name** | Shop name from settings | **Kate Admin** |
-| **Service worker** | Workbox (offline browse) | **None** — shop SW evicted on admin origin |
-| **Install prompt** | Storefront banner (C4) | Never shown |
-| **Offline** | Partial browse + cached images | Banner only — all staff actions need network |
+|                    | Kate Shop                      | Kate Admin                                                                      |
+| ------------------ | ------------------------------ | ------------------------------------------------------------------------------- |
+| **Origin**         | `shop.yourdomain.com`          | `admin.yourdomain.com`                                                          |
+| **Manifest**       | `/manifest.webmanifest`        | `/manifest.webmanifest` (admin app) or `/admin-manifest.webmanifest` (monolith) |
+| **Icon**           | `/pwa-icon.svg`                | `/admin-icon.svg`                                                               |
+| **Name**           | Shop name from settings        | **Kate Admin**                                                                  |
+| **Service worker** | Workbox (offline browse)       | **None** — shop SW evicted on admin origin                                      |
+| **Install prompt** | Storefront banner (C4)         | Never shown                                                                     |
+| **Offline**        | Partial browse + cached images | Banner only — all staff actions need network                                    |
 
 ## Staff manifest
 

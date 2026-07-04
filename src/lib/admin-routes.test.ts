@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  isAdminPath,
-  isAdminPublicPath,
-  isStaffOriginPath,
-} from "@/lib/admin-routes";
+import { isAdminPath, isAdminPublicPath, isStaffOriginPath } from "@/lib/admin-routes";
 
 describe("isAdminPath", () => {
   it("matches /admin and nested staff routes", () => {

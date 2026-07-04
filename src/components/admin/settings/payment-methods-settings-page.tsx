@@ -76,7 +76,11 @@ export function PaymentMethodsSettingsPage() {
         <>
           Choose which payment options customers see at checkout and their display order. Merchant
           codes and bank details are in{" "}
-          <Link to={adminUrl("/settings")} search={{ tab: "payments" }} className="text-primary hover:underline">
+          <Link
+            to={adminUrl("/settings")}
+            search={{ tab: "payments" }}
+            className="text-primary hover:underline"
+          >
             Store setup → Payments
           </Link>
           .

@@ -16,10 +16,7 @@ import {
 } from "@/lib/api/roles.functions";
 import type { PermissionKey } from "@/lib/permissions";
 import { humanizeError } from "@/lib/errors";
-import {
-  ROLE_TEMPLATES,
-  type RoleTemplate,
-} from "@/lib/role-templates";
+import { ROLE_TEMPLATES, type RoleTemplate } from "@/lib/role-templates";
 import { RoleTemplateBar } from "./role-template-bar";
 import { RolesPermissionMatrix } from "./roles-permission-matrix";
 
@@ -208,7 +205,10 @@ export function RolesPage() {
 
               {creating && canEdit ? <RoleTemplateBar onApply={applyTemplate} /> : null}
 
-              {selected?.is_system && !selected.is_locked && selected.slug !== "admin" && canEdit ? (
+              {selected?.is_system &&
+              !selected.is_locked &&
+              selected.slug !== "admin" &&
+              canEdit ? (
                 <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"

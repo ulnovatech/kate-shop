@@ -1,10 +1,7 @@
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { AdminLayout } from "@/components/admin-layout";
 import { AdminRouteGuard } from "@/components/admin-route-guard";
-import {
-  isAdminPublicPath,
-  type AdminRouteStatic,
-} from "@/lib/admin-routes";
+import { isAdminPublicPath, type AdminRouteStatic } from "@/lib/admin-routes";
 import { PWA_THEME_COLOR } from "@/lib/pwa";
 import { ADMIN_PWA_ICON } from "@/lib/staff-pwa";
 

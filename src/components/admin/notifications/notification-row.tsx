@@ -82,15 +82,11 @@ export function NotificationRow({
 
       <div className="min-w-0 space-y-1">
         <div className="flex flex-wrap items-center gap-2">
-          <p className="type-body-sm font-medium">
-            {NOTIFICATION_EVENT_LABELS[event] ?? event}
-          </p>
+          <p className="type-body-sm font-medium">{NOTIFICATION_EVENT_LABELS[event] ?? event}</p>
           <span
             className={cn(
               "inline-flex rounded-full px-2 py-0.5 type-overline",
-              isPending
-                ? "bg-amber-100 text-amber-800"
-                : "bg-muted text-muted-foreground",
+              isPending ? "bg-amber-100 text-amber-800" : "bg-muted text-muted-foreground",
             )}
           >
             {NOTIFICATION_STATUS_LABELS[n.status] ?? n.status}
@@ -123,11 +119,7 @@ export function NotificationRow({
           <Copy className="mr-1.5 h-3.5 w-3.5" aria-hidden /> Copy
         </Button>
         {wa ? (
-          <Button
-            asChild
-            size="sm"
-            className="bg-gold text-gold-foreground hover:bg-gold/90"
-          >
+          <Button asChild size="sm" className="bg-gold text-gold-foreground hover:bg-gold/90">
             <a href={wa} target="_blank" rel="noreferrer">
               <MessageCircle className="mr-1.5 h-3.5 w-3.5" aria-hidden /> WhatsApp
             </a>

@@ -7,10 +7,7 @@ import {
   staffEmailOtpCodesMatch,
   staffEmailVerificationTokensMatch,
 } from "@kate/api/staff-email-otp.server";
-import {
-  isStaffEmailOtpPurpose,
-  normalizeStaffEmail,
-} from "@kate/api/staff-email-otp.shared";
+import { isStaffEmailOtpPurpose, normalizeStaffEmail } from "@kate/api/staff-email-otp.shared";
 
 describe("staff-email-otp.server", () => {
   it("normalizes email", () => {

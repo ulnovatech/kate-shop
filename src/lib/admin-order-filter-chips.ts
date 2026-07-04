@@ -27,7 +27,11 @@ export function buildOrderFilterChips(
     });
   }
   if (applied.dateFrom) {
-    chips.push({ id: "from", label: `From ${applied.dateFrom}`, onRemove: handlers.onClearDateFrom });
+    chips.push({
+      id: "from",
+      label: `From ${applied.dateFrom}`,
+      onRemove: handlers.onClearDateFrom,
+    });
   }
   if (applied.dateTo) {
     chips.push({ id: "to", label: `To ${applied.dateTo}`, onRemove: handlers.onClearDateTo });

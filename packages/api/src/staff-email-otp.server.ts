@@ -1,14 +1,8 @@
 import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { supabaseAdmin } from "@kate/supabase/client.server";
 import { loadStaffAccess } from "@kate/api/server/permissions.server";
-import {
-  deliverStaffOtpEmail,
-  isEmailDeliveryEnabled,
-} from "@/lib/email/otp-delivery";
-import {
-  allowStaffEmailOtpRequest,
-  allowStaffEmailOtpVerify,
-} from "@/lib/otp-rate-limit";
+import { deliverStaffOtpEmail, isEmailDeliveryEnabled } from "@/lib/email/otp-delivery";
+import { allowStaffEmailOtpRequest, allowStaffEmailOtpVerify } from "@/lib/otp-rate-limit";
 import {
   normalizeStaffEmail,
   STAFF_EMAIL_OTP_MAX_ATTEMPTS,

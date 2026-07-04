@@ -10,12 +10,7 @@ export { formatAuditPayloadSummary };
 
 export function AuditRow({ row }: { row: AuditLogListItem }) {
   return (
-    <article
-      className={cn(
-        "border-b p-4 last:border-b-0",
-        AUDIT_LIST_GRID_CLASS,
-      )}
-    >
+    <article className={cn("border-b p-4 last:border-b-0", AUDIT_LIST_GRID_CLASS)}>
       <p className="type-caption text-muted-foreground md:whitespace-nowrap">
         {format(new Date(row.created_at), "MMM d, yyyy HH:mm")}
       </p>

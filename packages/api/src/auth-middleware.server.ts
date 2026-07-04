@@ -2,7 +2,11 @@ import { createMiddleware } from "@tanstack/react-start";
 import { supabaseAdmin } from "@kate/supabase/client.server";
 import { requireSupabaseAuth } from "@kate/supabase/auth-middleware";
 import { STAFF_ROLES, type StaffRole } from "@kate/domain/db/contracts";
-import { hasMatrixPermission, permissionsFromStaffAccess, type AdminPermissions } from "@kate/domain/rbac";
+import {
+  hasMatrixPermission,
+  permissionsFromStaffAccess,
+  type AdminPermissions,
+} from "@kate/domain/rbac";
 import { loadStaffAccess } from "./server/permissions.server";
 import type { PermissionAction, PermissionModule } from "@kate/domain/permissions";
 

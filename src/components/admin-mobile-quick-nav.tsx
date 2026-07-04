@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  LayoutDashboard,
-  Menu,
-  Package,
-  ShoppingBag,
-  type LucideIcon,
-} from "lucide-react";
+import { LayoutDashboard, Menu, Package, ShoppingBag, type LucideIcon } from "lucide-react";
 import { useAdminMobileNavOverride } from "@/components/admin/admin-mobile-nav-override";
 import {
   AdminCreateActionSheet,
@@ -139,8 +133,7 @@ export function AdminMobileQuickNav({
         {beforeCreate.map((tab) => {
           const active = isTabActive(path, tab.to);
           const badge = tab.to === ORDERS_NAV_PATH ? unopenedOrders : 0;
-          const ordersLabel =
-            badge > 0 ? `${tab.label}, ${badge} unopened` : tab.label;
+          const ordersLabel = badge > 0 ? `${tab.label}, ${badge} unopened` : tab.label;
           return (
             <NavTab
               key={tab.id}

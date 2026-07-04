@@ -41,16 +41,16 @@ Expect: `categories` (5 rows), `settings` (1 row), public bucket `product-images
 
 Dashboard → **Authentication** → **URL configuration**:
 
-| Setting | Values |
-|---------|--------|
-| **Site URL** | `http://localhost:5173` (Vite dev — avoids XAMPP on 8080) |
-| **Redirect URLs** | `http://localhost:5173/**` |
-| | `http://127.0.0.1:5173/**` |
-| | `http://localhost:5174/**` (standalone Kate Admin dev) |
-| | `http://127.0.0.1:5174/**` |
-| | `http://localhost:8080/**` (legacy if you still use port 8080) |
-| | `https://YOUR_STAGING_DOMAIN/**` (when known) |
-| | `https://YOUR_PRODUCTION_DOMAIN/**` (when known) |
+| Setting           | Values                                                         |
+| ----------------- | -------------------------------------------------------------- |
+| **Site URL**      | `http://localhost:5173` (Vite dev — avoids XAMPP on 8080)      |
+| **Redirect URLs** | `http://localhost:5173/**`                                     |
+|                   | `http://127.0.0.1:5173/**`                                     |
+|                   | `http://localhost:5174/**` (standalone Kate Admin dev)         |
+|                   | `http://127.0.0.1:5174/**`                                     |
+|                   | `http://localhost:8080/**` (legacy if you still use port 8080) |
+|                   | `https://YOUR_STAGING_DOMAIN/**` (when known)                  |
+|                   | `https://YOUR_PRODUCTION_DOMAIN/**` (when known)               |
 
 Enable **Email** provider for staff PIN sign-in (`/admin/login`).
 
@@ -125,6 +125,7 @@ npm run db:a2   # extends audit_action enum + indexes (safe to re-run)
 **Migration:** `supabase/migrations/20260612120000_addendum_a2_audit_actions.sql` — adds `category_*`, `inventory_changed`, `invite_created`, `role_assigned` enum values.
 
 **Instrumented paths:**
+
 - Server: order status, payment recorded, settings save, team invites
 - Client → `recordAudit`: product save/archive/delete, category CRUD
 
@@ -229,6 +230,7 @@ npm run build && npm run preview   # test service worker + install locally
 **Docs:** [docs/PWA.md](PWA.md) — offline scope, push Phase 2 hook, Lighthouse tips.
 
 **Behaviour:**
+
 - Dynamic manifest at `/manifest.webmanifest` (shop name from settings)
 - Service worker via `vite-plugin-pwa` — caches JS/CSS, images, Supabase product photos
 - Checkout shows offline banner and blocks order submit when offline
@@ -251,6 +253,7 @@ npm run db:a9
 **System roles:** Owner (locked), Admin, Manager, Staff, Delivery Rider, Accountant, Stock Controller — stable UUIDs in migration.
 
 **Admin UI:**
+
 - `/admin/roles` — view/edit custom roles and permission matrix (Owner locked; system roles read-only except legacy Admin)
 - `/admin/team` — invite by role from matrix (not legacy enum)
 - Recycle bin delete/purge requires `catalog.delete`
@@ -270,6 +273,7 @@ npm run db:a11
 ```
 
 **Changes:**
+
 - `staff_has_permission_key()` helper; `can_manage_catalog`, `can_manage_orders`, `is_owner`, `is_staff_member` delegate to matrix permissions (legacy `user_roles` fallback retained)
 - Granular catalog policies: `catalog.view/create/edit/delete` on products, categories, images, variants
 - Orders/settings/storage policies replace stale `has_role('admin')` checks
@@ -291,6 +295,7 @@ Daily admin ops tuned for phone/tablet (375px+).
 **Touch targets:** primary actions use 44px minimum (`src/lib/admin-mobile.ts`).
 
 **Pages polished:**
+
 - Orders list — stacked filters, full-width actions
 - Order detail — status update panel first on mobile, full-width status buttons
 - Products — card list on mobile (table on desktop)
@@ -382,6 +387,7 @@ npm run db:chunk15
 ```
 
 **Behaviour:**
+
 - `notification_outbox` queues customer messages on order placed, payment confirmed (full pay), and order shipped.
 - Templates editable in `/admin/settings` (notification section).
 - Staff send manually from `/admin/notifications` via WhatsApp link + mark sent.
@@ -397,6 +403,7 @@ See `docs/NOTIFICATIONS.md` for Phase 2 automation design (no extra migration).
 Code-only. `/admin` dashboard loads aggregated stats via `getAdminDashboardStats` (server function, staff auth).
 
 **Metrics (Kampala / EAT timezone):**
+
 - Revenue collected: today, week, month, lifetime (sum of `payments.amount_paid`)
 - Orders placed + order value by period (excludes cancelled)
 - Order counts by status
@@ -419,6 +426,7 @@ APP_ORIGIN=http://localhost:5173
 ```
 
 **Features:**
+
 - Per-page meta from DB (`settings`, `categories`, `products` `meta_title` / `meta_description`)
 - Canonical URLs + Open Graph on home, shop, product, contact
 - JSON-LD Product + BreadcrumbList on product pages
@@ -467,6 +475,7 @@ Or run `supabase/migrations/20260609120000_chunk11_payments.sql` in SQL Editor.
 **Settings:** `/admin/settings` → Payment instructions (merchant codes shown on order confirmation).
 
 **Behaviour:**
+
 - Partial payment → `partially_paid` on order; overpayment → `paid` + `payment_review_required`.
 - Full payment auto-confirms order (`awaiting_payment` → `confirmed`) and appends timeline event.
 - Confirmation page shows live MoMo/Airtel/bank instructions from settings.
@@ -486,6 +495,7 @@ npm run db:chunk10
 Or run `supabase/migrations/20260608120000_chunk10_guest_checkout.sql` in SQL Editor.
 
 **Behaviour:**
+
 - Guest checkout: name, phone, optional email, delivery area, street address, notes.
 - Customers upserted by normalized Uganda phone (`2567XXXXXXXX`).
 - Orders linked via `customer_id`; `checkout_session_id` stored from cart for abandoned-cart hooks later.
@@ -525,6 +535,7 @@ npm run db:chunk8
 Or run `supabase/migrations/20260606120000_chunk8_inventory.sql` in SQL Editor.
 
 **Behaviour:**
+
 - Checkout (`placeOrder` server function) atomically creates the order and **reserves** stock (`available_stock` down, `reserved_stock` up).
 - **Cancel** order → releases reservation.
 - **Delivered** → consumes reserved units (`stock_quantity` down).
@@ -539,11 +550,11 @@ Or run `supabase/migrations/20260606120000_chunk8_inventory.sql` in SQL Editor.
 
 Client-side resize before upload (`src/lib/media.ts`). Each image produces three files in the `product-images` bucket:
 
-| Variant | Max edge | Use |
-|---------|----------|-----|
-| `thumb` | 200px | Admin list, PDP thumbnails |
-| `medium` | 800px | Shop cards (`image_url` / `medium_url`) |
-| `full` | 1600px | Product detail main image |
+| Variant  | Max edge | Use                                     |
+| -------- | -------- | --------------------------------------- |
+| `thumb`  | 200px    | Admin list, PDP thumbnails              |
+| `medium` | 800px    | Shop cards (`image_url` / `medium_url`) |
+| `full`   | 1600px   | Product detail main image               |
 
 Stored paths: `uploads/{uuid}/thumb.webp` (or `.jpg` if WebP unsupported).
 
@@ -571,11 +582,11 @@ Production CRUD for categories and products. Code: `src/lib/catalog.ts`, admin p
 
 No new migration. Roles from Chunk 3 + invites from Chunk 4 drive access in the UI and server functions.
 
-| Role | Access |
-|------|--------|
-| **Owner / Admin** | Full admin: catalog, orders, settings, team invites |
-| **Manager** | Products, categories, orders |
-| **Staff** | Orders + dashboard (order-focused); redirected away from catalog/settings |
+| Role              | Access                                                                    |
+| ----------------- | ------------------------------------------------------------------------- |
+| **Owner / Admin** | Full admin: catalog, orders, settings, team invites                       |
+| **Manager**       | Products, categories, orders                                              |
+| **Staff**         | Orders + dashboard (order-focused); redirected away from catalog/settings |
 
 **Test:** invite a `staff` and `manager` user from `/admin/team`, accept each invite, then confirm nav and direct URLs match the table above.
 
@@ -614,11 +625,11 @@ npm run db:progressive   # wishlist by customer_id + OTP challenge table
 
 Set `SMS_OTP_PROVIDER` in server env (never `VITE_*`):
 
-| Provider | Required vars |
-|----------|----------------|
-| `africas_talking` | `AFRICAS_TALKING_USERNAME`, `AFRICAS_TALKING_API_KEY` |
-| `wesendall` | `WESENDALL_API_KEY`, `WESENDALL_API_SECRET`, `WESENDALL_WALLET_ID` |
-| `egosms` | `EGOSMS_USERNAME`, `EGOSMS_PASSWORD` (or `EGOSMS_API_KEY`) |
+| Provider          | Required vars                                                      |
+| ----------------- | ------------------------------------------------------------------ |
+| `africas_talking` | `AFRICAS_TALKING_USERNAME`, `AFRICAS_TALKING_API_KEY`              |
+| `wesendall`       | `WESENDALL_API_KEY`, `WESENDALL_API_SECRET`, `WESENDALL_WALLET_ID` |
+| `egosms`          | `EGOSMS_USERNAME`, `EGOSMS_PASSWORD` (or `EGOSMS_API_KEY`)         |
 
 Without a provider, OTP UI stays hidden; same-device session + order reference tracking still work.
 

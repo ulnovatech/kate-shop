@@ -71,10 +71,7 @@ export function SettingsSection({
 }: SettingsSectionProps<Record<string, unknown>>) {
   return (
     <section
-      className={cn(
-        "space-y-stack rounded-lg border bg-card p-card shadow-elevated",
-        className,
-      )}
+      className={cn("space-y-stack rounded-lg border bg-card p-card shadow-elevated", className)}
     >
       <div>
         <h2 className="type-h3">{title}</h2>
@@ -83,7 +80,12 @@ export function SettingsSection({
         ) : null}
       </div>
       {children}
-      <Button type="button" disabled={saving} className={adminPrimaryTouch} onClick={() => void onSave()}>
+      <Button
+        type="button"
+        disabled={saving}
+        className={adminPrimaryTouch}
+        onClick={() => void onSave()}
+      >
         {saving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />

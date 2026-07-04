@@ -80,7 +80,13 @@ export function AuditFilterChips(props: AuditFilterChipsProps) {
         </span>
       ))}
       {chips.length > 1 ? (
-        <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={props.onClearAll}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 text-xs"
+          onClick={props.onClearAll}
+        >
           Clear all
         </Button>
       ) : null}

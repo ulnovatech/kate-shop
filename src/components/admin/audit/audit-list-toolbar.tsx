@@ -1,7 +1,4 @@
-import {
-  AdminListToolbar,
-  OverlaySearch,
-} from "@/components/admin";
+import { AdminListToolbar, OverlaySearch } from "@/components/admin";
 import { DateRangeFilter } from "@/components/admin/date-range-filter";
 import {
   Select,
@@ -11,7 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AUDIT_ACTIONS, auditActionLabel, auditEntityLabel } from "@/lib/audit";
-import { AUDIT_ENTITY_TYPES,
+import {
+  AUDIT_ENTITY_TYPES,
   type AdminAuditListFilters,
   type AuditEntityFilter,
 } from "@/lib/list-filters";
@@ -62,7 +60,10 @@ export function AuditListToolbar({
         </SelectContent>
       </Select>
 
-      <Select value={draft.entityType} onValueChange={(v) => onEntityChange(v as AuditEntityFilter)}>
+      <Select
+        value={draft.entityType}
+        onValueChange={(v) => onEntityChange(v as AuditEntityFilter)}
+      >
         <SelectTrigger className={cn(adminToolbarControl, "w-[min(100%,9rem)]")}>
           <SelectValue placeholder="Entity" />
         </SelectTrigger>

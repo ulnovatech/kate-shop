@@ -82,7 +82,9 @@ export function EmptyState({
         <div
           className={cn(
             "mb-stack flex h-12 w-12 items-center justify-center rounded-full",
-            isStorefront ? "bg-emerald-deep/10 text-emerald-deep" : "bg-muted text-muted-foreground",
+            isStorefront
+              ? "bg-emerald-deep/10 text-emerald-deep"
+              : "bg-muted text-muted-foreground",
           )}
         >
           <Icon className="h-6 w-6" aria-hidden />

@@ -22,12 +22,7 @@ import {
   defaultSiteTitle,
   jsonLdScript,
 } from "@/lib/seo";
-import {
-  formatKES,
-  productImageAlt,
-  resolveProductImageUrl,
-  sortProductImages,
-} from "@/lib/shop";
+import { formatKES, productImageAlt, resolveProductImageUrl, sortProductImages } from "@/lib/shop";
 import { useStoreBranding } from "@/lib/store-branding-context";
 import { WishlistButton } from "@/components/wishlist-button";
 
@@ -105,6 +100,18 @@ function Product() {
     initialData: loaderData ?? undefined,
   });
 
+  const inquiryItems = useMemo(() => {
+    if (!product) return [];
+    return [
+      {
+        name: product.name,
+        quantity: qty,
+        price: parseFloat(String(product.price)),
+        sku: product.sku,
+      },
+    ];
+  }, [product, qty]);
+
   if (isLoading && !product) {
     return (
       <ShopLayout>
@@ -148,20 +155,6 @@ function Product() {
   const out = !isInStock(stock);
   const maxQty = maxPurchasable(stock);
   const stockCopy = humanStockAvailability(maxQty);
-  const inquiryItems = useMemo(
-    () =>
-      product
-        ? [
-            {
-              name: product.name,
-              quantity: qty,
-              price: parseFloat(String(product.price)),
-              sku: product.sku,
-            },
-          ]
-        : [],
-    [product, qty],
-  );
   const shareImageUrls = images.map((img) => resolveProductImageUrl(img, "medium"));
 
   return (

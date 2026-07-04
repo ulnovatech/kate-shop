@@ -1,8 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  normalizeStaffRelativePath,
-  queryKeysForAdminRefresh,
-} from "@/lib/admin-refresh";
+import { normalizeStaffRelativePath, queryKeysForAdminRefresh } from "@/lib/admin-refresh";
 
 vi.mock("@/lib/admin-base-path", () => ({
   ADMIN_BASE_PATH: "/",

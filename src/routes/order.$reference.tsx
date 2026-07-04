@@ -10,10 +10,7 @@ import { CopyButton } from "@/components/copy-button";
 import { Button } from "@/components/ui/button";
 import { getOrderConfirmation } from "@/lib/api/orders.functions";
 import { buildWhatsAppOrderMessage } from "@/lib/order-messages";
-import {
-  buildPaymentInstructions,
-  PAYMENT_PROVIDER_LABELS,
-} from "@/lib/payments";
+import { buildPaymentInstructions, PAYMENT_PROVIDER_LABELS } from "@/lib/payments";
 import { customerOrderNextStep, humanOrderStatus, humanPaymentStatus } from "@/lib/human-labels";
 import { OrderStatusTracker } from "@/components/order-status-tracker";
 import type { PaymentProvider } from "@/lib/db/contracts";

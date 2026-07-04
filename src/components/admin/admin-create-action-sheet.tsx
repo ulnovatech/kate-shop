@@ -121,16 +121,14 @@ export function AdminCreateActionSheet({
       onOpenChange={handleOpenChange}
       aria-labelledby="admin-create-title"
       aria-describedby={activeFlow ? "admin-wizard-desc" : "admin-create-desc"}
-      className={activeFlow ? "max-h-[min(92dvh,42rem)] sm:w-[min(calc(100vw-2rem),36rem)]" : undefined}
+      className={
+        activeFlow ? "max-h-[min(92dvh,42rem)] sm:w-[min(calc(100vw-2rem),36rem)]" : undefined
+      }
     >
       {!activeFlow ? (
         picker
       ) : activeFlow === "product" ? (
-        <ProductWizard
-          variant="modal"
-          onComplete={closeWizard}
-          onCancel={backToPicker}
-        />
+        <ProductWizard variant="modal" onComplete={closeWizard} onCancel={backToPicker} />
       ) : activeFlow === "category" ? (
         <CategoryWizard variant="modal" onComplete={closeWizard} onCancel={backToPicker} />
       ) : (

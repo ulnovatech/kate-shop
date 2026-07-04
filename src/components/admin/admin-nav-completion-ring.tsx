@@ -19,16 +19,12 @@ export function AdminNavCompletionRing({
     <span
       className={cn(
         "pointer-events-none absolute -inset-1 rounded-md border-2",
-        complete
-          ? "border-emerald-400/70"
-          : "border-gold/55 border-dashed",
+        complete ? "border-emerald-400/70" : "border-gold/55 border-dashed",
         className,
       )}
       aria-hidden
     >
-      <span className="sr-only">
-        {complete ? `${label} complete` : `${label} needs setup`}
-      </span>
+      <span className="sr-only">{complete ? `${label} complete` : `${label} needs setup`}</span>
     </span>
   );
 }

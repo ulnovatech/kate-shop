@@ -13,10 +13,7 @@ import {
   StockPricingStepPanel,
   VisibilitySeoStepPanel,
 } from "./product-wizard-step-panels";
-import {
-  PRODUCT_WIZARD_STEPS,
-  type ProductWizardStepId,
-} from "./product-wizard-schema";
+import { PRODUCT_WIZARD_STEPS, type ProductWizardStepId } from "./product-wizard-schema";
 import { useProductWizard } from "./use-product-wizard";
 
 const STEP_GUIDES: Record<ProductWizardStepId, string> = {
@@ -117,10 +114,7 @@ export function ProductWizard({
         return (
           <>
             {guide}
-            <StockPricingStepPanel
-              form={wizard.form}
-              reservedStock={wizard.reservedStock}
-            />
+            <StockPricingStepPanel form={wizard.form} reservedStock={wizard.reservedStock} />
           </>
         );
       case "visibility":

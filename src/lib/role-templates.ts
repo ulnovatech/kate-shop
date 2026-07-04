@@ -44,8 +44,6 @@ export const ROLE_TEMPLATES: RoleTemplate[] = [
   },
 ];
 
-export function permissionKeysForRoleTemplate(
-  slug: RoleTemplate["slug"],
-): PermissionKey[] {
+export function permissionKeysForRoleTemplate(slug: RoleTemplate["slug"]): PermissionKey[] {
   return [...SYSTEM_ROLE_PERMISSIONS[slug]];
 }

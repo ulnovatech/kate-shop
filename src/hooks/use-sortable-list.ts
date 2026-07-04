@@ -74,8 +74,7 @@ export function useSortableList({
   useEffect(() => {
     if (dragState.activeId) return;
     setDragState((s) => {
-      const same =
-        s.order.length === itemIds.length && s.order.every((id, i) => id === itemIds[i]);
+      const same = s.order.length === itemIds.length && s.order.every((id, i) => id === itemIds[i]);
       if (same) return s;
       return { ...s, order: itemIds };
     });

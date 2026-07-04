@@ -30,8 +30,7 @@ function AdminDashboard() {
   const { loading: authLoading, session, permissions, signOut } = useAuth();
   const { unopenedOrders } = useAdminNavBadges();
   const showCatalogStats = permissions.canManageCatalog;
-  const showGoLiveChecklist =
-    permissions.canManageSettings || permissions.canManageCatalog;
+  const showGoLiveChecklist = permissions.canManageSettings || permissions.canManageCatalog;
   const canLoadStats = !authLoading && Boolean(session?.user) && permissions.canManageOrders;
 
   const {

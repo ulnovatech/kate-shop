@@ -55,7 +55,10 @@ function rewriteDomain(text) {
 
 for (const [src, dest] of DOMAIN_FILES) {
   copyFile(path.join(root, src), path.join(root, dest), rewriteDomain);
-  shim(path.join(root, src), `@kate/domain/${path.relative(path.join(root, "packages/domain/src"), path.join(root, dest)).replace(/\\/g, "/").replace(/\.ts$/, "")}`);
+  shim(
+    path.join(root, src),
+    `@kate/domain/${path.relative(path.join(root, "packages/domain/src"), path.join(root, dest)).replace(/\\/g, "/").replace(/\.ts$/, "")}`,
+  );
 }
 
 // permissions: add staffAccessToLegacyRole before extract re-run - handled in source first
@@ -91,10 +94,8 @@ const uiSrc = path.join(root, "src/components/ui");
 const uiDest = path.join(root, "packages/ui/src/components");
 ensureDir(uiDest);
 for (const name of fs.readdirSync(uiSrc)) {
-  copyFile(
-    path.join(uiSrc, name),
-    path.join(uiDest, name),
-    (t) => t.replaceAll("@/lib/utils", "@kate/ui/utils"),
+  copyFile(path.join(uiSrc, name), path.join(uiDest, name), (t) =>
+    t.replaceAll("@/lib/utils", "@kate/ui/utils"),
   );
   shim(path.join(uiSrc, name), `@kate/ui/components/${name.replace(/\.tsx$/, "")}`);
 }

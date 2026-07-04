@@ -14,7 +14,12 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}", "tests/**/*.test.{ts,tsx}", "packages/**/*.test.ts", "scripts/**/*.test.mjs"],
+    include: [
+      "src/**/*.test.{ts,tsx}",
+      "tests/**/*.test.{ts,tsx}",
+      "packages/**/*.test.ts",
+      "scripts/**/*.test.mjs",
+    ],
     pool: "threads",
     maxWorkers: process.env.CI ? 2 : undefined,
     testTimeout: 15_000,

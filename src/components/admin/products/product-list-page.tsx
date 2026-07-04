@@ -204,31 +204,27 @@ export function ProductListPage({
     <div className="space-y-section">
       <AdminPageHeader
         title="Products"
-        meta={
-          isLoading
-            ? "Loading…"
-            : `${total} ${total === 1 ? "product" : "products"}`
-        }
+        meta={isLoading ? "Loading…" : `${total} ${total === 1 ? "product" : "products"}`}
         actions={
           selection.selectionMode ? null : (
-          <div className="flex flex-wrap gap-2">
-            {products.length > 0 ? (
-              <Button
-                type="button"
-                variant="outline"
-                className={adminPrimaryTouch}
-                onClick={() => selection.toggleSelectionMode(true)}
-              >
-                Select
+            <div className="flex flex-wrap gap-2">
+              {products.length > 0 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className={adminPrimaryTouch}
+                  onClick={() => selection.toggleSelectionMode(true)}
+                >
+                  Select
+                </Button>
+              ) : null}
+              <Button asChild className={adminPrimaryTouch}>
+                <Link to={adminUrl("/products/new")}>
+                  <Plus className="mr-2 h-4 w-4" aria-hidden />
+                  Add product
+                </Link>
               </Button>
-            ) : null}
-            <Button asChild className={adminPrimaryTouch}>
-              <Link to={adminUrl("/products/new")}>
-                <Plus className="mr-2 h-4 w-4" aria-hidden />
-                Add product
-              </Link>
-            </Button>
-          </div>
+            </div>
           )
         }
       />
@@ -267,9 +263,11 @@ export function ProductListPage({
             size="sm"
             variant="outline"
             disabled={selectedProducts.length === 0 || mutations.isBusy}
-            onClick={() => mutations.bulkPublish.mutate([...selection.selectedIds], {
-              onSuccess: () => selection.clearSelection(),
-            })}
+            onClick={() =>
+              mutations.bulkPublish.mutate([...selection.selectedIds], {
+                onSuccess: () => selection.clearSelection(),
+              })
+            }
           >
             <Eye className="mr-1.5 h-3.5 w-3.5" aria-hidden />
             Publish
@@ -390,8 +388,8 @@ export function ProductListPage({
         description={
           recycleTarget ? (
             <>
-              <strong>{recycleTarget.name}</strong> will be hidden from your catalog. You can restore
-              it later from Recently deleted.
+              <strong>{recycleTarget.name}</strong> will be hidden from your catalog. You can
+              restore it later from Recently deleted.
             </>
           ) : (
             ""

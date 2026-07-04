@@ -14,10 +14,7 @@ export const getUnopenedOrderCount = createServerFn({ method: "GET" })
 
     const [ordersRes, viewsRes] = await Promise.all([
       supabaseAdmin.from("orders").select("id, order_status"),
-      supabaseAdmin
-        .from("staff_order_views")
-        .select("order_id")
-        .eq("user_id", auth.userId),
+      supabaseAdmin.from("staff_order_views").select("order_id").eq("user_id", auth.userId),
     ]);
 
     if (ordersRes.error) throw new Error(ordersRes.error.message);

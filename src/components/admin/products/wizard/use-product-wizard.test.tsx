@@ -33,10 +33,7 @@ function wrapper({ children }: { children: ReactNode }) {
 
 describe("useProductWizard", () => {
   it("mounts without ReferenceError (goToStep before handleNext)", () => {
-    const { result } = renderHook(
-      () => useProductWizard({ initialStep: "photos" }),
-      { wrapper },
-    );
+    const { result } = renderHook(() => useProductWizard({ initialStep: "photos" }), { wrapper });
 
     expect(result.current.currentStep).toBe("photos");
     expect(result.current.isFirstStep).toBe(true);

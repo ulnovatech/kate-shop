@@ -35,7 +35,8 @@ export function resolveAdminMobileVersion(env = process.env) {
   const build = Number.parseInt(env.KATE_ANDROID_VERSION_BUILD ?? "0", 10);
   const buildOffset = Number.isFinite(build) && build >= 0 ? build : 0;
   const versionCode = file.versionCodeBase + buildOffset;
-  const variant = (env.ADMIN_APK_VARIANT ?? "debug").toLowerCase() === "release" ? "release" : "debug";
+  const variant =
+    (env.ADMIN_APK_VARIANT ?? "debug").toLowerCase() === "release" ? "release" : "debug";
   const format =
     env.ADMIN_ANDROID_FORMAT === "aab" || env.ADMIN_ANDROID_FORMAT === "apk"
       ? env.ADMIN_ANDROID_FORMAT

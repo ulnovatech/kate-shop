@@ -48,9 +48,7 @@ export function AdminAuthLayout({
 
         <header className="mt-stack space-y-1 text-center">
           <h1 className={TYPOGRAPHY_TAILWIND.h2}>{title}</h1>
-          {description ? (
-            <p className="type-body-sm text-muted-foreground">{description}</p>
-          ) : null}
+          {description ? <p className="type-body-sm text-muted-foreground">{description}</p> : null}
         </header>
 
         <div className={cn("mt-stack-lg", ADMIN_AUTH_FORM_PANEL_CLASS)}>{children}</div>

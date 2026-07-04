@@ -26,8 +26,7 @@ import { cn } from "@/lib/utils";
 
 export function PwaInstallPrompt() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const hostname =
-    typeof window !== "undefined" ? window.location.hostname : undefined;
+  const hostname = typeof window !== "undefined" ? window.location.hostname : undefined;
   const blocked = isPwaInstallBlockedPath(pathname, hostname);
   const { shopName } = useStoreBranding();
   const { session } = useCustomerSession();

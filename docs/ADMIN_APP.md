@@ -61,13 +61,13 @@ Today (after **C5**): `apps/storefront` is the primary shop app on port 5173; `a
 
 ## Environment contract
 
-| Variable | Used by | Purpose |
-|----------|---------|---------|
-| `APP_ORIGIN` | Shop worker | Public storefront URL |
-| `ADMIN_ORIGIN` | Admin worker, invite links | Staff app URL |
-| `VITE_ADMIN_ORIGIN` | Admin client build | Baked into admin bundle / Capacitor config |
-| `VITE_SUPABASE_*` | Both clients | Same Supabase project |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Never in admin APK client |
+| Variable                    | Used by                    | Purpose                                    |
+| --------------------------- | -------------------------- | ------------------------------------------ |
+| `APP_ORIGIN`                | Shop worker                | Public storefront URL                      |
+| `ADMIN_ORIGIN`              | Admin worker, invite links | Staff app URL                              |
+| `VITE_ADMIN_ORIGIN`         | Admin client build         | Baked into admin bundle / Capacitor config |
+| `VITE_SUPABASE_*`           | Both clients               | Same Supabase project                      |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server only                | Never in admin APK client                  |
 
 Local defaults:
 
@@ -97,46 +97,46 @@ Kate Admin install identity (C9): separate manifest + no shop service worker on 
 
 ## Blueprint chunks
 
-| Chunk | Scope |
-|-------|--------|
-| **C1** | Monorepo scaffold, docs, env contract, audit |
-| **C2** | `admin._layout.tsx`, lean providers, staff manifest |
-| **C3** | `apps/admin` TanStack Start app ✅ |
-| **C4** | `packages/*` extraction ✅ |
-| **C5** | `apps/storefront`, dual-app CI ✅ |
-| **C6** | Deploy `admin.yourdomain.com` ✅ |
-| **C7** | Capacitor APK shell ✅ |
-| **C8** | Mobile auth + deep links ✅ |
-| **C9** | Staff manifest / no shop SW on admin ✅ |
-| **C10** | Full route parity QA on Android ✅ |
-| **C11** | CI APK artifacts ✅ |
-| **C12** | Play Store scaffold + staff push ✅ |
+| Chunk   | Scope                                               |
+| ------- | --------------------------------------------------- |
+| **C1**  | Monorepo scaffold, docs, env contract, audit        |
+| **C2**  | `admin._layout.tsx`, lean providers, staff manifest |
+| **C3**  | `apps/admin` TanStack Start app ✅                  |
+| **C4**  | `packages/*` extraction ✅                          |
+| **C5**  | `apps/storefront`, dual-app CI ✅                   |
+| **C6**  | Deploy `admin.yourdomain.com` ✅                    |
+| **C7**  | Capacitor APK shell ✅                              |
+| **C8**  | Mobile auth + deep links ✅                         |
+| **C9**  | Staff manifest / no shop SW on admin ✅             |
+| **C10** | Full route parity QA on Android ✅                  |
+| **C11** | CI APK artifacts ✅                                 |
+| **C12** | Play Store scaffold + staff push ✅                 |
 
 ## Scripts
 
-| Script | Status |
-|--------|--------|
-| `npm run dev` | Storefront on port 5173 |
-| `npm run dev:admin` | Kate Admin on port 5174 |
-| `npm run dev:monolith` | Legacy monolith (shop + `/admin`) |
-| `npm run build` | Storefront production build |
-| `npm run build:all` | Storefront + admin builds |
-| `npm run build:admin` | `apps/admin` production build |
-| `npm run deploy:admin` | Admin Worker (`kate-admin`) — see [DEPLOY_ADMIN.md](DEPLOY_ADMIN.md) |
-| `npm run deploy:all` | Shop + admin Workers |
-| `npm run supabase:redirects` | Print Supabase auth redirect URLs (incl. mobile deep link) |
-| `npm run android:admin` | Capacitor sync + run on Android (C7) |
-| `npm run android:admin:sync` | Sync admin URL into native project |
-| `npm run android:admin:build` | Debug APK (`assembleDebug`) |
-| `npm run audit:admin` | Live — prints admin dependency summary |
-| `npm run verify:admin-routes` | C10 — monolith ↔ apps/admin ↔ route catalog parity |
-| `npm run test:e2e:admin:mobile` | C10 — Playwright mobile smoke (needs E2E creds) |
-| `npm run build:admin-apk` | C11 — debug APK → `dist/admin-mobile/` |
-| `npm run build:admin-apk:release` | C11 — signed release APK (keystore env) |
-| `npm run build:admin-aab` | C12 — debug AAB (Play Store format) |
-| `npm run build:admin-aab:release` | C12 — signed release AAB |
-| `npm run upload:play-store` | C12 — Play upload stub (checklist) |
-| `npm run db:c12` | C12 — staff push tables |
+| Script                            | Status                                                               |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `npm run dev`                     | Storefront on port 5173                                              |
+| `npm run dev:admin`               | Kate Admin on port 5174                                              |
+| `npm run dev:monolith`            | Legacy monolith (shop + `/admin`)                                    |
+| `npm run build`                   | Storefront production build                                          |
+| `npm run build:all`               | Storefront + admin builds                                            |
+| `npm run build:admin`             | `apps/admin` production build                                        |
+| `npm run deploy:admin`            | Admin Worker (`kate-admin`) — see [DEPLOY_ADMIN.md](DEPLOY_ADMIN.md) |
+| `npm run deploy:all`              | Shop + admin Workers                                                 |
+| `npm run supabase:redirects`      | Print Supabase auth redirect URLs (incl. mobile deep link)           |
+| `npm run android:admin`           | Capacitor sync + run on Android (C7)                                 |
+| `npm run android:admin:sync`      | Sync admin URL into native project                                   |
+| `npm run android:admin:build`     | Debug APK (`assembleDebug`)                                          |
+| `npm run audit:admin`             | Live — prints admin dependency summary                               |
+| `npm run verify:admin-routes`     | C10 — monolith ↔ apps/admin ↔ route catalog parity                   |
+| `npm run test:e2e:admin:mobile`   | C10 — Playwright mobile smoke (needs E2E creds)                      |
+| `npm run build:admin-apk`         | C11 — debug APK → `dist/admin-mobile/`                               |
+| `npm run build:admin-apk:release` | C11 — signed release APK (keystore env)                              |
+| `npm run build:admin-aab`         | C12 — debug AAB (Play Store format)                                  |
+| `npm run build:admin-aab:release` | C12 — signed release AAB                                             |
+| `npm run upload:play-store`       | C12 — Play upload stub (checklist)                                   |
+| `npm run db:c12`                  | C12 — staff push tables                                              |
 
 ## Related docs
 

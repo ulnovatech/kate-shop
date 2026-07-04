@@ -76,12 +76,7 @@ export function StaffScreenLockProvider({ enabled, children }: StaffScreenLockPr
       timer = window.setTimeout(lock, idleMs);
     };
 
-    const events: (keyof WindowEventMap)[] = [
-      "pointerdown",
-      "keydown",
-      "scroll",
-      "touchstart",
-    ];
+    const events: (keyof WindowEventMap)[] = ["pointerdown", "keydown", "scroll", "touchstart"];
     for (const event of events) {
       window.addEventListener(event, bump, { passive: true });
     }

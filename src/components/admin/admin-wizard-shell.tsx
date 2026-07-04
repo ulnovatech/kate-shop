@@ -95,10 +95,7 @@ export function AdminWizardShell({
             type="button"
             variant="outline"
             size="sm"
-            className={cn(
-              isModal ? adminToolbarControl : adminPrimaryTouch,
-              "flex-1 md:flex-none",
-            )}
+            className={cn(isModal ? adminToolbarControl : adminPrimaryTouch, "flex-1 md:flex-none")}
             onClick={onBack}
             disabled={busy}
           >
@@ -110,10 +107,7 @@ export function AdminWizardShell({
           <Button
             type="button"
             size="sm"
-            className={cn(
-              isModal ? adminToolbarControl : adminPrimaryTouch,
-              "flex-1 md:flex-none",
-            )}
+            className={cn(isModal ? adminToolbarControl : adminPrimaryTouch, "flex-1 md:flex-none")}
             onClick={primaryAction}
             disabled={busy || primaryDisabled}
           >

@@ -72,7 +72,7 @@ export const Route = createFileRoute("/shop")({
 function Shop() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const filters = parseShopListFilters(search);
+  const filters = useMemo(() => parseShopListFilters(search), [search]);
   const { category, q, sort: sortParam } = filters;
   const sort = sortParam as ShopSort;
   const [query, setQuery] = useState(q ?? "");
@@ -86,7 +86,7 @@ function Shop() {
 
   useEffect(() => {
     setFilterDraft(filters);
-  }, [category, q, sortParam, filters.inStockOnly, filters.featuredOnly, filters.minPrice, filters.maxPrice, filters.page]);
+  }, [filters]);
 
   const applySearch = (term: string) => {
     const trimmed = term.trim();
@@ -392,8 +392,7 @@ function Shop() {
                 suggestionCategories[0]
                   ? {
                       label: `Shop ${suggestionCategories[0].name}`,
-                      onClick: () =>
-                        navigateFilters({ category: suggestionCategories[0].slug }),
+                      onClick: () => navigateFilters({ category: suggestionCategories[0].slug }),
                     }
                   : undefined
               }

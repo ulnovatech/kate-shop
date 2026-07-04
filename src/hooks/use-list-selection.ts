@@ -51,8 +51,7 @@ export function useListSelection(itemIds: string[]) {
     }
   }, [itemIds, selectedIds, deselectAllOnPage, selectAllOnPage]);
 
-  const allOnPageSelected =
-    itemIds.length > 0 && itemIds.every((id) => selectedIds.has(id));
+  const allOnPageSelected = itemIds.length > 0 && itemIds.every((id) => selectedIds.has(id));
 
   return {
     selectionMode,

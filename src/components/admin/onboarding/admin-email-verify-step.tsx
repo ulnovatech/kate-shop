@@ -3,14 +3,8 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  AdminEmailOtpInput,
-  isStaffEmailOtpComplete,
-} from "@/components/admin-email-otp-input";
-import {
-  requestStaffEmailOtp,
-  verifyStaffEmailOtp,
-} from "@/lib/api/staff-email-otp.functions";
+import { AdminEmailOtpInput, isStaffEmailOtpComplete } from "@/components/admin-email-otp-input";
+import { requestStaffEmailOtp, verifyStaffEmailOtp } from "@/lib/api/staff-email-otp.functions";
 import { humanizeError } from "@/lib/errors";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
 

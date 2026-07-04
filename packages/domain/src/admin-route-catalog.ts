@@ -1,13 +1,6 @@
 import type { AdminPermission } from "./rbac";
 
-export type AdminRouteArea =
-  | "auth"
-  | "home"
-  | "catalog"
-  | "orders"
-  | "money"
-  | "ops"
-  | "team";
+export type AdminRouteArea = "auth" | "home" | "catalog" | "orders" | "money" | "ops" | "team";
 
 /** One staff route in the Kate Admin client (C10 parity matrix). */
 export type AdminRouteCatalogEntry = {
@@ -218,9 +211,7 @@ export const ADMIN_ROUTE_CATALOG: AdminRouteCatalogEntry[] = [
   },
 ];
 
-export const ADMIN_PUBLIC_ROUTE_IDS = ADMIN_ROUTE_CATALOG.filter((r) => r.public).map(
-  (r) => r.id,
-);
+export const ADMIN_PUBLIC_ROUTE_IDS = ADMIN_ROUTE_CATALOG.filter((r) => r.public).map((r) => r.id);
 
 export const ADMIN_PROTECTED_ROUTE_CATALOG = ADMIN_ROUTE_CATALOG.filter((r) => !r.public);
 

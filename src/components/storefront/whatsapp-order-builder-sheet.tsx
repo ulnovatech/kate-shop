@@ -193,9 +193,7 @@ export function WhatsAppOrderBuilderSheet({
               key={s.id}
               className={cn(
                 "flex-1 rounded-full py-1 text-center text-[11px] font-medium",
-                i <= stepIndex
-                  ? "bg-gold/15 text-foreground"
-                  : "bg-muted text-muted-foreground",
+                i <= stepIndex ? "bg-gold/15 text-foreground" : "bg-muted text-muted-foreground",
               )}
             >
               {s.label}
@@ -255,7 +253,9 @@ export function WhatsAppOrderBuilderSheet({
               <Label htmlFor="wa-phone">Phone</Label>
               <Input id="wa-phone" className="mt-1.5" {...form.register("phone")} />
               {form.formState.errors.phone ? (
-                <p className="mt-1 text-xs text-destructive">{form.formState.errors.phone.message}</p>
+                <p className="mt-1 text-xs text-destructive">
+                  {form.formState.errors.phone.message}
+                </p>
               ) : null}
             </div>
             <div>

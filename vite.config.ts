@@ -28,10 +28,7 @@ export default defineConfig({
             if (id.includes("src/routes/admin.") || id.includes("src\\routes\\admin.")) {
               return "admin-routes";
             }
-            if (
-              id.includes("src/components/admin") ||
-              id.includes("src\\components\\admin")
-            ) {
+            if (id.includes("src/components/admin") || id.includes("src\\components\\admin")) {
               return "admin-ui";
             }
           },

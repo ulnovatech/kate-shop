@@ -151,7 +151,12 @@ export function SettingsHubPage({ activeTab }: SettingsHubPageProps) {
             title="Your business"
             description="Contact details customers see on receipts and your storefront."
             saving={savingSection === "business"}
-            onSave={() => saveSection("business", pick("shop_name", "phone", "whatsapp", "email", "address", "inventory_mode"))}
+            onSave={() =>
+              saveSection(
+                "business",
+                pick("shop_name", "phone", "whatsapp", "email", "address", "inventory_mode"),
+              )
+            }
           >
             <div>
               <Label htmlFor="shop_name">Shop name</Label>
@@ -237,7 +242,12 @@ export function SettingsHubPage({ activeTab }: SettingsHubPageProps) {
             </div>
             <div>
               <Label htmlFor="about_text">About / footer blurb</Label>
-              <Textarea id="about_text" rows={3} {...form.register("about_text")} className="mt-1.5" />
+              <Textarea
+                id="about_text"
+                rows={3}
+                {...form.register("about_text")}
+                className="mt-1.5"
+              />
             </div>
             <div>
               <Label htmlFor="hero_title">Homepage headline</Label>

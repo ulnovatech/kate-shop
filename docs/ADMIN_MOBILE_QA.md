@@ -4,28 +4,28 @@ APK and mobile browser should match the staff web app across **20 routes**. This
 
 ## Route matrix
 
-| Area | Route | Path | Mobile notes |
-|------|-------|------|--------------|
-| **Auth** | login | `/login` | Sign-in form; 44px targets |
-| | setup | `/setup` | Owner bootstrap (once) |
-| | accept-invite | `/accept-invite?token=…` | Invalid token state + happy path |
-| **Home** | dashboard | `/` | Today + bottom quick nav |
-| | insights | `/insights` | Charts scroll horizontally |
-| **Catalog** | products | `/products` | Card list; add product CTA |
-| | product-new | `/products/new` | Sticky save; camera capture |
-| | product-edit | `/products/:id` | Gallery upload; sticky save |
-| | categories | `/categories` | Drag reorder; expand tree |
-| **Orders** | orders | `/orders` | Stacked filters; CSV export |
-| | order-detail | `/orders/:id` | Status pipeline first |
-| | delivery | `/delivery` | Zone toggles |
-| **Money** | payments | `/payments` | Inline record form |
-| | payment-methods | `/payment-methods` | Toggle methods |
-| **Ops** | notifications | `/notifications` | List readable on narrow screens |
-| | recycle | `/recycle` | Restore / purge actions |
-| | audit | `/audit` | Filter + scroll |
-| **Team** | team | `/team` | Invite form |
-| | roles | `/roles` | Permission matrix scroll |
-| | settings | `/settings` | Store setup sections |
+| Area        | Route           | Path                     | Mobile notes                     |
+| ----------- | --------------- | ------------------------ | -------------------------------- |
+| **Auth**    | login           | `/login`                 | Sign-in form; 44px targets       |
+|             | setup           | `/setup`                 | Owner bootstrap (once)           |
+|             | accept-invite   | `/accept-invite?token=…` | Invalid token state + happy path |
+| **Home**    | dashboard       | `/`                      | Today + bottom quick nav         |
+|             | insights        | `/insights`              | Charts scroll horizontally       |
+| **Catalog** | products        | `/products`              | Card list; add product CTA       |
+|             | product-new     | `/products/new`          | Sticky save; camera capture      |
+|             | product-edit    | `/products/:id`          | Gallery upload; sticky save      |
+|             | categories      | `/categories`            | Drag reorder; expand tree        |
+| **Orders**  | orders          | `/orders`                | Stacked filters; CSV export      |
+|             | order-detail    | `/orders/:id`            | Status pipeline first            |
+|             | delivery        | `/delivery`              | Zone toggles                     |
+| **Money**   | payments        | `/payments`              | Inline record form               |
+|             | payment-methods | `/payment-methods`       | Toggle methods                   |
+| **Ops**     | notifications   | `/notifications`         | List readable on narrow screens  |
+|             | recycle         | `/recycle`               | Restore / purge actions          |
+|             | audit           | `/audit`                 | Filter + scroll                  |
+| **Team**    | team            | `/team`                  | Invite form                      |
+|             | roles           | `/roles`                 | Permission matrix scroll         |
+|             | settings        | `/settings`              | Store setup sections             |
 
 Source of truth: [`packages/domain/src/admin-route-catalog.ts`](../packages/domain/src/admin-route-catalog.ts).
 
@@ -80,12 +80,12 @@ Use **Chrome on `admin.yourdomain.com`** and the **Kate Admin APK** (`npm run an
 
 ## WebView fixes included in C10
 
-| Issue | Fix |
-|-------|-----|
-| CSV download flaky in WebView | `downloadTextFile()` appends transient `<a>` |
-| Clipboard denied in WebView | `copyTextToClipboard()` `execCommand` fallback |
-| Shop SW on admin origin | C9 `StaffPwaPolicy` (evict caches) |
-| Touch targets | A10 `admin-mobile.ts` classes on primary actions |
+| Issue                         | Fix                                              |
+| ----------------------------- | ------------------------------------------------ |
+| CSV download flaky in WebView | `downloadTextFile()` appends transient `<a>`     |
+| Clipboard denied in WebView   | `copyTextToClipboard()` `execCommand` fallback   |
+| Shop SW on admin origin       | C9 `StaffPwaPolicy` (evict caches)               |
+| Touch targets                 | A10 `admin-mobile.ts` classes on primary actions |
 
 ## When something fails
 

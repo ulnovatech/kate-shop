@@ -49,8 +49,7 @@ export function AdminLoginPage() {
         }
       })
       .catch((err: unknown) => {
-        const message =
-          err instanceof Error ? err.message : typeof err === "string" ? err : "";
+        const message = err instanceof Error ? err.message : typeof err === "string" ? err : "";
         if (message.includes("Missing Supabase environment variable")) {
           toast.error(
             "Server .env is missing Supabase keys. Add SUPABASE_SERVICE_ROLE_KEY, restart the dev server, then refresh.",

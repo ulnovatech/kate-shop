@@ -61,10 +61,7 @@ export function ProductActionsMenu({
         aria-label={featuredLabel}
         onClick={onToggleFeatured}
       >
-        <Star
-          className={cn(product.is_featured && "fill-gold text-gold")}
-          aria-hidden
-        />
+        <Star className={cn(product.is_featured && "fill-gold text-gold")} aria-hidden />
       </Button>
       <Button
         type="button"
@@ -76,12 +73,7 @@ export function ProductActionsMenu({
       >
         {product.is_visible ? <Eye aria-hidden /> : <EyeOff aria-hidden />}
       </Button>
-      <Button
-        size="icon"
-        variant="ghost"
-        className={productActionButtonClass}
-        asChild
-      >
+      <Button size="icon" variant="ghost" className={productActionButtonClass} asChild>
         <Link {...editTarget} aria-label={`Edit ${product.name}`}>
           <PenLine aria-hidden />
         </Link>

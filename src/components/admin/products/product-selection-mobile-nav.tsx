@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Archive,
-  CheckSquare,
-  Download,
-  Eye,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { Archive, CheckSquare, Download, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -133,8 +126,7 @@ export function ProductSelectionMobileHeader({
   selectedCount: number;
   onCancel: () => void;
 }) {
-  const label =
-    selectedCount === 1 ? "1 product selected" : `${selectedCount} products selected`;
+  const label = selectedCount === 1 ? "1 product selected" : `${selectedCount} products selected`;
 
   return (
     <div className="sticky top-0 z-sticky -mx-page-x flex items-center gap-3 border-b border-emerald-800/40 bg-emerald-950 px-page-x py-2.5 text-emerald-50 shadow-sm md:hidden">

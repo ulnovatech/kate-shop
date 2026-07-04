@@ -27,12 +27,12 @@ npm run dev:monolith   # port 5173, includes /admin routes
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Storefront dev server (5173) |
-| `npm run build` | Storefront production build → `apps/storefront/dist` |
-| `npm run build:all` | Storefront + admin builds |
-| `npm run sync:storefront-routes` | Copy shop routes from `src/routes/` |
+| Command                          | Description                                          |
+| -------------------------------- | ---------------------------------------------------- |
+| `npm run dev`                    | Storefront dev server (5173)                         |
+| `npm run build`                  | Storefront production build → `apps/storefront/dist` |
+| `npm run build:all`              | Storefront + admin builds                            |
+| `npm run sync:storefront-routes` | Copy shop routes from `src/routes/`                  |
 
 ## Routes
 

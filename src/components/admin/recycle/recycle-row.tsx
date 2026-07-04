@@ -26,12 +26,7 @@ type RecycleRowProps = {
 
 export function RecycleRow({ item, canPurge, busy, onRestore, onPurge }: RecycleRowProps) {
   return (
-    <article
-      className={cn(
-        "border-b p-4 last:border-b-0",
-        RECYCLE_LIST_GRID_CLASS,
-      )}
-    >
+    <article className={cn("border-b p-4 last:border-b-0", RECYCLE_LIST_GRID_CLASS)}>
       <p className="type-caption text-muted-foreground md:whitespace-nowrap">
         {format(new Date(item.deleted_at), "MMM d, yyyy HH:mm")}
       </p>
@@ -42,24 +37,12 @@ export function RecycleRow({ item, canPurge, busy, onRestore, onPurge }: Recycle
         {item.meta ? <p className="type-caption text-muted-foreground">{item.meta}</p> : null}
       </div>
       <div className="mt-3 flex flex-wrap gap-2 md:mt-0 md:justify-end">
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          disabled={busy}
-          onClick={onRestore}
-        >
+        <Button type="button" size="sm" variant="outline" disabled={busy} onClick={onRestore}>
           <RotateCcw className="mr-1 h-3.5 w-3.5" aria-hidden />
           Restore
         </Button>
         {canPurge ? (
-          <Button
-            type="button"
-            size="sm"
-            variant="destructive"
-            disabled={busy}
-            onClick={onPurge}
-          >
+          <Button type="button" size="sm" variant="destructive" disabled={busy} onClick={onPurge}>
             <Trash2 className="mr-1 h-3.5 w-3.5" aria-hidden />
             Purge
           </Button>

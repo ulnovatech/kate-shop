@@ -49,12 +49,20 @@ export function AdminSavedViewsMenu<TFilters extends Record<string, unknown>>({
     refresh();
   };
 
-  const menuItems = useMemo(() => [...presets, ...views.map((v) => ({ name: v.name, filters: v.filters, id: v.id }))], [presets, views]);
+  const menuItems = useMemo(
+    () => [...presets, ...views.map((v) => ({ name: v.name, filters: v.filters, id: v.id }))],
+    [presets, views],
+  );
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className={cn(adminToolbarControl, "px-2.5 md:px-4")}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={cn(adminToolbarControl, "px-2.5 md:px-4")}
+        >
           <Bookmark className="mr-1.5 h-4 w-4 md:mr-2" aria-hidden />
           Views
           <ChevronDown className="ml-1.5 h-4 w-4 opacity-60" aria-hidden />
@@ -82,14 +90,19 @@ export function AdminSavedViewsMenu<TFilters extends Record<string, unknown>>({
             </div>
           </div>
         ) : (
-          <DropdownMenuItem onSelect={() => setSaving(true)}>Save current filters…</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setSaving(true)}>
+            Save current filters…
+          </DropdownMenuItem>
         )}
         {menuItems.length > 0 ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Saved views</DropdownMenuLabel>
             {presets.map((preset) => (
-              <DropdownMenuItem key={`preset-${preset.name}`} onSelect={() => onApply(preset.filters)}>
+              <DropdownMenuItem
+                key={`preset-${preset.name}`}
+                onSelect={() => onApply(preset.filters)}
+              >
                 {preset.name}
               </DropdownMenuItem>
             ))}

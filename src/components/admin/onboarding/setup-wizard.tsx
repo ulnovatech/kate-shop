@@ -12,10 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { AdminPinInput, isStaffPinComplete } from "@/components/admin-pin-input";
 import { completeBootstrap, getBootstrapStatus } from "@/lib/api/bootstrap.functions";
-import {
-  listPaymentMethodsAdmin,
-  savePaymentMethods,
-} from "@/lib/api/payment-methods.functions";
+import { listPaymentMethodsAdmin, savePaymentMethods } from "@/lib/api/payment-methods.functions";
 import { updateSettingsPartial } from "@/lib/api/settings.functions";
 import { withTimeout } from "@/lib/with-timeout";
 import { AuthCardSkeleton } from "@/components/loading-states";
@@ -62,14 +59,16 @@ const accountSchema = z
     path: ["confirmPassword"],
   });
 
-const storeSchema = z.object({
-  shop_name: z.string().trim().min(2, "Shop name is required"),
-  phone: z.string().trim().max(30).optional(),
-  whatsapp: z.string().trim().max(30).optional(),
-}).refine((d) => (d.phone?.trim().length ?? 0) >= 7 || (d.whatsapp?.trim().length ?? 0) >= 9, {
-  message: "Add a phone or WhatsApp number customers can reach you on",
-  path: ["phone"],
-});
+const storeSchema = z
+  .object({
+    shop_name: z.string().trim().min(2, "Shop name is required"),
+    phone: z.string().trim().max(30).optional(),
+    whatsapp: z.string().trim().max(30).optional(),
+  })
+  .refine((d) => (d.phone?.trim().length ?? 0) >= 7 || (d.whatsapp?.trim().length ?? 0) >= 9, {
+    message: "Add a phone or WhatsApp number customers can reach you on",
+    path: ["phone"],
+  });
 
 type AccountForm = z.infer<typeof accountSchema>;
 type StoreForm = z.infer<typeof storeSchema>;
@@ -226,7 +225,7 @@ export function SetupWizard() {
           email: account.email,
           password: oauthUserId ? undefined : account.password,
           bootstrapToken: account.bootstrapToken || undefined,
-          emailVerificationToken: oauthUserId ? undefined : emailVerificationToken ?? undefined,
+          emailVerificationToken: oauthUserId ? undefined : (emailVerificationToken ?? undefined),
           oauthUserId: oauthUserId ?? undefined,
           pin,
         },
@@ -354,11 +353,7 @@ export function SetupWizard() {
             </div>
           ) : null}
           <AdminAuthDivider />
-          <AdminGoogleAuthButton
-            disabled={busy}
-            busy={googleBusy}
-            onClick={onGoogleSetup}
-          />
+          <AdminGoogleAuthButton disabled={busy} busy={googleBusy} onClick={onGoogleSetup} />
         </div>
       ) : null}
 
@@ -457,7 +452,13 @@ export function SetupWizard() {
 
       <div className="mt-stack-lg flex flex-col gap-2 sm:flex-row sm:justify-between">
         {!isFirst && step !== "verify-email" ? (
-          <Button type="button" variant="outline" onClick={goBack} disabled={busy} className={adminPrimaryTouch}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={goBack}
+            disabled={busy}
+            className={adminPrimaryTouch}
+          >
             Back
           </Button>
         ) : (
@@ -482,7 +483,11 @@ export function SetupWizard() {
         ) : step === "verify-email" ? (
           <span className="sm:ml-auto" />
         ) : (
-          <Button type="button" onClick={() => void goNext()} className={`${adminPrimaryTouch} sm:ml-auto`}>
+          <Button
+            type="button"
+            onClick={() => void goNext()}
+            className={`${adminPrimaryTouch} sm:ml-auto`}
+          >
             Continue
           </Button>
         )}
