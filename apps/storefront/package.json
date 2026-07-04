@@ -1,0 +1,19 @@
+{
+  "name": "@kate/storefront",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "dependencies": {
+    "@kate/api": "*",
+    "@kate/domain": "*",
+    "@kate/supabase": "*",
+    "@kate/ui": "*"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sync:routes": "node ../../scripts/sync-storefront-app-routes.mjs"
+  }
+}

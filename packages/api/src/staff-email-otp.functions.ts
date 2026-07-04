@@ -1,0 +1,39 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+
+const purposeSchema = z.enum(["signup", "forgot_pin", "invite_accept"]);
+
+const requestSchema = z.object({
+  email: z.string().trim().email(),
+  purpose: purposeSchema,
+});
+
+const verifySchema = z.object({
+  email: z.string().trim().email(),
+  purpose: purposeSchema,
+  code: z.string().trim().length(6),
+});
+
+/** Whether Gmail staff OTP delivery is configured. */
+export const getStaffEmailOtpDeliveryStatus = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { getStaffEmailOtpDeliveryStatusImpl } = await import(
+      "@kate/api/staff-email-otp.server"
+    );
+    return getStaffEmailOtpDeliveryStatusImpl();
+  },
+);
+
+export const requestStaffEmailOtp = createServerFn({ method: "POST" })
+  .inputValidator(requestSchema)
+  .handler(async ({ data }) => {
+    const { requestStaffEmailOtpImpl } = await import("@kate/api/staff-email-otp.server");
+    return requestStaffEmailOtpImpl(data);
+  });
+
+export const verifyStaffEmailOtp = createServerFn({ method: "POST" })
+  .inputValidator(verifySchema)
+  .handler(async ({ data }) => {
+    const { verifyStaffEmailOtpImpl } = await import("@kate/api/staff-email-otp.server");
+    return verifyStaffEmailOtpImpl(data);
+  });

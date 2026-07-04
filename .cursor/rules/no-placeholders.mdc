@@ -1,0 +1,85 @@
+---
+alwaysApply: true
+---
+
+# IMPLEMENTATION RULES - NON-NEGOTIABLE
+
+The project is judged by completed business workflows, not by architectural coverage. A workflow that produces a real result is worth more than ten unimplemented modules.
+
+You are building production software, not architectural demonstrations.
+
+The following are highly prohibited at all times:
+
+* placeholder services
+* mock implementations
+* fake repositories
+* TODO handlers
+* simulated API responses
+* hardcoded sample data
+* stub modules
+* "future implementation" comments
+* demo-only workflows
+* prototype logic
+
+Every module must perform real work.
+
+If a feature depends on external data:
+
+* connect to a real source
+* implement the retrieval logic
+* implement validation
+* implement error handling
+
+If a feature cannot yet be implemented because a dependency is missing:
+
+DO NOT create a fake implementation.
+
+Instead:
+
+1. Clearly identify the missing dependency.
+2. Document why implementation cannot proceed.
+3. Stop implementation at that boundary.
+
+Never hide missing functionality behind mock code.
+
+Definition of Done:
+
+A module is considered complete only when:
+
+* inputs are accepted
+* processing occurs
+* outputs are produced
+* errors are handled
+* the feature performs its intended business function
+
+Examples:
+
+BAD:
+LeadDiscoveryService returns 50 sample businesses.
+
+GOOD:
+LeadDiscoveryService retrieves actual businesses from configured discovery providers.
+
+BAD:
+TikTokProvider returns mocked profiles.
+
+GOOD:
+TikTokProvider performs real discovery and returns real profiles.
+
+BAD:
+VideoRenderService simulates rendering.
+
+GOOD:
+VideoRenderService invokes Remotion and produces an actual MP4.
+
+Implementation completeness is prioritized over architectural completeness.
+
+Prefer:
+
+All modules working 
+
+Every pull request must answer:
+
+"What real business operation does this code perform today?"
+
+If the answer is "none", the implementation is incomplete.

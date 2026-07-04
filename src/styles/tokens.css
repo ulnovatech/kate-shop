@@ -1,0 +1,517 @@
+/*
+ * Kate Shop V2 — Design tokens (C01)
+ * Semantic tokens for spacing, typography, motion, elevation, and surfaces.
+ * Use Tailwind utilities (e.g. p-page, text-h1, shadow-elevated) or var(--token) in CSS.
+ * Never use raw pixel values in components when a token exists.
+ */
+
+:root {
+  /* ── Spacing (4px base grid) ─────────────────────────────────────────── */
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem; /* 2px */
+  --space-1: 0.25rem; /* 4px */
+  --space-1-5: 0.375rem; /* 6px */
+  --space-2: 0.5rem; /* 8px */
+  --space-2-5: 0.625rem; /* 10px */
+  --space-3: 0.75rem; /* 12px */
+  --space-3-5: 0.875rem; /* 14px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 1.75rem; /* 28px */
+  --space-8: 2rem; /* 32px */
+  --space-9: 2.25rem; /* 36px */
+  --space-10: 2.5rem; /* 40px */
+  --space-11: 2.75rem; /* 44px — minimum touch target */
+  --space-12: 3rem; /* 48px */
+  --space-14: 3.5rem; /* 56px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+
+  /* Semantic spacing */
+  --space-page-x: var(--space-4);
+  --space-page-y: var(--space-6);
+  --space-section: var(--space-8);
+  --space-stack: var(--space-4);
+  --space-stack-sm: var(--space-2);
+  --space-stack-lg: var(--space-6);
+  --space-inline: var(--space-3);
+  --space-inline-sm: var(--space-2);
+  --space-card: var(--space-4);
+  --space-card-lg: var(--space-6);
+  --space-toolbar: var(--space-3);
+
+  /* Layout */
+  --layout-max-width: 72rem; /* 1152px */
+  --layout-max-width-narrow: 42rem; /* 672px */
+  --layout-max-width-wide: 90rem; /* 1440px */
+  --layout-toolbar-height: var(--space-11);
+  --layout-header-height: 3.5rem;
+  --layout-bottom-nav-height: var(--storefront-tab-height, 3.5rem);
+
+  /* ── Typography scale ─────────────────────────────────────────────────── */
+  --text-display-size: 2.25rem; /* 36px */
+  --text-display-line: 1.1;
+  --text-display-tracking: -0.025em;
+  --text-display-weight: 600;
+
+  --text-h1-size: 1.875rem; /* 30px */
+  --text-h1-line: 1.2;
+  --text-h1-tracking: -0.02em;
+  --text-h1-weight: 600;
+
+  --text-h2-size: 1.5rem; /* 24px */
+  --text-h2-line: 1.25;
+  --text-h2-tracking: -0.015em;
+  --text-h2-weight: 600;
+
+  --text-h3-size: 1.25rem; /* 20px */
+  --text-h3-line: 1.3;
+  --text-h3-tracking: -0.01em;
+  --text-h3-weight: 600;
+
+  --text-h4-size: 1.125rem; /* 18px */
+  --text-h4-line: 1.35;
+  --text-h4-tracking: -0.01em;
+  --text-h4-weight: 600;
+
+  --text-body-size: 1rem; /* 16px */
+  --text-body-line: 1.5;
+  --text-body-tracking: 0;
+  --text-body-weight: 400;
+
+  --text-body-sm-size: 0.875rem; /* 14px */
+  --text-body-sm-line: 1.45;
+  --text-body-sm-tracking: 0;
+  --text-body-sm-weight: 400;
+
+  --text-caption-size: 0.75rem; /* 12px */
+  --text-caption-line: 1.4;
+  --text-caption-tracking: 0.01em;
+  --text-caption-weight: 500;
+
+  --text-overline-size: 0.6875rem; /* 11px */
+  --text-overline-line: 1.3;
+  --text-overline-tracking: 0.06em;
+  --text-overline-weight: 600;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-moderate: 300ms;
+  --duration-slow: 400ms;
+  --duration-slower: 500ms;
+
+  --ease-linear: linear;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --transition-colors: color var(--duration-fast) var(--ease-default),
+    background-color var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default);
+  --transition-opacity: opacity var(--duration-normal) var(--ease-default);
+  --transition-transform: transform var(--duration-moderate) var(--ease-out);
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-default);
+  --transition-common: var(--transition-colors), var(--transition-opacity),
+    var(--transition-shadow);
+
+  /* ── Elevation (shadows) ──────────────────────────────────────────────── */
+  --shadow-color: oklch(0.22 0.04 165 / 8%);
+  --shadow-xs: 0 1px 2px var(--shadow-color);
+  --shadow-sm: 0 1px 3px var(--shadow-color), 0 1px 2px oklch(0.22 0.04 165 / 4%);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px oklch(0.22 0.04 165 / 4%);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px oklch(0.22 0.04 165 / 4%);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 8px 10px -6px oklch(0.22 0.04 165 / 4%);
+  --shadow-elevated: var(--shadow-md);
+  --shadow-overlay: var(--shadow-xl);
+  --shadow-focus: 0 0 0 3px oklch(from var(--ring) l c h / 35%);
+
+  /* ── Semantic surfaces (role-based, not raw palette) ──────────────────── */
+  --surface: var(--background);
+  --surface-foreground: var(--foreground);
+  --surface-elevated: var(--card);
+  --surface-elevated-foreground: var(--card-foreground);
+  --surface-muted: var(--muted);
+  --surface-muted-foreground: var(--muted-foreground);
+  --surface-attention: oklch(0.96 0.04 85);
+  --surface-attention-foreground: oklch(0.28 0.07 165);
+  --surface-success: oklch(0.95 0.04 155);
+  --surface-success-foreground: oklch(0.28 0.07 165);
+  --surface-danger: oklch(0.96 0.04 25);
+  --surface-danger-foreground: oklch(0.45 0.18 25);
+  --surface-overlay: oklch(0.12 0.02 165 / 45%);
+
+  /* ── Z-index scale ────────────────────────────────────────────────────── */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-max: 9999;
+}
+
+.dark {
+  --shadow-color: oklch(0 0 0 / 35%);
+  --surface-attention: oklch(0.28 0.05 85);
+  --surface-attention-foreground: oklch(0.97 0.025 95);
+  --surface-success: oklch(0.26 0.05 155);
+  --surface-success-foreground: oklch(0.97 0.025 95);
+  --surface-danger: oklch(0.28 0.06 25);
+  --surface-danger-foreground: oklch(0.97 0.02 95);
+  --surface-overlay: oklch(0.05 0.02 165 / 60%);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --space-page-x: var(--space-6);
+    --space-page-y: var(--space-8);
+  }
+}
+
+/* Tailwind v4 utility generation */
+@theme inline {
+  /* Spacing extensions */
+  --spacing-page-x: var(--space-page-x);
+  --spacing-page-y: var(--space-page-y);
+  --spacing-section: var(--space-section);
+  --spacing-stack: var(--space-stack);
+  --spacing-stack-sm: var(--space-stack-sm);
+  --spacing-stack-lg: var(--space-stack-lg);
+  --spacing-inline: var(--space-inline);
+  --spacing-inline-sm: var(--space-inline-sm);
+  --spacing-card: var(--space-card);
+  --spacing-card-lg: var(--space-card-lg);
+  --spacing-toolbar: var(--space-toolbar);
+  --spacing-touch: var(--space-11);
+
+  /* Typography utilities: text-display, text-h1, … */
+  --text-display: var(--text-display-size);
+  --text-display--line-height: var(--text-display-line);
+  --text-display--letter-spacing: var(--text-display-tracking);
+  --text-display--font-weight: var(--text-display-weight);
+
+  --text-h1: var(--text-h1-size);
+  --text-h1--line-height: var(--text-h1-line);
+  --text-h1--letter-spacing: var(--text-h1-tracking);
+  --text-h1--font-weight: var(--text-h1-weight);
+
+  --text-h2: var(--text-h2-size);
+  --text-h2--line-height: var(--text-h2-line);
+  --text-h2--letter-spacing: var(--text-h2-tracking);
+  --text-h2--font-weight: var(--text-h2-weight);
+
+  --text-h3: var(--text-h3-size);
+  --text-h3--line-height: var(--text-h3-line);
+  --text-h3--letter-spacing: var(--text-h3-tracking);
+  --text-h3--font-weight: var(--text-h3-weight);
+
+  --text-h4: var(--text-h4-size);
+  --text-h4--line-height: var(--text-h4-line);
+  --text-h4--letter-spacing: var(--text-h4-tracking);
+  --text-h4--font-weight: var(--text-h4-weight);
+
+  --text-body: var(--text-body-size);
+  --text-body--line-height: var(--text-body-line);
+  --text-body--letter-spacing: var(--text-body-tracking);
+  --text-body--font-weight: var(--text-body-weight);
+
+  --text-body-sm: var(--text-body-sm-size);
+  --text-body-sm--line-height: var(--text-body-sm-line);
+  --text-body-sm--letter-spacing: var(--text-body-sm-tracking);
+  --text-body-sm--font-weight: var(--text-body-sm-weight);
+
+  --text-caption: var(--text-caption-size);
+  --text-caption--line-height: var(--text-caption-line);
+  --text-caption--letter-spacing: var(--text-caption-tracking);
+  --text-caption--font-weight: var(--text-caption-weight);
+
+  --text-overline: var(--text-overline-size);
+  --text-overline--line-height: var(--text-overline-line);
+  --text-overline--letter-spacing: var(--text-overline-tracking);
+  --text-overline--font-weight: var(--text-overline-weight);
+
+  /* Motion — literal values (referenced by :root --ease-* for non-Tailwind CSS) */
+  --ease-kate-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-kate-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-kate-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-kate-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-kate-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Semantic colors for Tailwind */
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-elevated-foreground: var(--surface-elevated-foreground);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-muted-foreground: var(--surface-muted-foreground);
+  --color-surface-attention: var(--surface-attention);
+  --color-surface-attention-foreground: var(--surface-attention-foreground);
+  --color-surface-success: var(--surface-success);
+  --color-surface-success-foreground: var(--surface-success-foreground);
+  --color-surface-danger: var(--surface-danger);
+  --color-surface-danger-foreground: var(--surface-danger-foreground);
+  --color-surface-overlay: var(--surface-overlay);
+
+  /* Shadows */
+  --shadow-elevated: var(--shadow-elevated);
+  --shadow-overlay: var(--shadow-overlay);
+  --shadow-focus-ring: var(--shadow-focus);
+
+  /* Max width */
+  --container-narrow: var(--layout-max-width-narrow);
+  --container-content: var(--layout-max-width);
+  --container-wide: var(--layout-max-width-wide);
+
+  /* Z-index */
+  --z-index-dropdown: var(--z-dropdown);
+  --z-index-sticky: var(--z-sticky);
+  --z-index-overlay: var(--z-overlay);
+  --z-index-modal: var(--z-modal);
+  --z-index-toast: var(--z-toast);
+}
+
+@layer utilities {
+  /* Typography presets — heading font + semantic size */
+  .type-display {
+    font-family: var(--font-heading);
+    font-size: var(--text-display-size);
+    line-height: var(--text-display-line);
+    letter-spacing: var(--text-display-tracking);
+    font-weight: var(--text-display-weight);
+  }
+
+  .type-h1 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h1-size);
+    line-height: var(--text-h1-line);
+    letter-spacing: var(--text-h1-tracking);
+    font-weight: var(--text-h1-weight);
+  }
+
+  .type-h2 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h2-size);
+    line-height: var(--text-h2-line);
+    letter-spacing: var(--text-h2-tracking);
+    font-weight: var(--text-h2-weight);
+  }
+
+  .type-h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    letter-spacing: var(--text-h3-tracking);
+    font-weight: var(--text-h3-weight);
+  }
+
+  .type-h4 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h4-size);
+    line-height: var(--text-h4-line);
+    letter-spacing: var(--text-h4-tracking);
+    font-weight: var(--text-h4-weight);
+  }
+
+  .type-body {
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-line);
+    letter-spacing: var(--text-body-tracking);
+    font-weight: var(--text-body-weight);
+  }
+
+  .type-body-sm {
+    font-size: var(--text-body-sm-size);
+    line-height: var(--text-body-sm-line);
+    letter-spacing: var(--text-body-sm-tracking);
+    font-weight: var(--text-body-sm-weight);
+  }
+
+  .type-caption {
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-line);
+    letter-spacing: var(--text-caption-tracking);
+    font-weight: var(--text-caption-weight);
+  }
+
+  .type-overline {
+    font-size: var(--text-overline-size);
+    line-height: var(--text-overline-line);
+    letter-spacing: var(--text-overline-tracking);
+    font-weight: var(--text-overline-weight);
+    text-transform: uppercase;
+  }
+
+  /* Motion helpers */
+  .transition-common {
+    transition: var(--transition-common);
+  }
+
+  .transition-transform-ui {
+    transition: var(--transition-transform);
+  }
+
+  .motion-safe\:animate-fade-in {
+    animation: kate-fade-in var(--duration-moderate) var(--ease-out) both;
+  }
+
+  .motion-safe\:animate-slide-up {
+    animation: kate-slide-up var(--duration-moderate) var(--ease-out) both;
+  }
+
+  .motion-safe\:animate-scale-in {
+    animation: kate-scale-in var(--duration-normal) var(--ease-spring) both;
+  }
+
+  .motion-safe\:animate-success-pop {
+    animation: kate-success-pop var(--duration-moderate) var(--ease-spring) both;
+  }
+
+  .confetti-particle {
+    animation: kate-confetti-fall var(--duration-slower) var(--ease-out) both;
+  }
+
+  /* Layout */
+  .max-w-content {
+    max-width: var(--layout-max-width);
+  }
+
+  .max-w-narrow {
+    max-width: var(--layout-max-width-narrow);
+  }
+
+  .max-w-wide {
+    max-width: var(--layout-max-width-wide);
+  }
+
+  .min-h-touch {
+    min-height: var(--space-11);
+  }
+
+  .min-w-touch {
+    min-width: var(--space-11);
+  }
+
+  .page-padding {
+    padding-left: var(--space-page-x);
+    padding-right: var(--space-page-x);
+    padding-top: var(--space-page-y);
+    padding-bottom: var(--space-page-y);
+  }
+
+  .cv-list-item {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 4.5rem;
+  }
+
+  /* Admin mobile — natural momentum scroll with native overscroll bounce */
+  .admin-overscroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+  }
+
+  /* Horizontal toolbar — hide scrollbar, enable smooth touch scroll */
+  .admin-toolbar-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-padding-inline: var(--space-page-x);
+  }
+
+  .admin-toolbar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Fade hint for horizontally scrollable toolbars on narrow viewports */
+  .admin-toolbar-fade::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 2rem;
+    pointer-events: none;
+    background: linear-gradient(to left, var(--background) 15%, transparent);
+  }
+
+  @media (min-width: 768px) {
+    .admin-toolbar-fade::after {
+      display: none;
+    }
+  }
+}
+
+@keyframes kate-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kate-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kate-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes kate-success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  65% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes kate-confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(105vh) rotate(540deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe\:animate-fade-in,
+  .motion-safe\:animate-slide-up,
+  .motion-safe\:animate-scale-in,
+  .motion-safe\:animate-success-pop,
+  .confetti-particle {
+    animation: none;
+  }
+}

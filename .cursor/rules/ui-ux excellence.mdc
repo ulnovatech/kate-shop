@@ -1,0 +1,163 @@
+---
+alwaysApply: true
+---
+# UI_UX_EXCELLENCE.mdc
+
+## Purpose
+
+Every user-facing interface must feel production-ready, intuitive, modern, and commercially competitive.
+
+The goal is not merely functional screens. The goal is software users enjoy using.
+
+A feature is NOT complete when it works.
+A feature is complete when it is:
+
+* Functional
+* Intuitive
+* Visually polished
+* Mobile-friendly
+* Accessible
+* Consistent with the product design system
+
+---
+
+## UI Design Standards
+
+Never generate:
+
+* Placeholder-looking interfaces
+* Generic CRUD dashboards
+* Plain forms stacked vertically
+* Random button placements
+* Unstyled tables
+* Developer-oriented layouts
+
+Always design interfaces comparable to:
+
+* Lovable
+* Linear
+* Notion
+* Stripe
+* Airbnb
+* Arc Browser
+* Vercel
+* Raycast
+
+---
+
+## UX Flow Standards
+
+Before implementing any screen:
+
+1. Identify the primary user goal.
+2. Minimize clicks required.
+3. Reduce cognitive load.
+4. Surface the most important actions first.
+5. Hide advanced actions until needed.
+6. Eliminate unnecessary forms.
+7. Prefer guided workflows over blank screens.
+
+Every screen must answer:
+
+* What is this page?
+* What should the user do next?
+* What is the fastest path to success?
+
+---
+
+## Component Design Standards
+
+Every component must include:
+
+* Loading state
+* Empty state
+* Error state
+* Success state
+* Hover state
+* Focus state
+* Disabled state
+
+No component is considered complete without all states.
+
+---
+
+## Layout Standards
+
+Prefer:
+
+* Clear visual hierarchy
+* Generous spacing
+* Card-based organization
+* Progressive disclosure
+* Strong typography
+* Consistent alignment
+
+Avoid:
+
+* Dense information walls
+* Tiny click targets
+* Deep nested menus
+* Unnecessary modals
+* Excessive scrolling
+
+---
+
+## Mobile First
+
+All interfaces must be usable on:
+
+* Mobile
+* Tablet
+* Desktop
+
+Design mobile experience before desktop expansion.
+
+---
+
+## Design Review Requirement
+
+Before finalizing any UI:
+
+Evaluate against:
+
+* Is this comparable to a top SaaS product?
+* Would users immediately understand it?
+* Does it feel premium?
+* Can actions be completed quickly?
+* Is there a simpler flow?
+
+If the answer is no, redesign before implementation.
+
+---
+
+## Deliverables
+
+For every new feature provide:
+
+* User journey
+* Screen structure
+* Component hierarchy
+* Interaction flow
+* Responsive behavior
+* Final implementation
+
+Do not jump directly into coding.
+
+Design first.
+Implement second.
+
+---
+
+## Completion Gate
+
+A feature cannot be marked complete if:
+
+* UI feels unfinished
+* UX contains unnecessary friction
+* Mobile experience is weak
+* User flow is unclear
+* Design resembles an internal admin tool
+
+Functionality alone is not completion.
+
+User experience is part of the definition of done.

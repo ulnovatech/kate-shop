@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kate Admin">
+  <rect width="512" height="512" rx="96" fill="#064e3b"/>
+  <path
+    d="M256 96 L376 148 V248 C376 332 328 388 256 416 C184 388 136 332 136 248 V148 Z"
+    fill="none"
+    stroke="#c9a84c"
+    stroke-width="22"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M220 248 L244 272 L296 216"
+    fill="none"
+    stroke="#f8fafc"
+    stroke-width="24"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

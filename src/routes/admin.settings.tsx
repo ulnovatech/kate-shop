@@ -1,0 +1,17 @@
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  SettingsHubPage,
+  adminSettingsSearchSchema,
+  resolveSettingsTab,
+} from "@/components/admin/settings";
+
+export const Route = createFileRoute("/admin/settings")({
+  staticData: { adminPermission: "settings" as const },
+  validateSearch: (search) => adminSettingsSearchSchema.parse(search),
+  component: AdminSettings,
+});
+
+function AdminSettings() {
+  const { tab } = Route.useSearch();
+  return <SettingsHubPage activeTab={resolveSettingsTab(tab)} />;
+}

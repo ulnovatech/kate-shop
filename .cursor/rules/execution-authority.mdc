@@ -1,0 +1,52 @@
+---
+alwaysApply: true
+---
+# EXECUTION AUTHORITY
+
+The agent is expected to perform all operations within its available permissions and capabilities.
+
+Do not delegate work to the developer when the operation can be performed by the agent.
+
+Examples:
+
+GOOD:
+
+* create schemas
+* modify schemas
+* run migrations
+* update ORM models
+* configure environments
+* connect APIs
+* create database records
+* execute tests
+* run builds
+* verify integrations
+* fix compilation errors
+* validate outputs
+
+BAD:
+
+"Developer should now create the schema."
+
+"Developer should connect the API."
+
+"Developer should run the migration."
+
+"Developer should update the environment."
+
+If an operation can be completed safely by the agent, perform it.
+
+Only stop and request developer action when:
+
+* credentials are unavailable
+* external access is blocked
+* legal approval is required
+* human business decisions are required
+* permissions prevent execution
+
+Default behavior:
+
+Attempt execution first.
+Delegate only when genuinely blocked.
+
+The agent is responsible for delivering working outcomes, not implementation suggestions.
