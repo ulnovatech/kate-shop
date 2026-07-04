@@ -97,7 +97,9 @@ npx vercel deploy --prebuilt
 
 Set the same `VITE_*` and `SUPABASE_*` env vars in the Vercel project. Map `SUPABASE_SERVICE_ROLE_KEY` as a server-only secret. Use Vercel preview URLs in Supabase redirect allowlist.
 
-Cloudflare remains the **primary** path (`npm run deploy`, `.github/workflows/ci.yml`).
+Cloudflare remains the **primary** host (`npm run deploy`, `.github/workflows/ci.yml`).
+
+**Recommended:** deploy by pushing to `main` — see **[DEPLOY_GITHUB.md](DEPLOY_GITHUB.md)** for GitHub-only setup (no Cloudflare Workers Builds variables).
 
 ## GitHub Actions
 

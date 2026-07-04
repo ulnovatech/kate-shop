@@ -4,8 +4,10 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { loadEnv } from "./load-env.mjs";
 import { putWorkerSecret } from "./put-worker-secret.mjs";
+import { releaseDistLock } from "./release-dist-lock.mjs";
 
 loadEnv();
+releaseDistLock();
 
 const root = process.cwd();
 const distDir = path.join("apps", "admin", "dist");
