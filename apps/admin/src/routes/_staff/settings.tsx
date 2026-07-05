@@ -6,7 +6,7 @@ import {
 } from "@/components/admin/settings";
 
 export const Route = createFileRoute("/_staff/settings")({
-  staticData: { adminPermission: "settings" as const },
+  staticData: { adminPermission: "settings" as const, adminRouteHeading: "Store setup" as const },
   validateSearch: (search) => adminSettingsSearchSchema.parse(search),
   component: AdminSettings,
 });

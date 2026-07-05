@@ -25,7 +25,6 @@ import { humanizeError } from "@/lib/errors";
 import { adminUrl } from "@/lib/admin-routes";
 import { AdminFormSectionsSkeleton } from "@/components/loading-states";
 import { StaffPinSettings } from "@/components/staff-pin-settings";
-import { AdminMobileSettingsPanel } from "@/components/admin/settings/admin-mobile-settings-panel";
 import { SettingsHubShell, SettingsTabNav } from "./settings-hub-nav";
 import { SettingsSection } from "./settings-save-bar";
 import type { SettingsTabId } from "./settings-hub-schema";
@@ -422,8 +421,6 @@ export function SettingsHubPage({ activeTab }: SettingsHubPageProps) {
             <StaffPinSettings />
           </section>
         ) : null}
-
-        {activeTab === "mobile" ? <AdminMobileSettingsPanel /> : null}
       </div>
     </SettingsHubShell>
   );

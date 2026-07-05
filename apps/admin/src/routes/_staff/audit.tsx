@@ -9,7 +9,7 @@ import {
 } from "@/lib/list-filters";
 
 export const Route = createFileRoute("/_staff/audit")({
-  staticData: { adminPermission: "audit" as const },
+  staticData: { adminPermission: "audit" as const, adminRouteHeading: "Audit log" as const },
   validateSearch: (search) => adminAuditListSearchSchema.parse(search),
   component: AdminAudit,
 });

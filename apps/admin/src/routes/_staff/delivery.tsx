@@ -18,7 +18,7 @@ import { humanizeError } from "@/lib/errors";
 import { AdminFormSectionsSkeleton } from "@/components/loading-states";
 
 export const Route = createFileRoute("/_staff/delivery")({
-  staticData: { adminPermission: "settings" as const },
+  staticData: { adminPermission: "settings" as const, adminRouteHeading: "Delivery" as const },
   component: AdminDelivery,
 });
 

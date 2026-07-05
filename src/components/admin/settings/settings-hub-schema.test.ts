@@ -10,6 +10,5 @@ describe("resolveSettingsTab", () => {
   it("accepts valid tab ids", () => {
     expect(resolveSettingsTab("payments")).toBe("payments");
     expect(resolveSettingsTab("security")).toBe("security");
-    expect(resolveSettingsTab("mobile")).toBe("mobile");
   });
 });

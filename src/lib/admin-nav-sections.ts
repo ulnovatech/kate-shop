@@ -13,6 +13,7 @@ import {
   CreditCard,
   Shield,
   Warehouse,
+  Smartphone,
   type LucideIcon,
 } from "lucide-react";
 import { adminUrl } from "@/lib/admin-routes";
@@ -126,6 +127,13 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
         label: "Payment methods",
         icon: CreditCard,
         permission: "settings",
+      },
+      {
+        to: adminUrl("/mobile-app"),
+        label: "Mobile app",
+        icon: Smartphone,
+        permission: "settings",
+        keywords: "apk android install staff app update",
       },
       {
         to: adminUrl("/team"),

@@ -156,6 +156,16 @@ export const ADMIN_ROUTE_CATALOG: AdminRouteCatalogEntry[] = [
     heading: "Payment methods",
   },
   {
+    id: "mobile-app",
+    area: "ops",
+    path: "/mobile-app",
+    monolithFile: "admin.mobile-app.tsx",
+    standaloneRel: "mobile-app.tsx",
+    permission: "settings",
+    heading: "Mobile app",
+    mobileNotes: "APK publish, install links, in-app updates",
+  },
+  {
     id: "notifications",
     area: "ops",
     path: "/notifications",

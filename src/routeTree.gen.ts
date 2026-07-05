@@ -35,6 +35,7 @@ import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminPaymentMethodsRouteImport } from './routes/admin.payment-methods'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminMobileAppRouteImport } from './routes/admin.mobile-app'
 import { Route as AdminLoginCallbackRouteImport } from './routes/admin.login-callback'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminInventoryRouteImport } from './routes/admin.inventory'
@@ -181,6 +182,11 @@ const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMobileAppRoute = AdminMobileAppRouteImport.update({
+  id: '/mobile-app',
+  path: '/mobile-app',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginCallbackRoute = AdminLoginCallbackRouteImport.update({
   id: '/login-callback',
   path: '/login-callback',
@@ -276,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/login-callback': typeof AdminLoginCallbackRoute
+  '/admin/mobile-app': typeof AdminMobileAppRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/payment-methods': typeof AdminPaymentMethodsRoute
@@ -317,6 +324,7 @@ export interface FileRoutesByTo {
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/login-callback': typeof AdminLoginCallbackRoute
+  '/admin/mobile-app': typeof AdminMobileAppRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/payment-methods': typeof AdminPaymentMethodsRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/login-callback': typeof AdminLoginCallbackRoute
+  '/admin/mobile-app': typeof AdminMobileAppRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/payment-methods': typeof AdminPaymentMethodsRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/admin/inventory'
     | '/admin/login'
     | '/admin/login-callback'
+    | '/admin/mobile-app'
     | '/admin/notifications'
     | '/admin/orders'
     | '/admin/payment-methods'
@@ -445,6 +455,7 @@ export interface FileRouteTypes {
     | '/admin/inventory'
     | '/admin/login'
     | '/admin/login-callback'
+    | '/admin/mobile-app'
     | '/admin/notifications'
     | '/admin/orders'
     | '/admin/payment-methods'
@@ -487,6 +498,7 @@ export interface FileRouteTypes {
     | '/admin/inventory'
     | '/admin/login'
     | '/admin/login-callback'
+    | '/admin/mobile-app'
     | '/admin/notifications'
     | '/admin/orders'
     | '/admin/payment-methods'
@@ -711,6 +723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNotificationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/mobile-app': {
+      id: '/admin/mobile-app'
+      path: '/mobile-app'
+      fullPath: '/admin/mobile-app'
+      preLoaderRoute: typeof AdminMobileAppRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login-callback': {
       id: '/admin/login-callback'
       path: '/login-callback'
@@ -833,6 +852,7 @@ interface AdminRouteChildren {
   AdminInventoryRoute: typeof AdminInventoryRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminLoginCallbackRoute: typeof AdminLoginCallbackRoute
+  AdminMobileAppRoute: typeof AdminMobileAppRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminOrdersRoute: typeof AdminOrdersRouteWithChildren
   AdminPaymentMethodsRoute: typeof AdminPaymentMethodsRoute
@@ -857,6 +877,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminInventoryRoute: AdminInventoryRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminLoginCallbackRoute: AdminLoginCallbackRoute,
+  AdminMobileAppRoute: AdminMobileAppRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
   AdminOrdersRoute: AdminOrdersRouteWithChildren,
   AdminPaymentMethodsRoute: AdminPaymentMethodsRoute,

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { RecycleListPage } from "@/components/admin/recycle";
 
 export const Route = createFileRoute("/_staff/recycle")({
-  staticData: { adminPermission: "catalog" as const },
+  staticData: { adminPermission: "catalog" as const, adminRouteHeading: "Recycle bin" as const },
   component: AdminRecycle,
 });
 

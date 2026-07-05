@@ -9,7 +9,7 @@ import {
 } from "@/lib/list-filters";
 
 export const Route = createFileRoute("/_staff/products/")({
-  staticData: { adminPermission: "catalog" as const },
+  staticData: { adminPermission: "catalog" as const, adminRouteHeading: "Products" as const },
   validateSearch: (search) => adminProductListSearchSchema.parse(search),
   component: AdminProductsIndex,
 });

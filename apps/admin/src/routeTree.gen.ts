@@ -21,6 +21,7 @@ import { Route as StaffPaymentsRouteImport } from './routes/_staff/payments'
 import { Route as StaffPaymentMethodsRouteImport } from './routes/_staff/payment-methods'
 import { Route as StaffOrdersRouteImport } from './routes/_staff/orders'
 import { Route as StaffNotificationsRouteImport } from './routes/_staff/notifications'
+import { Route as StaffMobileAppRouteImport } from './routes/_staff/mobile-app'
 import { Route as StaffLoginCallbackRouteImport } from './routes/_staff/login-callback'
 import { Route as StaffLoginRouteImport } from './routes/_staff/login'
 import { Route as StaffInventoryRouteImport } from './routes/_staff/inventory'
@@ -91,6 +92,11 @@ const StaffOrdersRoute = StaffOrdersRouteImport.update({
 const StaffNotificationsRoute = StaffNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => StaffRouteRoute,
+} as any)
+const StaffMobileAppRoute = StaffMobileAppRouteImport.update({
+  id: '/mobile-app',
+  path: '/mobile-app',
   getParentRoute: () => StaffRouteRoute,
 } as any)
 const StaffLoginCallbackRoute = StaffLoginCallbackRouteImport.update({
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof StaffInventoryRoute
   '/login': typeof StaffLoginRoute
   '/login-callback': typeof StaffLoginCallbackRoute
+  '/mobile-app': typeof StaffMobileAppRoute
   '/notifications': typeof StaffNotificationsRoute
   '/orders': typeof StaffOrdersRouteWithChildren
   '/payment-methods': typeof StaffPaymentMethodsRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/inventory': typeof StaffInventoryRoute
   '/login': typeof StaffLoginRoute
   '/login-callback': typeof StaffLoginCallbackRoute
+  '/mobile-app': typeof StaffMobileAppRoute
   '/notifications': typeof StaffNotificationsRoute
   '/orders': typeof StaffOrdersRouteWithChildren
   '/payment-methods': typeof StaffPaymentMethodsRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/_staff/inventory': typeof StaffInventoryRoute
   '/_staff/login': typeof StaffLoginRoute
   '/_staff/login-callback': typeof StaffLoginCallbackRoute
+  '/_staff/mobile-app': typeof StaffMobileAppRoute
   '/_staff/notifications': typeof StaffNotificationsRoute
   '/_staff/orders': typeof StaffOrdersRouteWithChildren
   '/_staff/payment-methods': typeof StaffPaymentMethodsRoute
@@ -244,6 +253,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/login-callback'
+    | '/mobile-app'
     | '/notifications'
     | '/orders'
     | '/payment-methods'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/login'
     | '/login-callback'
+    | '/mobile-app'
     | '/notifications'
     | '/orders'
     | '/payment-methods'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '/_staff/inventory'
     | '/_staff/login'
     | '/_staff/login-callback'
+    | '/_staff/mobile-app'
     | '/_staff/notifications'
     | '/_staff/orders'
     | '/_staff/payment-methods'
@@ -399,6 +411,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof StaffNotificationsRouteImport
+      parentRoute: typeof StaffRouteRoute
+    }
+    '/_staff/mobile-app': {
+      id: '/_staff/mobile-app'
+      path: '/mobile-app'
+      fullPath: '/mobile-app'
+      preLoaderRoute: typeof StaffMobileAppRouteImport
       parentRoute: typeof StaffRouteRoute
     }
     '/_staff/login-callback': {
@@ -509,6 +528,7 @@ interface StaffRouteRouteChildren {
   StaffInventoryRoute: typeof StaffInventoryRoute
   StaffLoginRoute: typeof StaffLoginRoute
   StaffLoginCallbackRoute: typeof StaffLoginCallbackRoute
+  StaffMobileAppRoute: typeof StaffMobileAppRoute
   StaffNotificationsRoute: typeof StaffNotificationsRoute
   StaffOrdersRoute: typeof StaffOrdersRouteWithChildren
   StaffPaymentMethodsRoute: typeof StaffPaymentMethodsRoute
@@ -533,6 +553,7 @@ const StaffRouteRouteChildren: StaffRouteRouteChildren = {
   StaffInventoryRoute: StaffInventoryRoute,
   StaffLoginRoute: StaffLoginRoute,
   StaffLoginCallbackRoute: StaffLoginCallbackRoute,
+  StaffMobileAppRoute: StaffMobileAppRoute,
   StaffNotificationsRoute: StaffNotificationsRoute,
   StaffOrdersRoute: StaffOrdersRouteWithChildren,
   StaffPaymentMethodsRoute: StaffPaymentMethodsRoute,

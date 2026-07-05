@@ -28,6 +28,7 @@ const ROUTE_MAP = [
   ["admin.categories.tsx", "categories.tsx"],
   ["admin.payments.tsx", "payments.tsx"],
   ["admin.payment-methods.tsx", "payment-methods.tsx"],
+  ["admin.mobile-app.tsx", "mobile-app.tsx"],
   ["admin.notifications.tsx", "notifications.tsx"],
   ["admin.recycle.tsx", "recycle.tsx"],
   ["admin.audit.tsx", "audit.tsx"],

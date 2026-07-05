@@ -7,6 +7,7 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_staff/accept-invite")({
+  staticData: { adminRouteHeading: "Accept staff invite" as const },
   validateSearch: (search) => searchSchema.parse(search),
   component: AcceptInvite,
 });
