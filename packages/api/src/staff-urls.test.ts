@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import {
+  buildAdminMobileInstallUrl,
   buildStaffInviteUrl,
   staffAuthRedirectOrigins,
   staffAuthRedirectUrls,
@@ -31,6 +32,30 @@ describe("buildStaffInviteUrl", () => {
     expect(buildStaffInviteUrl("tok")).toBe(
       "https://shop.example.com/admin/accept-invite?token=tok",
     );
+  });
+});
+
+describe("buildAdminMobileInstallUrl", () => {
+  const env = process.env;
+
+  beforeEach(() => {
+    process.env = { ...env };
+  });
+
+  afterEach(() => {
+    process.env = env;
+  });
+
+  it("uses ADMIN_ORIGIN for standalone staff host", () => {
+    process.env.ADMIN_ORIGIN = "https://admin.example.com";
+    expect(buildAdminMobileInstallUrl()).toBe("https://admin.example.com/install");
+  });
+
+  it("falls back to monolith /admin/install path", () => {
+    delete process.env.ADMIN_ORIGIN;
+    delete process.env.VITE_ADMIN_ORIGIN;
+    process.env.APP_ORIGIN = "https://shop.example.com";
+    expect(buildAdminMobileInstallUrl()).toBe("https://shop.example.com/admin/install");
   });
 });
 

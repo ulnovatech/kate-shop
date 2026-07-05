@@ -17,6 +17,7 @@ import {
 } from "@kate/api/admin-mobile-release-github.server";
 import { suggestNextAdminMobileVersionName } from "@kate/domain/admin-mobile-release-job";
 import { writeAuditLog } from "@kate/api/audit.server";
+import { buildAdminMobileInstallUrl } from "@kate/api/staff-urls";
 
 /** Public release manifest for in-app update checks (no auth). */
 export const getAdminMobileAndroidRelease = createServerFn({ method: "GET" }).handler(async () => {
@@ -32,7 +33,7 @@ export const getAdminMobileReleaseForStaff = createServerFn({ method: "GET" })
     const job = await readAdminMobileReleaseJob();
     return {
       release,
-      installUrl: release?.apkUrl ?? null,
+      installUrl: release ? buildAdminMobileInstallUrl() : null,
       activeJob: job && job.status !== "published" && job.status !== "idle" ? job : null,
     };
   });
@@ -53,7 +54,7 @@ export const getAdminMobileReleasePublishPanel = createServerFn({ method: "GET" 
       githubTokenPresent: tokenPresent,
       githubError: github.error,
       release,
-      installUrl: release?.apkUrl ?? null,
+      installUrl: release ? buildAdminMobileInstallUrl() : null,
       suggestedVersionName: suggestNextAdminMobileVersionName(release?.versionName),
       job,
     };

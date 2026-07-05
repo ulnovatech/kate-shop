@@ -3,13 +3,28 @@
  */
 import { STAFF_MOBILE_LOGIN_CALLBACK } from "@kate/domain/staff-mobile-auth";
 
-export function buildStaffInviteUrl(token: string): string {
+function resolveAdminWebOrigin(): string | null {
   const admin = process.env.ADMIN_ORIGIN?.trim() || process.env.VITE_ADMIN_ORIGIN?.trim();
+  return admin ? admin.replace(/\/$/, "") : null;
+}
+
+export function buildStaffInviteUrl(token: string): string {
+  const admin = resolveAdminWebOrigin();
   if (admin) {
-    return `${admin.replace(/\/$/, "")}/accept-invite?token=${encodeURIComponent(token)}`;
+    return `${admin}/accept-invite?token=${encodeURIComponent(token)}`;
   }
   const shop = (process.env.APP_ORIGIN ?? "http://localhost:5173").replace(/\/$/, "");
   return `${shop}/admin/accept-invite?token=${encodeURIComponent(token)}`;
+}
+
+/** Short public URL for sharing the latest APK (WhatsApp-safe). */
+export function buildAdminMobileInstallUrl(): string {
+  const admin = resolveAdminWebOrigin();
+  if (admin) {
+    return `${admin}/install`;
+  }
+  const shop = (process.env.APP_ORIGIN ?? "http://localhost:5173").replace(/\/$/, "");
+  return `${shop}/admin/install`;
 }
 
 export function staffAuthRedirectOrigins(): string[] {

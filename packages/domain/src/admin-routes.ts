@@ -2,6 +2,7 @@ import type { AdminPermission } from "./rbac";
 import {
   ADMIN_ACCEPT_INVITE_PATH,
   ADMIN_BASE_PATH,
+  ADMIN_INSTALL_PATH,
   ADMIN_LOGIN_PATH,
   ADMIN_LOGIN_CALLBACK_PATH,
   ADMIN_SETUP_PATH,
@@ -14,6 +15,7 @@ export const ADMIN_PUBLIC_PATHS = [
   ADMIN_LOGIN_CALLBACK_PATH,
   ADMIN_SETUP_PATH,
   ADMIN_ACCEPT_INVITE_PATH,
+  ADMIN_INSTALL_PATH,
 ] as const;
 
 export type AdminRouteStatic = {

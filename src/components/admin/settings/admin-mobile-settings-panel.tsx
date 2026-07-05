@@ -34,8 +34,8 @@ export function AdminMobileSettingsPanel() {
         <div>
           <h2 className="type-h3">Staff install link</h2>
           <p className="mt-1 type-body-sm text-muted-foreground">
-            Share with new team members. Existing staff get updates inside the app after you
-            publish.
+            Share with new team members. Uses a short link that works in WhatsApp. Existing staff
+            get updates inside the app after you publish.
           </p>
         </div>
         {isLoading ? (

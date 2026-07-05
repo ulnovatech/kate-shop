@@ -21,6 +21,7 @@ export const ADMIN_LOGIN_PATH = adminUrl("/login");
 export const ADMIN_SETUP_PATH = adminUrl("/setup");
 export const ADMIN_ACCEPT_INVITE_PATH = adminUrl("/accept-invite");
 export const ADMIN_LOGIN_CALLBACK_PATH = adminUrl("/login-callback");
+export const ADMIN_INSTALL_PATH = adminUrl("/install");
 export const ADMIN_DASHBOARD_PATH = adminUrl("/");
 
 /** TanStack Router target for product edit (monolith + standalone). */

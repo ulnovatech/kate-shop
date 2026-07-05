@@ -6,6 +6,10 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import {
+  adminMobileInstallResponse,
+  isAdminMobileInstallPath,
+} from "./lib/admin-mobile-install.server";
 import { healthCheckResponse, isHealthPath } from "./lib/observability/health.server";
 import {
   bindRequestId,
@@ -74,6 +78,10 @@ export default {
     }
 
     const requestId = resolveRequestId(request.headers.get(getRequestIdHeaderName()));
+
+    if (isAdminMobileInstallPath(url.pathname)) {
+      return withRequestId(await adminMobileInstallResponse(), requestId);
+    }
     bindRequestId(requestId);
     const started = Date.now();
 
