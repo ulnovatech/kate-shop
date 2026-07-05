@@ -7,8 +7,8 @@ import {
 } from "./admin-route-catalog";
 
 describe("ADMIN_ROUTE_CATALOG", () => {
-  it("lists 19 staff routes for C14 parity", () => {
-    expect(ADMIN_ROUTE_CATALOG).toHaveLength(19);
+  it("lists 20 staff routes for C14 parity", () => {
+    expect(ADMIN_ROUTE_CATALOG).toHaveLength(20);
   });
 
   it("has unique ids and paths", () => {
@@ -24,12 +24,12 @@ describe("ADMIN_ROUTE_CATALOG", () => {
     expect(adminRoutesInArea("catalog")).toHaveLength(4);
     expect(adminRoutesInArea("orders")).toHaveLength(3);
     expect(adminRoutesInArea("money")).toHaveLength(2);
-    expect(adminRoutesInArea("ops")).toHaveLength(3);
+    expect(adminRoutesInArea("ops")).toHaveLength(4);
     expect(adminRoutesInArea("team")).toHaveLength(3);
   });
 
   it("marks public auth routes", () => {
     expect(ADMIN_PUBLIC_ROUTE_IDS).toEqual(["login", "setup", "accept-invite"]);
-    expect(ADMIN_PROTECTED_ROUTE_CATALOG).toHaveLength(16);
+    expect(ADMIN_PROTECTED_ROUTE_CATALOG).toHaveLength(17);
   });
 });
