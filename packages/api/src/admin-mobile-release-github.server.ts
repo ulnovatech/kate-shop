@@ -3,6 +3,9 @@
  */
 const WORKFLOW_FILE = "release-admin-apk.yml";
 const DEFAULT_REPO = "ulnovatech/kate-shop";
+/** GitHub REST API requires a User-Agent; Cloudflare Worker fetch does not send one by default. */
+const GITHUB_USER_AGENT =
+  process.env.KATE_GITHUB_USER_AGENT?.trim() || "kate-admin-mobile-release (ulnovatech/kate-shop)";
 
 export type GitHubWorkflowRun = {
   id: number;
@@ -33,6 +36,9 @@ export function formatGithubReleaseError(status: number, body: string): string {
   const repo = resolveGithubRepo();
 
   if (status === 401 || status === 403) {
+    if (detail.toLowerCase().includes("user-agent")) {
+      return `GitHub blocked the release request (${status}): missing User-Agent header. Redeploy admin — this is fixed in the latest build.`;
+    }
     return `GitHub release token was rejected (${status}). Set KATE_GH_RELEASE_TOKEN on the admin Worker with Actions read and write access to ${repo}, then redeploy. GitHub: ${detail}`;
   }
 
@@ -87,6 +93,7 @@ async function githubFetch(path: string, init?: RequestInit): Promise<Response> 
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${token}`,
+      "User-Agent": GITHUB_USER_AGENT,
       "X-GitHub-Api-Version": "2022-11-28",
       ...(init?.headers ?? {}),
     },
