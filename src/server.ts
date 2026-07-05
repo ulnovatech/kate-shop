@@ -80,7 +80,21 @@ export default {
     const requestId = resolveRequestId(request.headers.get(getRequestIdHeaderName()));
 
     if (isAdminMobileInstallPath(url.pathname)) {
-      return withRequestId(await adminMobileInstallResponse(), requestId);
+      bindRequestId(requestId);
+      try {
+        return withRequestId(await adminMobileInstallResponse(), requestId);
+      } catch (error) {
+        logServerError(error, { method: request.method, path: url.pathname, source: "install" });
+        return withRequestId(
+          new Response(renderErrorPage(), {
+            status: 500,
+            headers: { "content-type": "text/html; charset=utf-8" },
+          }),
+          requestId,
+        );
+      } finally {
+        clearRequestId();
+      }
     }
     bindRequestId(requestId);
     const started = Date.now();

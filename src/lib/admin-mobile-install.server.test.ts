@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   adminMobileInstallResponse,
   isAdminMobileInstallPath,
+  sanitizeAdminMobileInstallRedirectUrl,
 } from "./admin-mobile-install.server";
 
 vi.mock("@kate/api/admin-mobile-release.server", () => ({
@@ -25,12 +26,20 @@ describe("isAdminMobileInstallPath", () => {
   });
 });
 
+describe("sanitizeAdminMobileInstallRedirectUrl", () => {
+  it("strips control characters from stored APK URLs", () => {
+    expect(
+      sanitizeAdminMobileInstallRedirectUrl("https://example.supabase.co/storage/app.apk\r\n"),
+    ).toBe("https://example.supabase.co/storage/app.apk");
+  });
+});
+
 describe("adminMobileInstallResponse", () => {
   it("redirects to the published APK", async () => {
     readRelease.mockResolvedValueOnce({
       versionName: "1.0.1",
       versionCode: 1001,
-      apkUrl: "https://cdn.example.com/app.apk",
+      apkUrl: "https://cdn.example.com/app.apk\r\n",
       sha256: "abc",
       releaseNotes: "Update",
       publishedAt: "2026-01-01T00:00:00.000Z",

@@ -20,6 +20,19 @@ describe("parseAdminMobileRelease", () => {
     expect(parseAdminMobileRelease(null)).toBeNull();
     expect(parseAdminMobileRelease({ versionName: "1.0.0" })).toBeNull();
   });
+
+  it("strips control characters from apkUrl", () => {
+    const release = parseAdminMobileRelease({
+      versionName: "1.0.1",
+      versionCode: 1010,
+      apkUrl: "https://example.com/app.apk\n",
+      sha256: "abc",
+      releaseNotes: "Fixes",
+      publishedAt: "2026-07-05T00:00:00.000Z",
+      applicationId: "com.kate.admin",
+    });
+    expect(release?.apkUrl).toBe("https://example.com/app.apk");
+  });
 });
 
 describe("suggestNextAdminMobileVersionName", () => {

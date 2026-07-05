@@ -25,6 +25,8 @@ if (!url || !serviceKey) {
   process.exit(1);
 }
 
+const supabaseOrigin = url.trim().replace(/\/$/, "");
+
 const version = resolveAdminMobileVersion(process.env);
 
 let artifactPath = join(distDir, version.artifactName);
@@ -48,7 +50,7 @@ console.log(`  Artifact: ${artifactPath}`);
 console.log(`  Storage:  ${bucket}/${storagePath}`);
 
 const uploadRes = await fetch(
-  `${url}/storage/v1/object/${bucket}/${encodeURIComponent(storagePath).replace(/%2F/g, "/")}`,
+  `${supabaseOrigin}/storage/v1/object/${bucket}/${encodeURIComponent(storagePath).replace(/%2F/g, "/")}`,
   {
     method: "POST",
     headers: {
@@ -67,7 +69,7 @@ if (!uploadRes.ok) {
   process.exit(1);
 }
 
-const apkUrl = `${url}/storage/v1/object/public/${bucket}/${storagePath}`;
+const apkUrl = `${supabaseOrigin}/storage/v1/object/public/${bucket}/${storagePath}`;
 const publishedAt = new Date().toISOString();
 
 const manifest = {
@@ -80,7 +82,7 @@ const manifest = {
   applicationId: version.applicationId,
 };
 
-const upsertRes = await fetch(`${url}/rest/v1/system_config?on_conflict=key`, {
+const upsertRes = await fetch(`${supabaseOrigin}/rest/v1/system_config?on_conflict=key`, {
   method: "POST",
   headers: {
     apikey: serviceKey,

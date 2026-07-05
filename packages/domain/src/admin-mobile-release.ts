@@ -28,7 +28,7 @@ export function parseAdminMobileRelease(value: unknown): AdminMobileAndroidRelea
     typeof row.versionCode === "number"
       ? row.versionCode
       : Number.parseInt(String(row.versionCode ?? ""), 10);
-  const apkUrl = typeof row.apkUrl === "string" ? row.apkUrl.trim() : "";
+  const apkUrl = typeof row.apkUrl === "string" ? row.apkUrl.trim().replace(/[\r\n\t\0]/g, "") : "";
   const sha256 = typeof row.sha256 === "string" ? row.sha256.trim() : "";
   const releaseNotes = typeof row.releaseNotes === "string" ? row.releaseNotes : "";
   const publishedAt = typeof row.publishedAt === "string" ? row.publishedAt : "";
