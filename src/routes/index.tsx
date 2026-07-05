@@ -137,11 +137,11 @@ function Home() {
               {shopName}
             </span>
             <h1 className="mt-5 font-heading text-4xl font-semibold leading-tight sm:text-5xl md:text-6xl">
-              {settings?.hero_title ?? "Timeless jewelry, crafted in Kampala"}
+              {settings?.hero_title ?? "Good taste, in one place."}
             </h1>
             <p className="mt-5 max-w-md text-base text-cream/80 sm:text-lg">
               {settings?.hero_subtitle ??
-                "Discover handpicked earrings, necklaces, watches, bangles and rings — delivered across Kampala, Uganda."}
+                "Jewelry, clothing, food stuffs and more — Kate's has what you're looking for."}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">
