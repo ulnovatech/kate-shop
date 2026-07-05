@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  CheckCircle2,
-  ExternalLink,
-  Loader2,
-  Rocket,
-  Sparkles,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, ExternalLink, Loader2, Rocket, Sparkles, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   dismissAdminMobileReleaseJob,
@@ -231,8 +224,7 @@ export function AdminMobileReleasePublisher() {
     );
   }
 
-  const canPublish =
-    /^\d+\.\d+\.\d+$/.test(versionName.trim()) && releaseNotes.trim().length >= 3;
+  const canPublish = /^\d+\.\d+\.\d+$/.test(versionName.trim()) && releaseNotes.trim().length >= 3;
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card shadow-elevated">
@@ -268,7 +260,9 @@ export function AdminMobileReleasePublisher() {
                 Current published: {data.release.versionName}
               </p>
             ) : (
-              <p className="mt-1.5 text-xs text-muted-foreground">First release for staff devices</p>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                First release for staff devices
+              </p>
             )}
           </div>
           <div>

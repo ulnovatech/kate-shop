@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  isNewerAdminMobileRelease,
-  parseAdminMobileRelease,
-} from "./admin-mobile-release";
+import { isNewerAdminMobileRelease, parseAdminMobileRelease } from "./admin-mobile-release";
 import { suggestNextAdminMobileVersionName } from "./admin-mobile-release-job";
 
 describe("parseAdminMobileRelease", () => {

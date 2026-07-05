@@ -67,10 +67,7 @@ export const publishAdminMobileRelease = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const auth = context.auth as { userId: string };
     const existingJob = await readAdminMobileReleaseJob();
-    if (
-      existingJob &&
-      (existingJob.status === "queued" || existingJob.status === "building")
-    ) {
+    if (existingJob && (existingJob.status === "queued" || existingJob.status === "building")) {
       throw new Error("A release is already in progress. Wait for it to finish.");
     }
 
@@ -133,7 +130,7 @@ export const refreshAdminMobileReleaseJob = createServerFn({ method: "GET" })
       return { job, release: await readAdminMobileAndroidRelease() };
     }
 
-    let run =
+    const run =
       job.workflowRunId > 0
         ? await getAdminMobileReleaseWorkflowRun(job.workflowRunId)
         : await findAdminMobileReleaseRunAfter(job.triggeredAt);
@@ -155,8 +152,7 @@ export const refreshAdminMobileReleaseJob = createServerFn({ method: "GET" })
       workflowRunId: run.id,
       status: manifestMatches ? ("published" as const) : mapped,
       conclusion: run.conclusion,
-      completedAt:
-        run.status === "completed" ? run.updated_at : (job.completedAt ?? null),
+      completedAt: run.status === "completed" ? run.updated_at : (job.completedAt ?? null),
       errorMessage:
         mapped === "failed"
           ? `GitHub workflow ${run.conclusion ?? "failed"}. Open the run log for details.`

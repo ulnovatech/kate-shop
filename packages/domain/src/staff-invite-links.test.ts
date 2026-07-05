@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildStaffInviteDeepLink,
-  parseStaffInviteTokenFromUrl,
-} from "./staff-invite-links";
+import { buildStaffInviteDeepLink, parseStaffInviteTokenFromUrl } from "./staff-invite-links";
 
 describe("staff invite deep links", () => {
   it("builds invite deep link", () => {
@@ -16,8 +13,8 @@ describe("staff invite deep links", () => {
   });
 
   it("parses token from https invite url", () => {
-    expect(
-      parseStaffInviteTokenFromUrl("https://admin.example.com/accept-invite?token=xyz"),
-    ).toBe("xyz");
+    expect(parseStaffInviteTokenFromUrl("https://admin.example.com/accept-invite?token=xyz")).toBe(
+      "xyz",
+    );
   });
 });

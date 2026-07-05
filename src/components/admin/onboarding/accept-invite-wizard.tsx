@@ -29,9 +29,7 @@ import { StaffInviteMobileGate } from "./staff-invite-mobile-gate";
 import { StaffWelcomeChecklist } from "./go-live-checklist";
 import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { isAndroidMobileBrowser } from "@/lib/staff-invite-mobile";
-import {
-  savePendingStaffInviteToken,
-} from "@/lib/staff-invite-pending";
+import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 import { completeStaffInviteOnboarding } from "@/components/staff-invite-resume-bridge";
 import { cn } from "@/lib/utils";
 

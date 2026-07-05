@@ -109,11 +109,13 @@ export function StaffAppUpdatePrompt() {
 
         <div className="space-y-4 px-6 py-5">
           {release.releaseNotes ? (
-            <p className="whitespace-pre-wrap text-sm text-muted-foreground">{release.releaseNotes}</p>
+            <p className="whitespace-pre-wrap text-sm text-muted-foreground">
+              {release.releaseNotes}
+            </p>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Tap update to download and install the latest app shell. Your sign-in and data stay
-              on the server.
+              Tap update to download and install the latest app shell. Your sign-in and data stay on
+              the server.
             </p>
           )}
           <p className="text-xs text-muted-foreground">

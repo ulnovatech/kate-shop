@@ -1,12 +1,7 @@
 /** Tracks an in-flight GitHub Actions mobile release job. */
 export const ADMIN_MOBILE_RELEASE_JOB_CONFIG_KEY = "admin_mobile_release_job";
 
-export type AdminMobileReleaseJobStatus =
-  | "idle"
-  | "queued"
-  | "building"
-  | "published"
-  | "failed";
+export type AdminMobileReleaseJobStatus = "idle" | "queued" | "building" | "published" | "failed";
 
 export type AdminMobileReleaseJob = {
   workflowRunId: number;
@@ -37,8 +32,7 @@ export function parseAdminMobileReleaseJob(value: unknown): AdminMobileReleaseJo
   const releaseNotes = typeof row.releaseNotes === "string" ? row.releaseNotes : "";
   const buildVariant = row.buildVariant === "debug" ? "debug" : "release";
   const triggeredAt = typeof row.triggeredAt === "string" ? row.triggeredAt : "";
-  const triggeredByUserId =
-    typeof row.triggeredByUserId === "string" ? row.triggeredByUserId : "";
+  const triggeredByUserId = typeof row.triggeredByUserId === "string" ? row.triggeredByUserId : "";
   const status = row.status;
   const validStatuses = ["idle", "queued", "building", "published", "failed"] as const;
   if (
