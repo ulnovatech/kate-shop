@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/password-input";
 import { Label } from "@/components/ui/label";
 import { AdminPinInput, isStaffPinComplete } from "@/components/admin-pin-input";
@@ -34,7 +35,7 @@ import { completeStaffInviteOnboarding } from "@/components/staff-invite-resume-
 import { cn } from "@/lib/utils";
 
 const INVITE_STEPS = [
-  { id: "credentials", label: "Account" },
+  { id: "account", label: "Account" },
   { id: "verify-email", label: "Verify email" },
   { id: "pin", label: "PIN" },
   { id: "welcome", label: "Welcome" },
@@ -42,8 +43,9 @@ const INVITE_STEPS = [
 
 type InviteStepId = (typeof INVITE_STEPS)[number]["id"];
 
-const credentialsSchema = z
+const accountSchema = z
   .object({
+    email: z.string().trim().email("Enter a valid work email"),
     password: z.string().min(8, "Min 8 characters"),
     confirmPassword: z.string(),
   })
@@ -52,7 +54,7 @@ const credentialsSchema = z
     path: ["confirmPassword"],
   });
 
-type CredentialsForm = z.infer<typeof credentialsSchema>;
+type AccountForm = z.infer<typeof accountSchema>;
 
 type AcceptInviteWizardProps = {
   token: string;
@@ -60,14 +62,14 @@ type AcceptInviteWizardProps = {
 
 export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
   const navigate = useNavigate();
-  const [inviteEmail, setInviteEmail] = useState<string | null>(null);
   const [inviteRole, setInviteRole] = useState<string | null>(null);
   const [invalid, setInvalid] = useState(false);
   const [validating, setValidating] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [step, setStep] = useState<InviteStepId>("credentials");
+  const [step, setStep] = useState<InviteStepId>("account");
   const [emailVerificationToken, setEmailVerificationToken] = useState<string | null>(null);
   const [oauthUserId, setOauthUserId] = useState<string | null>(null);
+  const [oauthEmail, setOauthEmail] = useState<string | null>(null);
   const [googleBusy, setGoogleBusy] = useState(false);
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
@@ -76,10 +78,12 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
     () => isNativeStaffApp() || !isAndroidMobileBrowser(),
   );
 
-  const form = useForm<CredentialsForm>({
-    resolver: zodResolver(credentialsSchema),
-    defaultValues: { password: "", confirmPassword: "" },
+  const form = useForm<AccountForm>({
+    resolver: zodResolver(accountSchema),
+    defaultValues: { email: "", password: "", confirmPassword: "" },
   });
+
+  const staffEmail = oauthEmail ?? form.watch("email");
 
   useEffect(() => {
     if (token) savePendingStaffInviteToken(token);
@@ -97,7 +101,6 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
           setInvalid(true);
           return;
         }
-        setInviteEmail(r.email);
         setInviteRole(r.role);
       })
       .catch(() => setInvalid(true))
@@ -105,7 +108,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
   }, [token]);
 
   useEffect(() => {
-    if (validating || !inviteEmail) return;
+    if (validating) return;
     void (async () => {
       const flow = loadStaffOnboardingOAuth();
       if (flow?.kind !== "invite" || flow.token !== token) return;
@@ -113,24 +116,19 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       const session = await getGoogleOnboardingSession();
       if (!session) return;
 
-      if (session.email.toLowerCase() !== inviteEmail.toLowerCase()) {
-        clearStaffOnboardingOAuth();
-        await supabase.auth.signOut();
-        toast.error("Use the Google account that matches this invite email.");
-        return;
-      }
-
       setOauthUserId(session.userId);
+      setOauthEmail(session.email);
+      form.setValue("email", session.email);
       setStep("pin");
     })();
-  }, [validating, inviteEmail, token]);
+  }, [validating, token, form]);
 
   const stepIndex = INVITE_STEPS.findIndex((s) => s.id === step);
   const isFirst = stepIndex === 0;
   const isLast = stepIndex === INVITE_STEPS.length - 1;
 
   const acceptInvite = async () => {
-    if (!inviteEmail) return false;
+    if (!staffEmail.trim()) return false;
     if (!oauthUserId && !emailVerificationToken) return false;
     const password = form.getValues("password");
     if (!isStaffPinComplete(pin)) {
@@ -147,6 +145,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       const result = await acceptAdminInvite({
         data: {
           token,
+          email: oauthUserId ? undefined : staffEmail,
           password: oauthUserId ? undefined : password,
           emailVerificationToken: oauthUserId ? undefined : (emailVerificationToken ?? undefined),
           oauthUserId: oauthUserId ?? undefined,
@@ -154,7 +153,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
         },
       });
       if (!oauthUserId) {
-        await establishStaffPinSession(inviteEmail, pin);
+        await establishStaffPinSession(staffEmail, pin);
       }
       clearStaffOnboardingOAuth();
       completeStaffInviteOnboarding();
@@ -170,10 +169,14 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
   };
 
   const goNext = async () => {
-    if (step === "credentials") {
+    if (step === "account") {
       const valid = await form.trigger();
       if (!valid) return;
       setEmailVerificationToken(null);
+      if (oauthUserId) {
+        setStep("pin");
+        return;
+      }
       setStep("verify-email");
       return;
     }
@@ -220,7 +223,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
     );
   }
 
-  if (validating || !inviteEmail) {
+  if (validating) {
     return (
       <div className="flex min-h-screen items-center justify-center type-body-sm text-muted-foreground">
         Validating invite…
@@ -232,7 +235,6 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
     return (
       <StaffInviteMobileGate
         token={token}
-        inviteEmail={inviteEmail}
         inviteRole={inviteRole}
         onContinueInBrowser={() => setSkipMobileGate(true)}
       />
@@ -246,20 +248,42 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       title="Join the team"
       description={
         <>
-          {inviteEmail} · role: <span className="font-medium text-foreground">{inviteRole}</span>
+          One-time link · role:{" "}
+          <span className="font-medium text-foreground">{inviteRole ?? "staff"}</span>
         </>
       }
       wide
     >
       <AdminOnboardingStepper steps={[...INVITE_STEPS]} current={step} />
 
-      {step === "credentials" ? (
+      {step === "account" ? (
         <div className="space-y-4">
+          <div>
+            <Label htmlFor="invite-email">Work email</Label>
+            <Input
+              id="invite-email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              disabled={Boolean(oauthUserId) || busy}
+              className={cn("mt-1.5", ADMIN_AUTH_FIELD_CLASS)}
+              {...form.register("email")}
+            />
+            <p className="mt-1 type-caption text-muted-foreground">
+              Use the address you want for daily sign-in and recovery.
+            </p>
+            {form.formState.errors.email ? (
+              <p className="mt-1 type-caption text-destructive">
+                {form.formState.errors.email.message}
+              </p>
+            ) : null}
+          </div>
           <div>
             <Label htmlFor="invite-password">Choose password</Label>
             <PasswordInput
               id="invite-password"
               autoComplete="new-password"
+              disabled={Boolean(oauthUserId)}
               {...form.register("password")}
               className={cn("mt-1.5", ADMIN_AUTH_FIELD_CLASS)}
             />
@@ -277,6 +301,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
             <PasswordInput
               id="invite-confirm"
               autoComplete="new-password"
+              disabled={Boolean(oauthUserId)}
               {...form.register("confirmPassword")}
               className={cn("mt-1.5", ADMIN_AUTH_FIELD_CLASS)}
             />
@@ -293,8 +318,9 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
 
       {step === "verify-email" ? (
         <AdminEmailVerifyStep
-          email={inviteEmail}
+          email={staffEmail}
           purpose="invite_accept"
+          inviteToken={token}
           disabled={busy}
           onVerified={(tokenValue) => {
             setEmailVerificationToken(tokenValue);
@@ -306,7 +332,15 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       {step === "pin" ? (
         <div className="space-y-4">
           <p className="type-body-sm text-muted-foreground">
-            Choose a 5-digit PIN for daily sign-in.
+            Choose a 5-digit PIN for daily sign-in
+            {staffEmail ? (
+              <>
+                {" "}
+                as <span className="font-medium text-foreground">{staffEmail}</span>.
+              </>
+            ) : (
+              "."
+            )}
           </p>
           <div>
             <Label>Choose PIN</Label>

@@ -12,7 +12,7 @@ export type Database = {
         Row: {
           created_at: string;
           created_by: string | null;
-          email: string;
+          email: string | null;
           expires_at: string;
           id: string;
           role: Database["public"]["Enums"]["app_role"];
@@ -23,7 +23,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           created_by?: string | null;
-          email: string;
+          email?: string | null;
           expires_at: string;
           id?: string;
           role: Database["public"]["Enums"]["app_role"];
@@ -34,7 +34,7 @@ export type Database = {
         Update: {
           created_at?: string;
           created_by?: string | null;
-          email?: string;
+          email?: string | null;
           expires_at?: string;
           id?: string;
           role?: Database["public"]["Enums"]["app_role"];

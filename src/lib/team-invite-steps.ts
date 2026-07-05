@@ -1,7 +1,6 @@
 export const TEAM_INVITE_STEPS = [
-  { id: "email", label: "Email" },
   { id: "role", label: "Role" },
-  { id: "send", label: "Send" },
+  { id: "link", label: "Share link" },
 ] as const;
 
 export type TeamInviteStepId = (typeof TEAM_INVITE_STEPS)[number]["id"];

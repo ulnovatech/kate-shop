@@ -3,10 +3,21 @@ import { z } from "zod";
 
 const purposeSchema = z.enum(["signup", "forgot_pin", "invite_accept"]);
 
-const requestSchema = z.object({
-  email: z.string().trim().email(),
-  purpose: purposeSchema,
-});
+const requestSchema = z
+  .object({
+    email: z.string().trim().email(),
+    purpose: purposeSchema,
+    inviteToken: z.string().min(16).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.purpose === "invite_accept" && !data.inviteToken) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Invite token is required.",
+        path: ["inviteToken"],
+      });
+    }
+  });
 
 const verifySchema = z.object({
   email: z.string().trim().email(),

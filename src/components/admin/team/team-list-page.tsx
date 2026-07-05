@@ -23,7 +23,7 @@ export function TeamListPage() {
     <div className="space-y-section">
       <AdminPageHeader
         title="Team invites"
-        description="Invite staff with a role from your permission matrix. Links expire in 7 days and work once."
+        description="Invite staff with a role. Share a one-time link — they choose their email when joining. Links expire in 7 days."
         meta={`${invites.length} invite${invites.length === 1 ? "" : "s"}`}
       />
 
@@ -47,7 +47,13 @@ export function TeamListPage() {
                 className="flex flex-wrap items-center justify-between gap-2 px-4 py-3.5 text-sm sm:px-5"
               >
                 <span>
-                  <span className="font-medium">{inv.email}</span>
+                  <span className="font-medium">
+                    {inv.used_at
+                      ? (inv.email ?? "Joined teammate")
+                      : inv.email
+                        ? inv.email
+                        : "Open invite link"}
+                  </span>
                   <span className="text-muted-foreground">
                     {" "}
                     ·{" "}

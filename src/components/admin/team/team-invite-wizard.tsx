@@ -8,15 +8,12 @@ import { AdminWizardShell } from "@/components/admin/admin-wizard-shell";
 import { AdminWizardStepGuide } from "@/components/admin/admin-wizard-step-guide";
 import { CopyButton } from "@/components/copy-button";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { createAdminInvite } from "@/lib/api/invites.functions";
 import { listInvitableRoles } from "@/lib/api/roles.functions";
 import { humanizeError } from "@/lib/errors";
 import { TEAM_INVITE_STEPS, type TeamInviteStepId } from "@/lib/team-invite-steps";
 
 const schema = z.object({
-  email: z.string().trim().email("Enter a valid email"),
   role_id: z.string().uuid("Select a role"),
 });
 
@@ -46,10 +43,10 @@ export function TeamInviteWizard({
   onCancel,
 }: TeamInviteWizardProps) {
   const qc = useQueryClient();
-  const [step, setStep] = useState<TeamInviteStepId>("email");
+  const [step, setStep] = useState<TeamInviteStepId>("role");
   const [busy, setBusy] = useState(false);
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
-  const [sentEmail, setSentEmail] = useState<string | null>(null);
+  const [roleName, setRoleName] = useState<string | null>(null);
 
   const { data: fetchedRoles = [] } = useQuery({
     queryKey: ["invitable-roles"],
@@ -62,7 +59,7 @@ export function TeamInviteWizard({
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { email: "", role_id: defaultRoleId },
+    defaultValues: { role_id: defaultRoleId },
   });
 
   useEffect(() => {
@@ -75,44 +72,32 @@ export function TeamInviteWizard({
   const selectedRole = invitableRoles.find((r) => r.id === values.role_id);
 
   const resetWizard = () => {
-    setStep("email");
+    setStep("role");
     setInviteUrl(null);
-    setSentEmail(null);
-    form.reset({ email: "", role_id: defaultRoleId });
+    setRoleName(null);
+    form.reset({ role_id: defaultRoleId });
   };
 
   const goNext = async () => {
-    if (step === "email") {
-      const valid = await form.trigger("email");
-      if (!valid) return;
-      setStep("role");
-      return;
-    }
     if (step === "role") {
       const valid = await form.trigger("role_id");
       if (!valid) return;
-      setStep("send");
+      setStep("link");
     }
   };
 
   const goBack = () => {
-    if (step === "role") setStep("email");
-    else if (step === "send") setStep("role");
-  };
-
-  const handleEmailBlur = async () => {
-    const valid = await form.trigger("email");
-    if (valid && step === "email") setStep("role");
+    if (step === "link" && !inviteUrl) setStep("role");
   };
 
   const handleRoleSelect = (roleId: string) => {
     form.setValue("role_id", roleId, { shouldValidate: true });
     if (step === "role") {
-      window.setTimeout(() => setStep("send"), 150);
+      window.setTimeout(() => setStep("link"), 150);
     }
   };
 
-  const sendInvite = async () => {
+  const createInviteLink = async () => {
     const valid = await form.trigger();
     if (!valid) return;
 
@@ -120,8 +105,8 @@ export function TeamInviteWizard({
     try {
       const result = await createAdminInvite({ data: form.getValues() });
       setInviteUrl(result.inviteUrl);
-      setSentEmail(result.email);
-      toast.success(`Invite created for ${result.email}`);
+      setRoleName(result.roleName);
+      toast.success("Invite link created — share it once with your teammate.");
       void qc.invalidateQueries({ queryKey: ["admin-invites"] });
       onInviteCreated?.();
     } catch (e: unknown) {
@@ -147,49 +132,23 @@ export function TeamInviteWizard({
       steps={[...TEAM_INVITE_STEPS]}
       currentStep={step}
       title="Invite teammate"
-      subtitle="One link — install the app and join in the same flow."
-      isFirstStep={step === "email"}
-      isLastStep={step === "send"}
-      onBack={step !== "email" && !inviteUrl ? goBack : undefined}
-      onNext={step !== "send" ? goNext : undefined}
-      onFinish={inviteUrl ? onComplete : sendInvite}
+      subtitle="One link — they choose their email when signing up."
+      isFirstStep={step === "role"}
+      isLastStep={step === "link"}
+      onBack={step !== "role" && !inviteUrl ? goBack : undefined}
+      onNext={step === "role" ? goNext : undefined}
+      onFinish={inviteUrl ? onComplete : createInviteLink}
       onCancel={onCancel}
       finishLabel={inviteUrl ? "Done" : "Create invite link"}
-      nextDisabled={
-        step === "email" ? !values.email.trim() : step === "role" ? !values.role_id : false
-      }
+      nextDisabled={step === "role" ? !values.role_id : false}
       finishDisabled={busy}
       busy={busy}
     >
-      {step === "email" ? (
-        <div className="max-w-md space-y-3">
-          <AdminWizardStepGuide>
-            Enter their work email — we&apos;ll generate a secure invite link.
-          </AdminWizardStepGuide>
-          <div>
-            <Label htmlFor="invite-email">Work email</Label>
-            <Input
-              id="invite-email"
-              type="email"
-              autoComplete="email"
-              placeholder="name@example.com"
-              className="mt-1.5"
-              {...form.register("email")}
-              onBlur={() => void handleEmailBlur()}
-            />
-            {form.formState.errors.email ? (
-              <p className="mt-1 type-caption text-destructive">
-                {form.formState.errors.email.message}
-              </p>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
       {step === "role" ? (
         <div className="space-y-3">
           <AdminWizardStepGuide>
-            Choose what {values.email || "they"} can access in the admin app.
+            Choose what this teammate can access. They will pick their own work email when they open
+            the link.
           </AdminWizardStepGuide>
           <ul className="grid gap-2 sm:grid-cols-2">
             {invitableRoles.map((role) => {
@@ -220,38 +179,40 @@ export function TeamInviteWizard({
         </div>
       ) : null}
 
-      {step === "send" ? (
+      {step === "link" ? (
         <div className="space-y-3">
           {!inviteUrl ? (
             <AdminWizardStepGuide>
-              Review the details, then share one link — they install Kate Admin and complete signup
-              from the same page.
+              We will generate a one-time link for{" "}
+              <span className="font-medium text-foreground">
+                {selectedRole?.name ?? "this role"}
+              </span>
+              . Share it privately — it expires in 7 days and works once.
             </AdminWizardStepGuide>
           ) : null}
 
           <div className="rounded-lg border bg-muted/30 p-3 text-sm">
             <p>
-              <span className="text-muted-foreground">Email</span>{" "}
-              <span className="font-medium">{values.email}</span>
-            </p>
-            <p className="mt-2">
               <span className="text-muted-foreground">Role</span>{" "}
-              <span className="font-medium">{selectedRole?.name ?? "—"}</span>
+              <span className="font-medium">{roleName ?? selectedRole?.name ?? "—"}</span>
+            </p>
+            <p className="mt-2 text-muted-foreground">
+              Staff choose their own email during signup. No need to collect it here.
             </p>
           </div>
 
           {inviteUrl ? (
             <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
-              <p className="text-sm font-medium">Invite link for {sentEmail}</p>
+              <p className="text-sm font-medium">One-time invite link</p>
               <p className="text-xs text-muted-foreground">
-                Send via WhatsApp or email. On Android, this link installs the app and walks them
-                through signup — no separate download step.
+                Send via WhatsApp or any channel. On Android, this link installs the app and walks
+                them through signup.
               </p>
               <p className="break-all font-mono text-xs text-muted-foreground">{inviteUrl}</p>
               <div className="flex flex-wrap gap-2">
                 <CopyButton text={inviteUrl} label="Copy link" />
                 <Button type="button" variant="outline" size="sm" onClick={resetWizard}>
-                  Invite someone else
+                  Create another link
                 </Button>
               </div>
             </div>

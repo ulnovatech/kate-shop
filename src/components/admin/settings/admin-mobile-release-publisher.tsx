@@ -108,7 +108,13 @@ export function AdminMobileReleasePublisher() {
             action: "manage mobile app releases",
           })}
         </p>
-        <Button type="button" variant="outline" size="sm" className="mt-4" onClick={() => void refetch()}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mt-4"
+          onClick={() => void refetch()}
+        >
           Retry
         </Button>
       </div>

@@ -9,14 +9,12 @@ import { adminPrimaryTouch } from "@/lib/admin-mobile";
 
 type StaffInviteMobileGateProps = {
   token: string;
-  inviteEmail: string;
   inviteRole: string | null;
   onContinueInBrowser: () => void;
 };
 
 export function StaffInviteMobileGate({
   token,
-  inviteEmail,
   inviteRole,
   onContinueInBrowser,
 }: StaffInviteMobileGateProps) {
@@ -73,13 +71,15 @@ export function StaffInviteMobileGate({
                 Join Kate Admin
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">{inviteEmail}</span>
                 {inviteRole ? (
                   <>
-                    {" "}
-                    · <span className="capitalize">{inviteRole}</span>
+                    Role:{" "}
+                    <span className="font-medium capitalize text-foreground">{inviteRole}</span>.
+                    You will choose your work email during signup.
                   </>
-                ) : null}
+                ) : (
+                  "You will choose your work email during signup."
+                )}
               </p>
             </div>
           </div>

@@ -79,8 +79,7 @@ export function permissionsFromStaffAccess(access: StaffAccess | null): AdminPer
       hasPermissionKey(permissionKeys, "catalog", "delete"),
     canManageOrders: hasPermissionKey(permissionKeys, "orders", "view"),
     canManageSettings: shopOwner,
-    canManageTeam:
-      shopOwner || hasPermissionKey(permissionKeys, "team", "manage"),
+    canManageTeam: shopOwner || hasPermissionKey(permissionKeys, "team", "manage"),
     canViewAudit: hasPermissionKey(permissionKeys, "audit", "view"),
     canManageRoles: hasPermissionKey(permissionKeys, "roles", "manage"),
   };

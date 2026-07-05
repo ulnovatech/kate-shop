@@ -13,6 +13,7 @@ type StaffEmailVerifyPurpose = "signup" | "invite_accept" | "forgot_pin";
 type AdminEmailVerifyStepProps = {
   email: string;
   purpose: StaffEmailVerifyPurpose;
+  inviteToken?: string;
   disabled?: boolean;
   onVerified: (verificationToken: string) => void;
 };
@@ -20,6 +21,7 @@ type AdminEmailVerifyStepProps = {
 export function AdminEmailVerifyStep({
   email,
   purpose,
+  inviteToken,
   disabled = false,
   onVerified,
 }: AdminEmailVerifyStepProps) {
@@ -30,7 +32,13 @@ export function AdminEmailVerifyStep({
   const sendCode = async () => {
     setBusy(true);
     try {
-      await requestStaffEmailOtp({ data: { email, purpose } });
+      await requestStaffEmailOtp({
+        data: {
+          email,
+          purpose,
+          ...(inviteToken ? { inviteToken } : {}),
+        },
+      });
       setCodeSent(true);
       toast.success("Verification code sent to your email.");
     } catch (e: unknown) {

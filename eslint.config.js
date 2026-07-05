@@ -47,5 +47,12 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    files: ["src/components/ui/**/*.{ts,tsx}", "packages/ui/src/components/**/*.{ts,tsx}"],
+    rules: {
+      // UI shims re-export package components — fast refresh warnings are noise here.
+      "react-refresh/only-export-components": "off",
+    },
+  },
   eslintPluginPrettier,
 );

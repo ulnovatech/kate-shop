@@ -75,7 +75,11 @@ async function findAuthUserByEmail(email: string) {
   return null;
 }
 
-async function assertCanRequestOtp(email: string, purpose: StaffEmailOtpPurpose): Promise<void> {
+async function assertCanRequestOtp(
+  email: string,
+  purpose: StaffEmailOtpPurpose,
+  inviteToken?: string,
+): Promise<void> {
   const normalized = normalizeStaffEmail(email);
 
   if (purpose === "signup") {
@@ -110,21 +114,19 @@ async function assertCanRequestOtp(email: string, purpose: StaffEmailOtpPurpose)
   }
 
   if (purpose === "invite_accept") {
-    const { data: invite, error } = await supabaseAdmin
-      .from("admin_invites")
-      .select("id, expires_at, used_at")
-      .eq("email", normalized)
-      .is("used_at", null)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (error) throw new Error(error.message);
-    if (!invite) {
-      throw new Error("No pending invite found for this email.");
+    if (!inviteToken?.trim()) {
+      throw new Error("Invite link is required to verify email.");
     }
-    if (new Date(invite.expires_at) < new Date()) {
-      throw new Error("This invite has expired. Ask your shop owner for a new link.");
+
+    const { assertOpenInviteToken } = await import("@kate/api/invites.server");
+    await assertOpenInviteToken(inviteToken);
+
+    const existing = await findAuthUserByEmail(normalized);
+    if (existing) {
+      const access = await loadStaffAccess(existing.id);
+      if (access) {
+        throw new Error("This email already has a staff account. Sign in instead.");
+      }
     }
   }
 }
@@ -136,6 +138,7 @@ export function getStaffEmailOtpDeliveryStatusImpl() {
 export async function requestStaffEmailOtpImpl(data: {
   email: string;
   purpose: StaffEmailOtpPurpose;
+  inviteToken?: string;
 }) {
   const email = normalizeStaffEmail(data.email);
   const purpose = data.purpose;
@@ -154,7 +157,7 @@ export async function requestStaffEmailOtpImpl(data: {
     throw new Error("Too many verification requests. Try again in an hour.");
   }
 
-  await assertCanRequestOtp(email, purpose);
+  await assertCanRequestOtp(email, purpose, data.inviteToken);
 
   const code = generateStaffEmailOtpCode();
   const expiresAt = new Date(Date.now() + STAFF_EMAIL_OTP_TTL_MS).toISOString();

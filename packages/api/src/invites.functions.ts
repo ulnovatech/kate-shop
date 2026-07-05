@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@kate/supabase/client.server";
@@ -10,19 +10,19 @@ import { assertOAuthStaffUser } from "@kate/api/staff-oauth.server";
 import { staffPinSchema } from "@kate/api/staff-pin.server";
 import { auditFromServer } from "@kate/api/audit.server";
 import { hasMatrixPermission } from "@kate/domain/rbac";
+import {
+  assertOpenInviteToken,
+  getOpenInviteByToken,
+  hashInviteToken,
+} from "@kate/api/invites.server";
 
 import { buildStaffInviteUrl } from "./staff-urls";
-
-function hashToken(token: string) {
-  return createHash("sha256").update(token).digest("hex");
-}
 
 function newInviteToken() {
   return randomBytes(32).toString("base64url");
 }
 
 const inviteSchema = z.object({
-  email: z.string().trim().email(),
   role_id: z.string().uuid(),
 });
 
@@ -37,7 +37,7 @@ export const createAdminInvite = createServerFn({ method: "POST" })
 
     const { data: role, error: roleErr } = await supabaseAdmin
       .from("roles")
-      .select("id, slug, is_locked")
+      .select("id, slug, is_locked, name")
       .eq("id", data.role_id)
       .maybeSingle();
 
@@ -52,25 +52,26 @@ export const createAdminInvite = createServerFn({ method: "POST" })
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
     const { error } = await supabaseAdmin.from("admin_invites").insert({
-      email: data.email.toLowerCase(),
+      email: null,
       role: legacyRole,
       role_id: data.role_id,
-      token_hash: hashToken(token),
+      token_hash: hashInviteToken(token),
       expires_at: expiresAt,
       created_by: authUserId,
     });
     if (error) throw new Error(error.message);
 
-    await auditFromServer(authUserId, "invite_created", "invite", data.email.toLowerCase(), null, {
-      email: data.email.toLowerCase(),
+    await auditFromServer(authUserId, "invite_created", "invite", token.slice(0, 8), null, {
       role_id: data.role_id,
       role: legacyRole,
+      role_name: role.name,
       expires_at: expiresAt,
+      link_only: true,
     });
 
     return {
-      email: data.email,
       role: legacyRole,
+      roleName: role.name,
       roleId: data.role_id,
       expiresAt,
       inviteUrl: buildStaffInviteUrl(token),
@@ -80,18 +81,9 @@ export const createAdminInvite = createServerFn({ method: "POST" })
 export const validateInviteToken = createServerFn({ method: "POST" })
   .inputValidator(z.object({ token: z.string().min(16) }))
   .handler(async ({ data }) => {
-    const { data: invite, error } = await supabaseAdmin
-      .from("admin_invites")
-      .select("email, role, expires_at, used_at")
-      .eq("token_hash", hashToken(data.token))
-      .maybeSingle();
-
-    if (error) throw new Error(error.message);
-    if (!invite || invite.used_at) {
-      return { valid: false as const };
-    }
-    if (new Date(invite.expires_at) < new Date()) {
-      return { valid: false as const, reason: "expired" as const };
+    const invite = await getOpenInviteByToken(data.token);
+    if (!invite) {
+      return { valid: false as const, reason: "invalid" as const };
     }
 
     return {
@@ -106,6 +98,7 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
     z
       .object({
         token: z.string().min(16),
+        email: z.string().trim().email().optional(),
         password: z.string().min(8, "Password must be at least 8 characters").optional(),
         emailVerificationToken: z.string().min(16).optional(),
         oauthUserId: z.string().uuid().optional(),
@@ -126,23 +119,29 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
             path: ["password"],
           });
         }
+        if (!data.oauthUserId && !data.email) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Email is required.",
+            path: ["email"],
+          });
+        }
       }),
   )
   .handler(async ({ data }) => {
-    const { data: invite, error: findErr } = await supabaseAdmin
-      .from("admin_invites")
-      .select("id, email, role, role_id, expires_at, used_at")
-      .eq("token_hash", hashToken(data.token))
-      .maybeSingle();
+    const invite = await assertOpenInviteToken(data.token);
 
-    if (findErr) throw new Error(findErr.message);
-    if (!invite || invite.used_at) throw new Error("Invite is invalid or already used.");
-    if (new Date(invite.expires_at) < new Date()) throw new Error("Invite has expired.");
-
-    const email = normalizeStaffEmail(invite.email);
+    let email: string;
     let userId: string;
 
     if (data.oauthUserId) {
+      const { data: oauthUser, error: oauthErr } = await supabaseAdmin.auth.admin.getUserById(
+        data.oauthUserId,
+      );
+      if (oauthErr) throw new Error(oauthErr.message);
+      if (!oauthUser.user?.email) throw new Error("Google account has no email.");
+
+      email = normalizeStaffEmail(oauthUser.user.email);
       await assertOAuthStaffUser(data.oauthUserId, email);
       userId = data.oauthUserId;
       if (data.password) {
@@ -152,6 +151,7 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
         if (pwErr) throw new Error(pwErr.message);
       }
     } else {
+      email = normalizeStaffEmail(data.email!);
       await consumeStaffEmailVerificationToken({
         email,
         purpose: "invite_accept",
@@ -186,19 +186,20 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
     await assignStaffRole(userId, roleId);
     await storeStaffPin(userId, data.pin);
 
+    const usedAt = new Date().toISOString();
     const { error: usedErr } = await supabaseAdmin
       .from("admin_invites")
-      .update({ used_at: new Date().toISOString() })
+      .update({ used_at: usedAt, email })
       .eq("id", invite.id);
     if (usedErr) throw new Error(usedErr.message);
 
     await auditFromServer(userId, "role_assigned", "user", userId, null, {
-      email: invite.email,
+      email,
       role: invite.role,
       via: "invite_accept",
     });
 
-    return { email: invite.email, role: invite.role };
+    return { email, role: invite.role };
   });
 
 export const listAdminInvites = createServerFn({ method: "GET" })

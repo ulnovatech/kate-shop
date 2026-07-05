@@ -20,7 +20,10 @@
     "build:all": "npm run build:storefront && npm run build:admin",
     "sync:storefront-routes": "node scripts/sync-storefront-app-routes.mjs",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
     "supabase:verify": "node scripts/verify-chunk1.mjs",
     "db:ensure-storage": "node scripts/ensure-storage-bucket.mjs",
     "db:migrate": "node scripts/db-migrate.mjs",
@@ -35,6 +38,7 @@
     "db:chunk16": "node scripts/apply-sql-file.mjs supabase/migrations/20260625120000_chunk16_staff_order_views.sql",
     "db:chunk17": "node scripts/apply-sql-file.mjs supabase/migrations/20260625130000_chunk17_staff_pin.sql",
     "db:chunk18-email": "node scripts/apply-sql-file.mjs supabase/migrations/20260701120000_chunk18_staff_email_otp.sql",
+    "db:open-invites": "node scripts/apply-sql-file.mjs supabase/migrations/20260705120000_open_staff_invite_links.sql",
     "staff:set-owner-pin": "node scripts/set-owner-pin.mjs",
     "staff:ensure-owner": "node scripts/ensure-owner-account.mjs",
     "db:c12": "node scripts/apply-sql-file.mjs supabase/migrations/20260622120000_c12_staff_push.sql",
@@ -174,6 +178,12 @@
     "vite": "^7.3.1",
     "vite-plugin-pwa": "^1.3.0",
     "vitest": "^4.1.8",
-    "wrangler": "^4.98.0"
+    "wrangler": "^4.98.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs,json,md,css,yml,yaml}": "prettier --write",
+    "*.{ts,tsx,js,mjs}": "eslint --fix --no-warn-ignored"
   }
 }
