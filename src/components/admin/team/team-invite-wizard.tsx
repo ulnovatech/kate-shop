@@ -132,7 +132,7 @@ export function TeamInviteWizard({
       steps={[...TEAM_INVITE_STEPS]}
       currentStep={step}
       title="Invite teammate"
-      subtitle="One link — they choose their email when signing up."
+      subtitle="Single-use link — works for one person, then expires."
       isFirstStep={step === "role"}
       isLastStep={step === "link"}
       onBack={step !== "role" && !inviteUrl ? goBack : undefined}
@@ -205,8 +205,8 @@ export function TeamInviteWizard({
             <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
               <p className="text-sm font-medium">One-time invite link</p>
               <p className="text-xs text-muted-foreground">
-                Send via WhatsApp or any channel. On Android, this link installs the app and walks
-                them through signup.
+                Single-use link — works for one person, then expires. Send via WhatsApp or any
+                channel. On Android, this link installs the app and walks them through signup.
               </p>
               <p className="break-all font-mono text-xs text-muted-foreground">{inviteUrl}</p>
               <div className="flex flex-wrap gap-2">

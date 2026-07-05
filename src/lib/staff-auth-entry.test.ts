@@ -25,11 +25,10 @@ describe("resolveStaffUnauthenticatedRedirect", () => {
     });
   });
 
-  it("resumes accept-invite when a pending token exists", () => {
+  it("resumes signup when a pending token exists", () => {
     loadPending.mockReturnValue("invite-token-abc123456");
     expect(resolveStaffUnauthenticatedRedirect()).toEqual({
-      to: "/admin/accept-invite",
-      search: { token: "invite-token-abc123456" },
+      to: "/admin/signup",
       replace: true,
     });
   });

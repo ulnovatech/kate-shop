@@ -5,7 +5,7 @@ import { completeStaffAuthFromUrl } from "@/integrations/supabase/staff-mobile-a
 import { AuthCardSkeleton } from "@/components/loading-states";
 import { humanizeError } from "@/lib/errors";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
-import { ADMIN_ACCEPT_INVITE_PATH, ADMIN_JOIN_PATH, ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
+import { ADMIN_JOIN_PATH, ADMIN_SETUP_PATH, ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
 import { loadStaffOnboardingOAuth } from "@/lib/staff-onboarding-oauth";
 
 export const Route = createFileRoute("/admin/login-callback")({
@@ -49,11 +49,7 @@ function StaffLoginCallback() {
       }
 
       if (onboarding?.kind === "invite") {
-        navigate({
-          to: ADMIN_ACCEPT_INVITE_PATH,
-          search: { token: onboarding.token },
-          replace: true,
-        });
+        navigate({ to: ADMIN_SIGNUP_PATH, replace: true });
         return;
       }
 

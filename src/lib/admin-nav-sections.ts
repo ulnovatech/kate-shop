@@ -14,6 +14,7 @@ import {
   Shield,
   Warehouse,
   Smartphone,
+  UserCircle,
   type LucideIcon,
 } from "lucide-react";
 import { adminUrl } from "@/lib/admin-routes";
@@ -150,6 +151,18 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
         keywords: "permissions",
       },
       { to: adminUrl("/audit"), label: "Audit log", icon: ScrollText, permission: "audit" },
+    ],
+  },
+  {
+    label: "You",
+    items: [
+      {
+        to: adminUrl("/account"),
+        label: "My account",
+        icon: UserCircle,
+        permission: "account",
+        keywords: "profile pin email password security",
+      },
     ],
   },
 ];

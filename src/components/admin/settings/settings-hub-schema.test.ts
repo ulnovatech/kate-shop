@@ -9,6 +9,9 @@ describe("resolveSettingsTab", () => {
 
   it("accepts valid tab ids", () => {
     expect(resolveSettingsTab("payments")).toBe("payments");
-    expect(resolveSettingsTab("security")).toBe("security");
+  });
+
+  it("maps legacy security tab to business", () => {
+    expect(resolveSettingsTab("security")).toBe("business");
   });
 });

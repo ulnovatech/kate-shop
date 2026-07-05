@@ -1,12 +1,6 @@
 import { z } from "zod";
 
-export const SETTINGS_TAB_IDS = [
-  "business",
-  "storefront",
-  "payments",
-  "messages",
-  "security",
-] as const;
+export const SETTINGS_TAB_IDS = ["business", "storefront", "payments", "messages"] as const;
 
 export type SettingsTabId = (typeof SETTINGS_TAB_IDS)[number];
 
@@ -15,7 +9,6 @@ export const SETTINGS_TAB_OPTIONS: { id: SettingsTabId; label: string }[] = [
   { id: "storefront", label: "Storefront" },
   { id: "payments", label: "Payments" },
   { id: "messages", label: "Messages" },
-  { id: "security", label: "Security" },
 ];
 
 export const adminSettingsSearchSchema = z.object({
@@ -25,6 +18,7 @@ export const adminSettingsSearchSchema = z.object({
 export type AdminSettingsSearch = z.infer<typeof adminSettingsSearchSchema>;
 
 export function resolveSettingsTab(tab?: string): SettingsTabId {
+  if (tab === "security") return "business";
   if (tab && SETTINGS_TAB_IDS.includes(tab as SettingsTabId)) {
     return tab as SettingsTabId;
   }

@@ -15,6 +15,8 @@ export const AUDIT_ACTIONS = [
   "settings_changed",
   "invite_created",
   "role_assigned",
+  "staff_email_updated",
+  "staff_password_updated",
   "item_restored",
   "item_purged",
   "user_login",
@@ -55,6 +57,8 @@ const MANAGER_HIDDEN_ACTIONS = new Set<AuditAction>([
   "settings_changed",
   "invite_created",
   "role_assigned",
+  "staff_email_updated",
+  "staff_password_updated",
   "user_login",
 ]);
 
@@ -82,6 +86,8 @@ export function auditActionLabel(action: AuditAction): string {
     settings_changed: "Settings changed",
     invite_created: "Invite created",
     role_assigned: "Role assigned",
+    staff_email_updated: "Staff email updated",
+    staff_password_updated: "Staff password updated",
     item_restored: "Item restored",
     item_purged: "Item purged",
     user_login: "User login",

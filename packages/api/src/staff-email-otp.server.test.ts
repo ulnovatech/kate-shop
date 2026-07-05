@@ -17,6 +17,7 @@ describe("staff-email-otp.server", () => {
   it("recognizes valid purposes", () => {
     expect(isStaffEmailOtpPurpose("signup")).toBe(true);
     expect(isStaffEmailOtpPurpose("forgot_pin")).toBe(true);
+    expect(isStaffEmailOtpPurpose("change_password")).toBe(true);
     expect(isStaffEmailOtpPurpose("other")).toBe(false);
   });
 

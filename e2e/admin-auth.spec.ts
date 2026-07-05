@@ -13,6 +13,28 @@ import {
 
 process.env.E2E_ADMIN_BASE_PATH = process.env.E2E_ADMIN_BASE_PATH ?? "/";
 
+test.describe("Kate Admin staff signup", () => {
+  test("join page shows owner message without paste field", async ({ page }) => {
+    await page.goto(adminPath("/join"));
+    await expect(page.getByRole("heading", { name: "Join your team" })).toBeVisible();
+    await expect(page.getByText(/open the invite link your shop owner sent/i)).toBeVisible();
+    await expect(page.getByLabel(/invite link/i)).toHaveCount(0);
+  });
+
+  test("signup page shows owner message without bound invite", async ({ page }) => {
+    await page.goto(adminPath("/signup"));
+    await expect(page.getByRole("heading", { name: "Sign up for your new account" })).toBeVisible();
+    await expect(page.getByText(/open the invite link your shop owner sent/i)).toBeVisible();
+    await expect(page.getByLabel(/invite link/i)).toHaveCount(0);
+  });
+
+  test("accept-invite redirects to signup and strips token from URL", async ({ page }) => {
+    await page.goto(adminPath("/accept-invite?token=abc123456789012345678901234"));
+    await expect(page).toHaveURL(/\/signup/, { timeout: 10_000 });
+    expect(page.url()).not.toContain("token=");
+  });
+});
+
 test.describe("Kate Admin public auth", () => {
   test("login route renders PIN form without session", async ({ page }) => {
     await page.goto(adminLoginPath());
@@ -75,10 +97,10 @@ test.describe("Kate Admin PIN auth", () => {
     await expect(page.getByRole("heading", { name: "Enter your PIN" })).toBeVisible();
   });
 
-  test("settings security tab shows PIN management", async ({ page }) => {
+  test("my account page shows PIN management for all staff", async ({ page }) => {
     await loginAdmin(page);
-    await page.goto(adminPath("/settings?tab=security"));
-    await expect(page.getByRole("heading", { name: "Account security" })).toBeVisible();
+    await page.goto(adminPath("/account"));
+    await expect(page.getByRole("heading", { name: "My account" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Update PIN" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Forgot your PIN?" })).toBeVisible();
   });

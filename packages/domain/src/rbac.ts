@@ -20,6 +20,7 @@ const ROLE_PRIORITY: Record<StaffRole, number> = {
 
 export type AdminPermission =
   | "dashboard"
+  | "account"
   | "catalog"
   | "orders"
   | "settings"
@@ -127,6 +128,8 @@ function emptyPermissions(): AdminPermissions {
 export function hasPermission(perms: AdminPermissions, permission: AdminPermission): boolean {
   switch (permission) {
     case "dashboard":
+      return perms.canAccessAdmin;
+    case "account":
       return perms.canAccessAdmin;
     case "catalog":
       return perms.canManageCatalog;

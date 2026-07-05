@@ -15,6 +15,7 @@ const ROUTE_MAP = [
   ["admin.index.tsx", "index.tsx"],
   ["admin.login.tsx", "login.tsx"],
   ["admin.join.tsx", "join.tsx"],
+  ["admin.signup.tsx", "signup.tsx"],
   ["admin.login-callback.tsx", "login-callback.tsx"],
   ["admin.setup.tsx", "setup.tsx"],
   ["admin.accept-invite.tsx", "accept-invite.tsx"],
@@ -34,6 +35,7 @@ const ROUTE_MAP = [
   ["admin.recycle.tsx", "recycle.tsx"],
   ["admin.audit.tsx", "audit.tsx"],
   ["admin.team.tsx", "team.tsx"],
+  ["admin.account.tsx", "account.tsx"],
   ["admin.roles.tsx", "roles.tsx"],
   ["admin.settings.tsx", "settings.tsx"],
 ];

@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Menu, Store } from "lucide-react";
+import { LogOut, Menu, Store, UserCircle } from "lucide-react";
 import { AdminBrandMark, useAdminShopName } from "@/components/admin-brand-mark";
 import { AdminNavCompletionRing } from "@/components/admin/admin-nav-completion-ring";
 import { AdminSetupProgress } from "@/components/admin/admin-setup-progress";
@@ -225,6 +225,12 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
                 <span className="text-xs text-sidebar-foreground/50">⌘K</span>
                 <span className="flex-1 text-left">Command palette</span>
               </button>
+              <Link
+                to={adminUrl("/account")}
+                className="flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+              >
+                <UserCircle className="h-4 w-4" /> My account
+              </Link>
               {viewShopLink}
               <button
                 onClick={() => void handleSignOut()}
@@ -299,6 +305,13 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
             title={<AdminBrandMark subtitle={`Admin · ${roleBadge}`} />}
             footer={
               <>
+                <Link
+                  to={adminUrl("/account")}
+                  onClick={() => setNavOpen(false)}
+                  className="flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent/50"
+                >
+                  <UserCircle className="h-4 w-4" /> My account
+                </Link>
                 <a
                   href={ADMIN_BASE_PATH === "/" ? SHOP_ORIGIN : "/"}
                   onClick={() => setNavOpen(false)}

@@ -8,13 +8,20 @@ import { requestStaffEmailOtp, verifyStaffEmailOtp } from "@/lib/api/staff-email
 import { humanizeError } from "@/lib/errors";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
 
-type StaffEmailVerifyPurpose = "signup" | "invite_accept" | "forgot_pin";
+type StaffEmailVerifyPurpose =
+  | "signup"
+  | "invite_accept"
+  | "forgot_pin"
+  | "change_email"
+  | "change_password";
 
 type AdminEmailVerifyStepProps = {
   email: string;
   purpose: StaffEmailVerifyPurpose;
   inviteToken?: string;
   disabled?: boolean;
+  /** Override OTP request (e.g. authenticated email change). */
+  requestOtp?: () => Promise<void>;
   onVerified: (verificationToken: string) => void;
 };
 
@@ -23,6 +30,7 @@ export function AdminEmailVerifyStep({
   purpose,
   inviteToken,
   disabled = false,
+  requestOtp,
   onVerified,
 }: AdminEmailVerifyStepProps) {
   const [busy, setBusy] = useState(false);
@@ -32,13 +40,17 @@ export function AdminEmailVerifyStep({
   const sendCode = async () => {
     setBusy(true);
     try {
-      await requestStaffEmailOtp({
-        data: {
-          email,
-          purpose,
-          ...(inviteToken ? { inviteToken } : {}),
-        },
-      });
+      if (requestOtp) {
+        await requestOtp();
+      } else {
+        await requestStaffEmailOtp({
+          data: {
+            email,
+            purpose,
+            ...(inviteToken ? { inviteToken } : {}),
+          },
+        });
+      }
       setCodeSent(true);
       toast.success("Verification code sent to your email.");
     } catch (e: unknown) {

@@ -1,9 +1,8 @@
-import { ADMIN_ACCEPT_INVITE_PATH, ADMIN_JOIN_PATH } from "@/lib/admin-base-path";
+import { ADMIN_JOIN_PATH, ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
 import { loadPendingStaffInviteToken } from "@/lib/staff-invite-pending";
 
 export type StaffUnauthenticatedRedirect = {
   to: string;
-  search?: { token: string };
   replace: true;
 };
 
@@ -12,8 +11,7 @@ export function resolveStaffUnauthenticatedRedirect(): StaffUnauthenticatedRedir
   const pending = loadPendingStaffInviteToken();
   if (pending) {
     return {
-      to: ADMIN_ACCEPT_INVITE_PATH,
-      search: { token: pending },
+      to: ADMIN_SIGNUP_PATH,
       replace: true,
     };
   }

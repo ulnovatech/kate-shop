@@ -80,6 +80,10 @@ function staffOtpSubject(purpose: StaffEmailOtpPurpose): string {
       return "Reset your Kate Admin PIN";
     case "invite_accept":
       return "Verify your email — Kate Admin invite";
+    case "change_email":
+      return "Confirm your new Kate Admin email";
+    case "change_password":
+      return "Confirm your Kate Admin recovery password change";
     default:
       return "Your Kate Admin verification code";
   }

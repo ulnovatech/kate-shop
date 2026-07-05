@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
-import { ADMIN_ACCEPT_INVITE_PATH } from "@/lib/admin-base-path";
+import { ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
 import {
   clearPendingStaffInviteToken,
   loadPendingStaffInviteToken,
@@ -27,13 +27,14 @@ export function StaffInviteResumeBridge() {
     const pending = loadPendingStaffInviteToken();
     if (!pending) return;
 
-    const onAcceptInvite =
-      typeof window !== "undefined" && window.location.pathname.includes("accept-invite");
-    if (onAcceptInvite) return;
+    const onInviteFlow =
+      typeof window !== "undefined" &&
+      (window.location.pathname.includes("accept-invite") ||
+        window.location.pathname.includes("signup"));
+    if (onInviteFlow) return;
 
     navigate({
-      to: ADMIN_ACCEPT_INVITE_PATH,
-      search: { token: pending },
+      to: ADMIN_SIGNUP_PATH,
       replace: true,
     });
   }, [navigate]);

@@ -35,3 +35,20 @@ export async function assertOpenInviteToken(token: string): Promise<OpenAdminInv
   }
   return invite;
 }
+
+/** Marks invite used exactly once; throws if already consumed. */
+export async function consumeAdminInvite(inviteId: string, email: string): Promise<void> {
+  const usedAt = new Date().toISOString();
+  const { data, error } = await supabaseAdmin
+    .from("admin_invites")
+    .update({ used_at: usedAt, email })
+    .eq("id", inviteId)
+    .is("used_at", null)
+    .select("id")
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) {
+    throw new Error("This invite has already been used.");
+  }
+}

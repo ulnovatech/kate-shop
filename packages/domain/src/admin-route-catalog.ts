@@ -23,7 +23,7 @@ export type AdminRouteCatalogEntry = {
 };
 
 /**
- * Canonical Kate Admin route catalog — 19 staff routes (Insights merged into Today, C14).
+ * Canonical Kate Admin route catalog — 23 staff routes (Insights merged into Today, C14).
  * Keep in sync with scripts/sync-admin-app-routes.mjs ROUTE_MAP (insights.tsx remains a redirect alias).
  */
 export const ADMIN_ROUTE_CATALOG: AdminRouteCatalogEntry[] = [
@@ -45,7 +45,17 @@ export const ADMIN_ROUTE_CATALOG: AdminRouteCatalogEntry[] = [
     standaloneRel: "join.tsx",
     public: true,
     heading: "Join your team",
-    mobileNotes: "Primary entry for new staff; paste invite link",
+    mobileNotes: "No invite bound — ask owner for link",
+  },
+  {
+    id: "signup",
+    area: "auth",
+    path: "/signup",
+    monolithFile: "admin.signup.tsx",
+    standaloneRel: "signup.tsx",
+    public: true,
+    heading: "Sign up",
+    mobileNotes: "Email + PIN signup after invite link",
   },
   {
     id: "setup",
@@ -228,6 +238,16 @@ export const ADMIN_ROUTE_CATALOG: AdminRouteCatalogEntry[] = [
     standaloneRel: "settings.tsx",
     permission: "settings",
     heading: "Store setup",
+  },
+  {
+    id: "account",
+    area: "team",
+    path: "/account",
+    monolithFile: "admin.account.tsx",
+    standaloneRel: "account.tsx",
+    permission: "account",
+    heading: "My account",
+    mobileNotes: "PIN, email, recovery password — all staff",
   },
 ];
 

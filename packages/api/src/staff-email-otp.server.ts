@@ -128,6 +128,29 @@ async function assertCanRequestOtp(
         throw new Error("This email already has a staff account. Sign in instead.");
       }
     }
+    return;
+  }
+
+  if (purpose === "change_email") {
+    const existing = await findAuthUserByEmail(normalized);
+    if (existing) {
+      const access = await loadStaffAccess(existing.id);
+      if (access) {
+        throw new Error("This email is already used by another staff account.");
+      }
+    }
+    return;
+  }
+
+  if (purpose === "change_password") {
+    const user = await findAuthUserByEmail(normalized);
+    if (!user) {
+      throw new Error("No staff account found for this email.");
+    }
+    const access = await loadStaffAccess(user.id);
+    if (!access) {
+      throw new Error("No staff account found for this email.");
+    }
   }
 }
 

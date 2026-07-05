@@ -24,7 +24,6 @@ import { ADMIN_SETUP_COMPLETION_QUERY_KEY } from "@/lib/admin-setup-completion";
 import { humanizeError } from "@/lib/errors";
 import { adminUrl } from "@/lib/admin-routes";
 import { AdminFormSectionsSkeleton } from "@/components/loading-states";
-import { StaffPinSettings } from "@/components/staff-pin-settings";
 import { SettingsHubShell, SettingsTabNav } from "./settings-hub-nav";
 import { SettingsSection } from "./settings-save-bar";
 import type { SettingsTabId } from "./settings-hub-schema";
@@ -408,18 +407,6 @@ export function SettingsHubPage({ activeTab }: SettingsHubPageProps) {
               />
             </div>
           </SettingsSection>
-        ) : null}
-
-        {activeTab === "security" ? (
-          <section className="space-y-stack rounded-lg border bg-card p-card shadow-elevated">
-            <div>
-              <h2 className="type-h3">Account security</h2>
-              <p className="mt-1 type-body-sm text-muted-foreground">
-                Change your sign-in PIN or reset it via email verification.
-              </p>
-            </div>
-            <StaffPinSettings />
-          </section>
         ) : null}
       </div>
     </SettingsHubShell>

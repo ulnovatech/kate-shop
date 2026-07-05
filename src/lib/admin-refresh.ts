@@ -53,6 +53,10 @@ const ROUTE_REFRESH_RULES: RefreshRule[] = [
     keys: ["admin-delivery", "delivery-config", "admin-setup-completion"],
   },
   {
+    match: (p) => p === "/account",
+    keys: ["staff-pin-status"],
+  },
+  {
     match: (p) => p === "/settings",
     keys: [
       "admin-settings",

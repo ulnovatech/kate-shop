@@ -12,6 +12,7 @@ import { auditFromServer } from "@kate/api/audit.server";
 import { hasMatrixPermission } from "@kate/domain/rbac";
 import {
   assertOpenInviteToken,
+  consumeAdminInvite,
   getOpenInviteByToken,
   hashInviteToken,
 } from "@kate/api/invites.server";
@@ -93,6 +94,10 @@ export const validateInviteToken = createServerFn({ method: "POST" })
     };
   });
 
+function newInternalAuthPassword(): string {
+  return randomBytes(32).toString("base64url");
+}
+
 export const acceptAdminInvite = createServerFn({ method: "POST" })
   .inputValidator(
     z
@@ -105,18 +110,33 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
         pin: staffPinSchema,
       })
       .superRefine((data, ctx) => {
-        if (!data.emailVerificationToken && !data.oauthUserId) {
+        const inviteBoundEmail = Boolean(
+          data.email && !data.oauthUserId && !data.emailVerificationToken,
+        );
+        const legacyEmail = Boolean(
+          data.email && data.emailVerificationToken && data.password && !data.oauthUserId,
+        );
+        const oauthPath = Boolean(data.oauthUserId);
+
+        if (!inviteBoundEmail && !legacyEmail && !oauthPath) {
           ctx.addIssue({
             code: "custom",
-            message: "Email verification is required.",
-            path: ["emailVerificationToken"],
+            message: "Provide email and PIN, or sign in with Google first.",
+            path: ["email"],
           });
         }
-        if (!data.password && !data.oauthUserId) {
+        if (legacyEmail && !data.password) {
           ctx.addIssue({
             code: "custom",
             message: "Password is required.",
             path: ["password"],
+          });
+        }
+        if (legacyEmail && !data.emailVerificationToken) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Email verification is required.",
+            path: ["emailVerificationToken"],
           });
         }
         if (!data.oauthUserId && !data.email) {
@@ -150,17 +170,27 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
         });
         if (pwErr) throw new Error(pwErr.message);
       }
-    } else {
+    } else if (data.emailVerificationToken && data.password) {
       email = normalizeStaffEmail(data.email!);
       await consumeStaffEmailVerificationToken({
         email,
         purpose: "invite_accept",
-        verificationToken: data.emailVerificationToken!,
+        verificationToken: data.emailVerificationToken,
       });
 
       const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email,
-        password: data.password!,
+        password: data.password,
+        email_confirm: true,
+      });
+      if (createErr) throw new Error(createErr.message);
+      if (!created.user) throw new Error("Could not create account.");
+      userId = created.user.id;
+    } else {
+      email = normalizeStaffEmail(data.email!);
+      const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password: newInternalAuthPassword(),
         email_confirm: true,
       });
       if (createErr) throw new Error(createErr.message);
@@ -185,13 +215,7 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
 
     await assignStaffRole(userId, roleId);
     await storeStaffPin(userId, data.pin);
-
-    const usedAt = new Date().toISOString();
-    const { error: usedErr } = await supabaseAdmin
-      .from("admin_invites")
-      .update({ used_at: usedAt, email })
-      .eq("id", invite.id);
-    if (usedErr) throw new Error(usedErr.message);
+    await consumeAdminInvite(invite.id, email);
 
     await auditFromServer(userId, "role_assigned", "user", userId, null, {
       email,
