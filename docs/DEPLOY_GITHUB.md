@@ -62,7 +62,7 @@ Successful run shows:
 
 1. **Lint, test, build** — must pass first
 2. **Deploy production** — shop Worker (`kate-shop`)
-3. **Deploy admin production** — admin Worker (`kate-admin`) when `ADMIN_ORIGIN` is set
+3. **Deploy admin production** — admin Worker (`kate-admin`) on every push to `main` (defaults to `https://kate-admin.ulnovatech.workers.dev` if `ADMIN_ORIGIN` is unset)
 
 Both deploy jobs use the same GitHub **`production`** environment (shared secrets and variables).
 
@@ -79,6 +79,7 @@ Expect HTTP **200** and `"status": "healthy"` or `"degraded"`.
 | Symptom                             | Fix                                                                                                                         |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Deploy job skipped                  | Push must be to `main`, not a branch                                                                                        |
+| **Deploy admin production skipped** | Was caused by `ADMIN_ORIGIN` gate — admin now deploys on every `main` push. Set `ADMIN_ORIGIN` in **production** variables to override the default URL. |
 | Deploy job missing                  | `check` job failed — open the run and fix lint/test/build                                                                   |
 | Worker still 500 after green deploy | Open Cloudflare → Worker → **Logs** (enabled by `prepare-deploy.mjs`)                                                       |
 | `CLOUDFLARE_API_TOKEN` invalid      | Token needs **Account → Workers Scripts → Edit**                                                                            |

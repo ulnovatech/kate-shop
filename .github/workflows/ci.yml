@@ -70,8 +70,8 @@ jobs:
           CLOUDFLARE_WORKER_NAME: ${{ vars.CLOUDFLARE_WORKER_NAME }}
           NODE_ENV: production
           APP_ORIGIN: ${{ vars.APP_ORIGIN }}
-          ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          VITE_ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -95,13 +95,23 @@ jobs:
   deploy-admin-production:
     name: Deploy admin production
     needs: check
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ADMIN_ORIGIN != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: ${{ vars.ADMIN_ORIGIN }}
+      url: ${{ vars.ADMIN_ORIGIN != '' && vars.ADMIN_ORIGIN || 'https://kate-admin.ulnovatech.workers.dev' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve deploy URLs
+        id: deploy_urls
+        run: |
+          ADMIN="${{ vars.ADMIN_ORIGIN }}"
+          APP="${{ vars.APP_ORIGIN }}"
+          if [ -z "$ADMIN" ]; then ADMIN="https://kate-admin.ulnovatech.workers.dev"; fi
+          if [ -z "$APP" ]; then APP="https://kate-shop.ulnovatech.workers.dev"; fi
+          echo "admin_origin=$ADMIN" >> "$GITHUB_OUTPUT"
+          echo "app_origin=$APP" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v4
         with:
@@ -117,10 +127,10 @@ jobs:
           VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
-          ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          VITE_ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          APP_ORIGIN: ${{ vars.APP_ORIGIN }}
-          VITE_APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          APP_ORIGIN: ${{ steps.deploy_urls.outputs.app_origin }}
+          VITE_APP_ORIGIN: ${{ steps.deploy_urls.outputs.app_origin }}
 
       - name: Prepare admin Wrangler config
         run: node scripts/prepare-deploy.mjs
@@ -129,9 +139,9 @@ jobs:
           KATE_WORKER_TARGET: admin
           CLOUDFLARE_ADMIN_WORKER_NAME: ${{ vars.CLOUDFLARE_ADMIN_WORKER_NAME }}
           NODE_ENV: production
-          APP_ORIGIN: ${{ vars.APP_ORIGIN }}
-          ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          VITE_ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
+          APP_ORIGIN: ${{ steps.deploy_urls.outputs.app_origin }}
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -155,10 +165,17 @@ jobs:
   build-admin-apk:
     name: Build Kate Admin APK
     needs: [check, deploy-admin-production]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ADMIN_ORIGIN != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve deploy URLs
+        id: deploy_urls
+        run: |
+          ADMIN="${{ vars.ADMIN_ORIGIN }}"
+          if [ -z "$ADMIN" ]; then ADMIN="https://kate-admin.ulnovatech.workers.dev"; fi
+          echo "admin_origin=$ADMIN" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v4
         with:
@@ -177,8 +194,8 @@ jobs:
       - name: Build debug APK
         run: npm run build:admin-apk
         env:
-          ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          VITE_ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
           KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
           KATE_RELEASE_VERSION: ${{ vars.KATE_RELEASE_VERSION }}
 
@@ -194,8 +211,8 @@ jobs:
         if: vars.BUILD_ADMIN_APK_RELEASE == 'true'
         run: npm run build:admin-apk:release
         env:
-          ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          VITE_ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
           KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
           KATE_RELEASE_VERSION: ${{ vars.KATE_RELEASE_VERSION }}
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -216,8 +233,8 @@ jobs:
         if: vars.BUILD_ADMIN_AAB == 'true'
         run: npm run build:admin-aab:release
         env:
-          ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
-          VITE_ADMIN_ORIGIN: ${{ vars.ADMIN_ORIGIN }}
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
           KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
           KATE_RELEASE_VERSION: ${{ vars.KATE_RELEASE_VERSION }}
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
