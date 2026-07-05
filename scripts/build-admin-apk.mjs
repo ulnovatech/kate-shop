@@ -3,7 +3,7 @@
  * Build Kate Admin Android artifact — APK or AAB (C11 + C12).
  */
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, chmodSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadEnv } from "./load-env.mjs";
@@ -73,11 +73,14 @@ if (!existsSync(gradlew)) {
   console.error("Missing Gradle wrapper — run npm run android:admin:sync");
   process.exit(1);
 }
+if (process.platform !== "win32") {
+  chmodSync(gradlew, 0o755);
+}
 
 const build = spawnSync(gradlew, [gradleTask], {
   cwd: androidDir,
   stdio: "inherit",
-  shell: true,
+  shell: false,
   env: process.env,
 });
 

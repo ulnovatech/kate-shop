@@ -3,7 +3,7 @@
  * Kate Admin Capacitor Android — sync, run, open, or build debug APK (C7).
  */
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { chmodSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadEnv } from "./load-env.mjs";
@@ -56,10 +56,13 @@ if (cmd === "build") {
     console.error("Missing Gradle wrapper — run: npm run android:admin:sync");
     process.exit(1);
   }
+  if (process.platform !== "win32") {
+    chmodSync(gradlew, 0o755);
+  }
   const build = spawnSync(gradlew, ["assembleDebug"], {
     cwd: androidDir,
     stdio: "inherit",
-    shell: true,
+    shell: false,
   });
   if ((build.status ?? 1) === 0) {
     console.log("\nAPK: apps/admin-mobile/android/app/build/outputs/apk/debug/app-debug.apk");
