@@ -36,6 +36,7 @@
     "db:chunk17": "node scripts/apply-sql-file.mjs supabase/migrations/20260625130000_chunk17_staff_pin.sql",
     "db:chunk18-email": "node scripts/apply-sql-file.mjs supabase/migrations/20260701120000_chunk18_staff_email_otp.sql",
     "staff:set-owner-pin": "node scripts/set-owner-pin.mjs",
+    "staff:ensure-owner": "node scripts/ensure-owner-account.mjs",
     "db:c12": "node scripts/apply-sql-file.mjs supabase/migrations/20260622120000_c12_staff_push.sql",
     "db:a2": "node scripts/apply-sql-file.mjs supabase/migrations/20260612120000_addendum_a2_audit_actions.sql",
     "db:a3": "node scripts/apply-sql-file.mjs supabase/migrations/20260613120000_addendum_a3_recycle_bin.sql",

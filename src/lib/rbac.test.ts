@@ -50,4 +50,19 @@ describe("permissionsFromStaffAccess", () => {
     expect(perms.permissionKeys.has("catalog.edit")).toBe(true);
     expect(perms.permissionKeys.has("catalog.delete")).toBe(false);
   });
+
+  it("locked owner keeps settings access when permission rows are missing", () => {
+    const perms = permissionsFromStaffAccess({
+      userId: "u4",
+      roleId: "owner-role",
+      roleSlug: "owner",
+      roleName: "Owner",
+      isSystem: true,
+      isLocked: true,
+      permissions: [],
+    });
+
+    expect(perms.canAccessAdmin).toBe(true);
+    expect(perms.canManageSettings).toBe(true);
+  });
 });

@@ -27,7 +27,7 @@ const PANEL_QUERY_KEY = ["admin-mobile-release-panel"];
 
 export function AdminMobileReleasePublisher() {
   const qc = useQueryClient();
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: PANEL_QUERY_KEY,
     queryFn: () => getAdminMobileReleasePublishPanel(),
   });
@@ -73,7 +73,12 @@ export function AdminMobileReleasePublisher() {
       });
     },
     onError: (error) => {
-      toast.error(humanizeError(error, { fallback: "Could not start the release." }));
+      toast.error(
+        humanizeError(error, {
+          fallback: "Could not start the release.",
+          action: "publish mobile updates",
+        }),
+      );
     },
   });
 
@@ -89,6 +94,23 @@ export function AdminMobileReleasePublisher() {
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Loader2 className="size-4 animate-spin" aria-hidden />
         Loading publish tools…
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5">
+        <p className="font-medium text-foreground">Could not load publish tools</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {humanizeError(error, {
+            fallback: "Something went wrong loading the release panel.",
+            action: "manage mobile app releases",
+          })}
+        </p>
+        <Button type="button" variant="outline" size="sm" className="mt-4" onClick={() => void refetch()}>
+          Retry
+        </Button>
       </div>
     );
   }

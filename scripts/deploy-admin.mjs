@@ -57,4 +57,15 @@ if (
 ) {
   console.log("Uploaded Worker secret SUPABASE_SERVICE_ROLE_KEY.");
 }
-run("npx", ["nitro", "deploy", "--prebuilt", "--dir", distDir]);
+if (
+  putWorkerSecret({
+    distDir,
+    name: "KATE_GH_RELEASE_TOKEN",
+    value: process.env.KATE_GH_RELEASE_TOKEN,
+  })
+) {
+  console.log("Uploaded Worker secret KATE_GH_RELEASE_TOKEN.");
+}
+run("npx", ["wrangler", "deploy", "--config", "wrangler.json"], {
+  cwd: path.join(root, distDir, "server"),
+});

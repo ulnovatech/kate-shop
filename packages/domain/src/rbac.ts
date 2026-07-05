@@ -46,26 +46,41 @@ export function pickPrimaryRole(roles: StaffRole[]): StaffRole | null {
   return roles.reduce((best, r) => (ROLE_PRIORITY[r] > ROLE_PRIORITY[best] ? r : best));
 }
 
+/** Owner-level settings access — locked owner role or explicit settings.manage. */
+export function isShopOwnerAccess(
+  access: Pick<StaffAccess, "isLocked" | "roleSlug" | "permissions">,
+): boolean {
+  const permissionKeys = new Set(access.permissions);
+  return (
+    access.isLocked ||
+    access.roleSlug === "owner" ||
+    access.roleSlug === "admin" ||
+    hasPermissionKey(permissionKeys, "settings", "manage")
+  );
+}
+
 export function permissionsFromStaffAccess(access: StaffAccess | null): AdminPermissions {
   if (!access) return emptyPermissions();
 
   const permissionKeys = new Set(access.permissions);
   const role = staffAccessToLegacyRole(access);
+  const shopOwner = isShopOwnerAccess(access);
 
   return {
     role,
     roleSlug: access.roleSlug,
     roleName: access.roleName,
     permissionKeys,
-    canAccessAdmin: permissionKeys.size > 0,
+    canAccessAdmin: permissionKeys.size > 0 || access.isSystem || shopOwner,
     canManageCatalog:
       hasPermissionKey(permissionKeys, "catalog", "view") ||
       hasPermissionKey(permissionKeys, "catalog", "edit") ||
       hasPermissionKey(permissionKeys, "catalog", "create") ||
       hasPermissionKey(permissionKeys, "catalog", "delete"),
     canManageOrders: hasPermissionKey(permissionKeys, "orders", "view"),
-    canManageSettings: hasPermissionKey(permissionKeys, "settings", "manage"),
-    canManageTeam: hasPermissionKey(permissionKeys, "team", "manage"),
+    canManageSettings: shopOwner,
+    canManageTeam:
+      shopOwner || hasPermissionKey(permissionKeys, "team", "manage"),
     canViewAudit: hasPermissionKey(permissionKeys, "audit", "view"),
     canManageRoles: hasPermissionKey(permissionKeys, "roles", "manage"),
   };
