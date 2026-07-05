@@ -27,6 +27,7 @@ Add these **Secrets** (copy values from your local `.env` — same names):
 | `SUPABASE_PUBLISHABLE_KEY`      | ✓ (same as `VITE_SUPABASE_PUBLISHABLE_KEY`)                                                                                                            |
 | `SUPABASE_SERVICE_ROLE_KEY`     | ✓ (service role JWT — **never** `VITE_`)                                                                                                               |
 | `BOOTSTRAP_TOKEN`               | Optional — locks `/admin/setup`                                                                                                                        |
+| `KATE_GH_RELEASE_TOKEN`         | Optional — fine-grained PAT with **Actions: Read and write** on this repo (one-click mobile publish from admin; name cannot start with `GITHUB_`)   |
 
 Add these **Variables** (not secrets — plain text URLs):
 

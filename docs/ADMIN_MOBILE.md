@@ -16,7 +16,7 @@ No forked API. No service role key in the APK.
 
 - Node 20+ and `npm install` at repo root
 - [Android Studio](https://developer.android.com/studio) with SDK Platform 34+
-- JDK 17 (bundled with Android Studio)
+- JDK 21 (Capacitor 7; Android Studio Ladybug+ or install Temurin 21)
 
 ## Local dev (emulator)
 

@@ -17,6 +17,7 @@ import { StoreBrandingProvider } from "@/lib/store-branding-context";
 import { isAdminPath } from "@/lib/admin-routes";
 import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { StaffMobileAuthBridge } from "@/components/staff-mobile-auth-bridge";
+import { StaffInviteResumeBridge } from "@/components/staff-invite-resume-bridge";
 import { StaffPushRegistration } from "@/components/staff-push-registration";
 import { StaffOfflineBanner } from "@/components/staff-offline-banner";
 import { StaffPwaPolicy } from "@/components/staff-pwa-policy";
@@ -128,6 +129,7 @@ function RootComponent() {
     <>
       {showStaffPwaPolicy ? <StaffPwaPolicy /> : null}
       {showStaffMobileAuth ? <StaffMobileAuthBridge /> : null}
+      {showStaffMobileAuth ? <StaffInviteResumeBridge /> : null}
       {showStaffMobileAuth ? <StaffPushRegistration /> : null}
       {isAdmin ? <StaffOfflineBanner /> : null}
       <Outlet />

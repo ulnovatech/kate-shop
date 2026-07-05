@@ -149,6 +149,7 @@ jobs:
           VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
           BOOTSTRAP_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
           CLOUDFLARE_ZONE_NAME: ${{ vars.CLOUDFLARE_ZONE_NAME }}
+          GITHUB_REPO: ulnovatech/kate-shop
 
       - name: Deploy admin Worker
         uses: cloudflare/wrangler-action@v3
@@ -159,97 +160,10 @@ jobs:
           command: deploy --config wrangler.json
           secrets: |
             SUPABASE_SERVICE_ROLE_KEY
+            KATE_GH_RELEASE_TOKEN
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-
-  build-admin-apk:
-    name: Build Kate Admin APK
-    needs: [check, deploy-admin-production]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Resolve deploy URLs
-        id: deploy_urls
-        run: |
-          ADMIN="${{ vars.ADMIN_ORIGIN }}"
-          if [ -z "$ADMIN" ]; then ADMIN="https://kate-admin.ulnovatech.workers.dev"; fi
-          echo "admin_origin=$ADMIN" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - uses: android-actions/setup-android@v3
-
-      - run: npm ci
-
-      - name: Build debug APK
-        run: npm run build:admin-apk
-        env:
-          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
-          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
-          KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
-          KATE_RELEASE_VERSION: ${{ vars.KATE_RELEASE_VERSION }}
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: kate-admin-apk-${{ github.run_number }}
-          path: dist/admin-mobile/*.apk
-          retention-days: 90
-          if-no-files-found: error
-
-      - name: Build signed release APK
-        if: vars.BUILD_ADMIN_APK_RELEASE == 'true'
-        run: npm run build:admin-apk:release
-        env:
-          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
-          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
-          KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
-          KATE_RELEASE_VERSION: ${{ vars.KATE_RELEASE_VERSION }}
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-      - name: Upload release APK artifact
-        if: vars.BUILD_ADMIN_APK_RELEASE == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: kate-admin-apk-release-${{ github.run_number }}
-          path: dist/admin-mobile/*-release.apk
-          retention-days: 90
-          if-no-files-found: error
-
-      - name: Build signed release AAB
-        if: vars.BUILD_ADMIN_AAB == 'true'
-        run: npm run build:admin-aab:release
-        env:
-          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
-          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
-          KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
-          KATE_RELEASE_VERSION: ${{ vars.KATE_RELEASE_VERSION }}
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-      - name: Upload release AAB artifact
-        if: vars.BUILD_ADMIN_AAB == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: kate-admin-aab-release-${{ github.run_number }}
-          path: dist/admin-mobile/*-release.aab
-          retention-days: 90
-          if-no-files-found: error
+          KATE_GH_RELEASE_TOKEN: ${{ secrets.KATE_GH_RELEASE_TOKEN }}
 
   deploy-preview:
     name: Deploy PR preview

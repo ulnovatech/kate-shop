@@ -14,9 +14,11 @@ import { StoreBrandingProvider } from "@/lib/store-branding-context";
 import { PWA_THEME_COLOR } from "@/lib/pwa";
 import { ClientErrorReporting } from "@/components/client-error-reporting";
 import { StaffMobileAuthBridge } from "@/components/staff-mobile-auth-bridge";
+import { StaffInviteResumeBridge } from "@/components/staff-invite-resume-bridge";
 import { StaffPushRegistration } from "@/components/staff-push-registration";
 import { StaffOfflineBanner } from "@/components/staff-offline-banner";
 import { StaffPwaPolicy } from "@/components/staff-pwa-policy";
+import { StaffAppUpdatePrompt } from "@/components/staff-app-update-prompt";
 import { captureClientError } from "@/lib/observability/client-errors";
 import { ADMIN_PWA_ICON } from "@/lib/staff-pwa";
 
@@ -117,8 +119,10 @@ function RootComponent() {
         <AuthProvider>
           <StaffPwaPolicy />
           <StaffMobileAuthBridge />
+          <StaffInviteResumeBridge />
           <StaffPushRegistration />
           <StaffOfflineBanner />
+          <StaffAppUpdatePrompt />
           <Outlet />
           <ClientErrorReporting />
           <Toaster richColors position="top-right" />

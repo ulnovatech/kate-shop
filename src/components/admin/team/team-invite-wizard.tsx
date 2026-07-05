@@ -147,7 +147,7 @@ export function TeamInviteWizard({
       steps={[...TEAM_INVITE_STEPS]}
       currentStep={step}
       title="Invite teammate"
-      subtitle="Email → role → share a one-time link."
+      subtitle="One link — install the app and join in the same flow."
       isFirstStep={step === "email"}
       isLastStep={step === "send"}
       onBack={step !== "email" && !inviteUrl ? goBack : undefined}
@@ -224,7 +224,8 @@ export function TeamInviteWizard({
         <div className="space-y-3">
           {!inviteUrl ? (
             <AdminWizardStepGuide>
-              Review the details, then create a link to share over WhatsApp or email.
+              Review the details, then share one link — they install Kate Admin and complete signup
+              from the same page.
             </AdminWizardStepGuide>
           ) : null}
 
@@ -242,6 +243,10 @@ export function TeamInviteWizard({
           {inviteUrl ? (
             <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
               <p className="text-sm font-medium">Invite link for {sentEmail}</p>
+              <p className="text-xs text-muted-foreground">
+                Send via WhatsApp or email. On Android, this link installs the app and walks them
+                through signup — no separate download step.
+              </p>
               <p className="break-all font-mono text-xs text-muted-foreground">{inviteUrl}</p>
               <div className="flex flex-wrap gap-2">
                 <CopyButton text={inviteUrl} label="Copy link" />

@@ -6,6 +6,7 @@ export const SETTINGS_TAB_IDS = [
   "payments",
   "messages",
   "security",
+  "mobile",
 ] as const;
 
 export type SettingsTabId = (typeof SETTINGS_TAB_IDS)[number];
@@ -16,6 +17,7 @@ export const SETTINGS_TAB_OPTIONS: { id: SettingsTabId; label: string }[] = [
   { id: "payments", label: "Payments" },
   { id: "messages", label: "Messages" },
   { id: "security", label: "Security" },
+  { id: "mobile", label: "Mobile app" },
 ];
 
 export const adminSettingsSearchSchema = z.object({

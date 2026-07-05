@@ -25,7 +25,14 @@ import { AdminAuthDivider, AdminGoogleAuthButton } from "./admin-google-auth-but
 import { AdminAuthLayout, ADMIN_AUTH_FIELD_CLASS } from "./admin-auth-layout";
 import { AdminEmailVerifyStep } from "./admin-email-verify-step";
 import { AdminOnboardingStepper } from "./admin-onboarding-stepper";
+import { StaffInviteMobileGate } from "./staff-invite-mobile-gate";
 import { StaffWelcomeChecklist } from "./go-live-checklist";
+import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
+import { isAndroidMobileBrowser } from "@/lib/staff-invite-mobile";
+import {
+  savePendingStaffInviteToken,
+} from "@/lib/staff-invite-pending";
+import { completeStaffInviteOnboarding } from "@/components/staff-invite-resume-bridge";
 import { cn } from "@/lib/utils";
 
 const INVITE_STEPS = [
@@ -67,11 +74,18 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [joinedRole, setJoinedRole] = useState<string | null>(null);
+  const [skipMobileGate, setSkipMobileGate] = useState(
+    () => isNativeStaffApp() || !isAndroidMobileBrowser(),
+  );
 
   const form = useForm<CredentialsForm>({
     resolver: zodResolver(credentialsSchema),
     defaultValues: { password: "", confirmPassword: "" },
   });
+
+  useEffect(() => {
+    if (token) savePendingStaffInviteToken(token);
+  }, [token]);
 
   useEffect(() => {
     if (!token) {
@@ -145,6 +159,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
         await establishStaffPinSession(inviteEmail, pin);
       }
       clearStaffOnboardingOAuth();
+      completeStaffInviteOnboarding();
       setJoinedRole(result.role);
       toast.success(`Welcome! You joined as ${result.role}.`);
       return true;
@@ -212,6 +227,17 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
       <div className="flex min-h-screen items-center justify-center type-body-sm text-muted-foreground">
         Validating invite…
       </div>
+    );
+  }
+
+  if (!skipMobileGate) {
+    return (
+      <StaffInviteMobileGate
+        token={token}
+        inviteEmail={inviteEmail}
+        inviteRole={inviteRole}
+        onContinueInBrowser={() => setSkipMobileGate(true)}
+      />
     );
   }
 

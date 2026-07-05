@@ -60,6 +60,15 @@ Staff push (C12): add `STAFF_PUSH_ENABLED` and `FCM_SERVER_KEY` to the admin Wor
 | `GMAIL_USER`         | Server | When Gmail | Gmail address for SMTP                     |
 | `GMAIL_APP_PASSWORD` | Server | When Gmail | Google App Password (not account password) |
 
+## Admin mobile one-click publish
+
+| Variable / secret      | Where  | Required | Notes                                              |
+| ---------------------- | ------ | -------- | -------------------------------------------------- |
+| `GITHUB_REPO`          | Server | Optional | Defaults to `ulnovatech/kate-shop`                 |
+| `KATE_GH_RELEASE_TOKEN` | Server | Optional | PAT with Actions write — GitHub production secret (cannot start with `GITHUB_`) |
+
+Owner UI: **Settings → Mobile app → Publish update to staff**. See [ADMIN_MOBILE_UPDATES.md](ADMIN_MOBILE_UPDATES.md).
+
 Apply migration:
 
 ```bash

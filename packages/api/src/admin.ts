@@ -9,3 +9,4 @@ export * from "./payments.functions";
 export * from "./recycle.functions";
 export * from "./roles.functions";
 export * from "./settings.functions";
+export * from "./admin-mobile-release.functions";

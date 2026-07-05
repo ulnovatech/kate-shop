@@ -69,6 +69,8 @@
     "android:admin:build": "node scripts/android-admin.mjs build",
     "build:admin-apk": "node scripts/build-admin-apk.mjs",
     "build:admin-apk:release": "node scripts/build-admin-apk.mjs --release",
+    "publish:admin-mobile-release": "node scripts/publish-admin-mobile-release.mjs",
+    "db:admin-mobile-bucket": "node scripts/ensure-admin-mobile-bucket.mjs",
     "build:admin-aab": "node scripts/build-admin-apk.mjs --aab",
     "build:admin-aab:release": "node scripts/build-admin-apk.mjs --aab --release",
     "upload:play-store": "node scripts/upload-play-store.mjs",

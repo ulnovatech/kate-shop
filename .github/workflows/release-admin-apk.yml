@@ -1,0 +1,96 @@
+name: Release Kate Admin APK
+
+# Developer-triggered mobile release — not tied to every web deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: Release notes shown in the in-app update prompt
+        required: true
+        type: string
+      version_name:
+        description: Optional version name (e.g. 1.0.1). Leave empty to use release.json
+        required: false
+        type: string
+      build_variant:
+        description: APK signing variant
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - debug
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  release-admin-apk:
+    name: Build and publish Kate Admin APK
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve deploy URLs
+        id: deploy_urls
+        run: |
+          ADMIN="${{ vars.ADMIN_ORIGIN }}"
+          if [ -z "$ADMIN" ]; then ADMIN="https://kate-admin.ulnovatech.workers.dev"; fi
+          echo "admin_origin=$ADMIN" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+
+      - name: Ensure Supabase release bucket
+        run: node scripts/ensure-admin-mobile-bucket.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Build APK
+        run: |
+          if [ "${{ inputs.build_variant }}" = "release" ]; then
+            npm run build:admin-apk:release
+          else
+            npm run build:admin-apk
+          fi
+        env:
+          ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          VITE_ADMIN_ORIGIN: ${{ steps.deploy_urls.outputs.admin_origin }}
+          KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
+          KATE_RELEASE_VERSION: ${{ inputs.version_name }}
+          ADMIN_APK_VARIANT: ${{ inputs.build_variant }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Publish release manifest + APK URL
+        run: node scripts/publish-admin-mobile-release.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ADMIN_MOBILE_RELEASE_NOTES: ${{ inputs.release_notes }}
+          KATE_ANDROID_VERSION_BUILD: ${{ github.run_number }}
+          KATE_RELEASE_VERSION: ${{ inputs.version_name }}
+          ADMIN_APK_VARIANT: ${{ inputs.build_variant }}
+
+      - name: Upload APK artifact (backup)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kate-admin-apk-release-${{ github.run_number }}
+          path: dist/admin-mobile/*.apk
+          retention-days: 365
+          if-no-files-found: error

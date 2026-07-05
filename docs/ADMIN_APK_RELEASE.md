@@ -59,18 +59,29 @@ base64 -i kate-admin-release.jks | tr -d '\n'
 
 ## GitHub Actions
 
-Job **`build-admin-apk`** runs on push to `main` when `vars.ADMIN_ORIGIN` is set (after admin Worker deploy).
+**Routine deploys do not publish APKs.** Use the manual workflow:
+
+**Actions → Release Kate Admin APK** (`release-admin-apk.yml`) — run when native shell changes.
+
+| Input           | Purpose                                      |
+| --------------- | -------------------------------------------- |
+| `release_notes` | Shown in the in-app “Update available” dialog  |
+| `version_name`  | Optional override of `release.json`          |
+| `build_variant` | `release` (signed) or `debug`                |
+
+The workflow builds the APK, uploads to Supabase Storage, and updates the release manifest. Staff get a shareable install link in **Settings → Mobile app**.
+
+See [ADMIN_MOBILE_UPDATES.md](ADMIN_MOBILE_UPDATES.md) for the full owner/staff flow.
+
+Legacy: `build-admin-apk` on every `main` push was removed — use the release workflow instead.
 
 | Input                     | Type     | Required                               |
 | ------------------------- | -------- | -------------------------------------- |
 | `ADMIN_ORIGIN`            | variable | Yes — APK loads this URL               |
 | `KATE_RELEASE_VERSION`    | variable | Optional — overrides `versionName`     |
-| `BUILD_ADMIN_APK_RELEASE` | variable | Set `true` for signed release artifact |
-| `ANDROID_KEYSTORE_*`      | secrets  | Required when release builds enabled   |
+| `ANDROID_KEYSTORE_*`      | secrets  | Required for `release` variant           |
 
-Download APK: **Actions** → workflow run → **Artifacts** → `kate-admin-apk-<run>`.
-
-Retention: 90 days.
+Backup artifact: workflow run → **Artifacts** → `kate-admin-apk-release-<run>`.
 
 ## Changelog
 

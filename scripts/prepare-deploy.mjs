@@ -47,6 +47,7 @@ for (const key of [
   "VITE_SUPABASE_PUBLISHABLE_KEY",
   "VITE_SUPABASE_PROJECT_ID",
   "BOOTSTRAP_TOKEN",
+  "GITHUB_REPO",
 ]) {
   const value = process.env[key]?.trim();
   if (value) vars[key] = value;

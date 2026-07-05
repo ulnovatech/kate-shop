@@ -35,8 +35,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# Tests
-coverage
+# Android signing (never commit)
+*.jks
+*.keystore
+apps/admin-mobile/.build/
 test-results
 playwright-report
 blob-report

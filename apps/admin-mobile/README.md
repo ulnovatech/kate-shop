@@ -54,6 +54,7 @@ The APK does **not** bundle the admin app or `SUPABASE_SERVICE_ROLE_KEY` — it 
 ## Docs
 
 - [docs/ADMIN_MOBILE.md](../../docs/ADMIN_MOBILE.md) — full C7 guide
+- [docs/ADMIN_MOBILE_UPDATES.md](../../docs/ADMIN_MOBILE_UPDATES.md) — publish + in-app updates
 - [docs/ADMIN_MOBILE_QA.md](../../docs/ADMIN_MOBILE_QA.md) — C10 route parity checklist
 - [docs/ADMIN_APK_RELEASE.md](../../docs/ADMIN_APK_RELEASE.md) — CI artifacts + versioning (C11)
 - [docs/ADMIN_PWA.md](../../docs/ADMIN_PWA.md) — staff install identity (C9)
