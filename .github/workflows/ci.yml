@@ -86,7 +86,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/storefront/dist/server
-          command: deploy
+          command: deploy --config wrangler.json
           secrets: |
             SUPABASE_SERVICE_ROLE_KEY
         env:
@@ -146,7 +146,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/admin/dist/server
-          command: deploy
+          command: deploy --config wrangler.json
           secrets: |
             SUPABASE_SERVICE_ROLE_KEY
         env:
@@ -278,7 +278,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/storefront/dist/server
-          command: deploy
+          command: deploy --config wrangler.json
           secrets: |
             SUPABASE_SERVICE_ROLE_KEY
         env:

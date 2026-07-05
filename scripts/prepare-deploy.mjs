@@ -88,4 +88,13 @@ if (process.env.CLOUDFLARE_WORKER_LOGS !== "false") {
 }
 
 fs.writeFileSync(wranglerPath, `${JSON.stringify(cfg, null, 2)}\n`);
+
+// Nitro also writes dist/.wrangler/deploy/config.json. Wrangler 4.x errors when both
+// that redirect config and server/wrangler.json exist with different base paths.
+const nitroWranglerDir = path.join(distRoot, ".wrangler");
+if (fs.existsSync(nitroWranglerDir)) {
+  fs.rmSync(nitroWranglerDir, { recursive: true, force: true });
+  console.log(`Removed ${nitroWranglerDir} to avoid wrangler deploy config conflict.`);
+}
+
 console.log(`Prepared wrangler deploy config for worker "${cfg.name}" (${target}).`);
