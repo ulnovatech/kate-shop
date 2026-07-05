@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
 import { defaultAdminPath } from "@/lib/rbac";
-import { ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
+import { ADMIN_JOIN_PATH, ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
 import { withTimeout } from "@/lib/with-timeout";
 import { signInWithStaffPinAndFinish } from "@/lib/staff-login";
 import { AuthCardSkeleton } from "@/components/loading-states";
@@ -35,6 +35,7 @@ export function AdminLoginPage() {
   const shopName = useAdminShopName();
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
+  const [bootstrapRequired, setBootstrapRequired] = useState(false);
   const [view, setView] = useState<LoginView>("sign-in");
   const [email, setEmail] = useState("");
   const [pin, setPin] = useState("");
@@ -44,6 +45,7 @@ export function AdminLoginPage() {
   useEffect(() => {
     withTimeout(getBootstrapStatus(), BOOTSTRAP_TIMEOUT_MS, "Setup check")
       .then((s) => {
+        setBootstrapRequired(s.required);
         if (s.required) {
           navigate({ to: ADMIN_SETUP_PATH, replace: true });
         }
@@ -177,10 +179,19 @@ export function AdminLoginPage() {
 
       {view === "sign-in" ? (
         <p className="mt-stack type-caption text-muted-foreground">
-          First time here?{" "}
-          <Link to={ADMIN_SETUP_PATH} className="font-medium text-primary hover:underline">
-            Run shop setup
+          New team member?{" "}
+          <Link to={ADMIN_JOIN_PATH} className="font-medium text-primary hover:underline">
+            Join with invite link
           </Link>
+          {bootstrapRequired ? (
+            <>
+              {" "}
+              ·{" "}
+              <Link to={ADMIN_SETUP_PATH} className="font-medium text-primary hover:underline">
+                Run shop setup
+              </Link>
+            </>
+          ) : null}
         </p>
       ) : null}
     </AdminAuthLayout>

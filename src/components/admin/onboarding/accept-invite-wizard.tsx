@@ -13,7 +13,7 @@ import { AdminPinInput, isStaffPinComplete } from "@/components/admin-pin-input"
 import { acceptAdminInvite, validateInviteToken } from "@/lib/api/invites.functions";
 import { humanizeError } from "@/lib/errors";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
-import { ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
+import { ADMIN_JOIN_PATH, ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
 import { supabase } from "@/integrations/supabase/client";
 import { establishStaffPinSession } from "@/lib/staff-login";
 import {
@@ -86,15 +86,17 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
   const staffEmail = oauthEmail ?? form.watch("email");
 
   useEffect(() => {
+    if (!token) {
+      navigate({ to: ADMIN_JOIN_PATH, replace: true });
+    }
+  }, [token, navigate]);
+
+  useEffect(() => {
     if (token) savePendingStaffInviteToken(token);
   }, [token]);
 
   useEffect(() => {
-    if (!token) {
-      setInvalid(true);
-      setValidating(false);
-      return;
-    }
+    if (!token) return;
     validateInviteToken({ data: { token } })
       .then((r) => {
         if (!r.valid) {
@@ -216,9 +218,14 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
         title="Invalid invite"
         description="This link may be expired or already used."
       >
-        <Button asChild className={`w-full ${adminPrimaryTouch}`}>
-          <Link to={ADMIN_LOGIN_PATH}>Go to sign in</Link>
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Button asChild className={`w-full ${adminPrimaryTouch}`}>
+            <Link to={ADMIN_JOIN_PATH}>Try another link</Link>
+          </Button>
+          <Button asChild variant="outline" className={adminPrimaryTouch}>
+            <Link to={ADMIN_LOGIN_PATH}>Sign in</Link>
+          </Button>
+        </div>
       </AdminAuthLayout>
     );
   }

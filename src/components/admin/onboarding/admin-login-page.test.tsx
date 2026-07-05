@@ -56,6 +56,10 @@ describe("AdminLoginPage", () => {
     expect(screen.queryByLabelText(/password/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Forgot or change PIN?" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Join with invite link" })).toHaveAttribute(
+      "href",
+      "/admin/join",
+    );
   });
 
   it("opens the forgot PIN reset wizard", async () => {

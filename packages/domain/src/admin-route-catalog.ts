@@ -38,6 +38,16 @@ export const ADMIN_ROUTE_CATALOG: AdminRouteCatalogEntry[] = [
     mobileNotes: "Touch-friendly form; dev hint when server down",
   },
   {
+    id: "join",
+    area: "auth",
+    path: "/join",
+    monolithFile: "admin.join.tsx",
+    standaloneRel: "join.tsx",
+    public: true,
+    heading: "Join your team",
+    mobileNotes: "Primary entry for new staff; paste invite link",
+  },
+  {
     id: "setup",
     area: "auth",
     path: "/setup",

@@ -5,7 +5,7 @@ import { completeStaffAuthFromUrl } from "@/integrations/supabase/staff-mobile-a
 import { AuthCardSkeleton } from "@/components/loading-states";
 import { humanizeError } from "@/lib/errors";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
-import { ADMIN_ACCEPT_INVITE_PATH, ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
+import { ADMIN_ACCEPT_INVITE_PATH, ADMIN_JOIN_PATH, ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
 import { loadStaffOnboardingOAuth } from "@/lib/staff-onboarding-oauth";
 
 export const Route = createFileRoute("/_staff/login-callback")({
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_staff/login-callback")({
 });
 
 function StaffLoginCallback() {
-  const navigate = useNavigate();
+  const navigate = Route.useNavigate();
   const [message, setMessage] = useState("Completing sign-in…");
 
   useEffect(() => {
@@ -25,13 +25,13 @@ function StaffLoginCallback() {
 
       if (error) {
         toast.error(humanizeError(error, { fallback: "Could not complete sign-in." }));
-        navigate({ to: "/login", replace: true });
+        navigate({ to: ADMIN_JOIN_PATH, replace: true });
         return;
       }
 
       if (!session) {
         setMessage("No sign-in session found. Redirecting…");
-        navigate({ to: "/login", replace: true });
+        navigate({ to: ADMIN_JOIN_PATH, replace: true });
         return;
       }
 

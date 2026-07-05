@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import { ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
+import { resolveStaffUnauthenticatedRedirect } from "@/lib/staff-auth-entry";
 import { defaultAdminPath, hasPermission, type AdminPermission } from "@/lib/rbac";
 
 type Props = {
@@ -17,7 +17,7 @@ export function AdminRouteGuard({ permission, children }: Props) {
   useEffect(() => {
     if (initialLoading) return;
     if (!permissions.canAccessAdmin) {
-      navigate({ to: ADMIN_LOGIN_PATH, replace: true });
+      navigate(resolveStaffUnauthenticatedRedirect());
       return;
     }
     if (!hasPermission(permissions, permission)) {

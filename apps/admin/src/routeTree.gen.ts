@@ -24,6 +24,7 @@ import { Route as StaffNotificationsRouteImport } from './routes/_staff/notifica
 import { Route as StaffMobileAppRouteImport } from './routes/_staff/mobile-app'
 import { Route as StaffLoginCallbackRouteImport } from './routes/_staff/login-callback'
 import { Route as StaffLoginRouteImport } from './routes/_staff/login'
+import { Route as StaffJoinRouteImport } from './routes/_staff/join'
 import { Route as StaffInventoryRouteImport } from './routes/_staff/inventory'
 import { Route as StaffInsightsRouteImport } from './routes/_staff/insights'
 import { Route as StaffDeliveryRouteImport } from './routes/_staff/delivery'
@@ -109,6 +110,11 @@ const StaffLoginRoute = StaffLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => StaffRouteRoute,
 } as any)
+const StaffJoinRoute = StaffJoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => StaffRouteRoute,
+} as any)
 const StaffInventoryRoute = StaffInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/delivery': typeof StaffDeliveryRoute
   '/insights': typeof StaffInsightsRoute
   '/inventory': typeof StaffInventoryRoute
+  '/join': typeof StaffJoinRoute
   '/login': typeof StaffLoginRoute
   '/login-callback': typeof StaffLoginCallbackRoute
   '/mobile-app': typeof StaffMobileAppRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/delivery': typeof StaffDeliveryRoute
   '/insights': typeof StaffInsightsRoute
   '/inventory': typeof StaffInventoryRoute
+  '/join': typeof StaffJoinRoute
   '/login': typeof StaffLoginRoute
   '/login-callback': typeof StaffLoginCallbackRoute
   '/mobile-app': typeof StaffMobileAppRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/_staff/delivery': typeof StaffDeliveryRoute
   '/_staff/insights': typeof StaffInsightsRoute
   '/_staff/inventory': typeof StaffInventoryRoute
+  '/_staff/join': typeof StaffJoinRoute
   '/_staff/login': typeof StaffLoginRoute
   '/_staff/login-callback': typeof StaffLoginCallbackRoute
   '/_staff/mobile-app': typeof StaffMobileAppRoute
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/insights'
     | '/inventory'
+    | '/join'
     | '/login'
     | '/login-callback'
     | '/mobile-app'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/insights'
     | '/inventory'
+    | '/join'
     | '/login'
     | '/login-callback'
     | '/mobile-app'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/_staff/delivery'
     | '/_staff/insights'
     | '/_staff/inventory'
+    | '/_staff/join'
     | '/_staff/login'
     | '/_staff/login-callback'
     | '/_staff/mobile-app'
@@ -434,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffLoginRouteImport
       parentRoute: typeof StaffRouteRoute
     }
+    '/_staff/join': {
+      id: '/_staff/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof StaffJoinRouteImport
+      parentRoute: typeof StaffRouteRoute
+    }
     '/_staff/inventory': {
       id: '/_staff/inventory'
       path: '/inventory'
@@ -526,6 +545,7 @@ interface StaffRouteRouteChildren {
   StaffDeliveryRoute: typeof StaffDeliveryRoute
   StaffInsightsRoute: typeof StaffInsightsRoute
   StaffInventoryRoute: typeof StaffInventoryRoute
+  StaffJoinRoute: typeof StaffJoinRoute
   StaffLoginRoute: typeof StaffLoginRoute
   StaffLoginCallbackRoute: typeof StaffLoginCallbackRoute
   StaffMobileAppRoute: typeof StaffMobileAppRoute
@@ -551,6 +571,7 @@ const StaffRouteRouteChildren: StaffRouteRouteChildren = {
   StaffDeliveryRoute: StaffDeliveryRoute,
   StaffInsightsRoute: StaffInsightsRoute,
   StaffInventoryRoute: StaffInventoryRoute,
+  StaffJoinRoute: StaffJoinRoute,
   StaffLoginRoute: StaffLoginRoute,
   StaffLoginCallbackRoute: StaffLoginCallbackRoute,
   StaffMobileAppRoute: StaffMobileAppRoute,

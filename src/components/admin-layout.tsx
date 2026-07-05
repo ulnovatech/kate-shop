@@ -14,8 +14,8 @@ import { RouteAnnouncer } from "@/components/a11y/route-announcer";
 import { AdminShellSkeleton, AdminRefreshingBar } from "@/components/loading-states";
 import { useAuth } from "@/lib/auth";
 import { adminIconButton } from "@/lib/admin-mobile";
-import { ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
 import { ADMIN_PUBLIC_PATHS, adminUrl } from "@/lib/admin-routes";
+import { resolveStaffUnauthenticatedRedirect } from "@/lib/staff-auth-entry";
 import { defaultAdminPath, displayRoleLabel, hasPermission } from "@/lib/rbac";
 import { Button } from "@/components/ui/button";
 import { AdminMobileNavDrawer } from "@/components/admin-mobile-nav-drawer";
@@ -113,7 +113,7 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   useEffect(() => {
     if (ADMIN_PUBLIC_PATHS.some((p) => path.startsWith(p))) return;
     if (!initialLoading && (!user || !permissions.canAccessAdmin)) {
-      navigate({ to: ADMIN_LOGIN_PATH, replace: true });
+      navigate(resolveStaffUnauthenticatedRedirect());
     }
   }, [user, permissions.canAccessAdmin, initialLoading, navigate, path]);
 
@@ -133,7 +133,7 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   const handleSignOut = useCallback(async () => {
     clearStaffAppUnlock();
     await signOut();
-    navigate({ to: ADMIN_LOGIN_PATH });
+    navigate(resolveStaffUnauthenticatedRedirect());
   }, [navigate, signOut]);
 
   if (initialLoading) {

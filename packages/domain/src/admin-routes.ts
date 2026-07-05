@@ -3,6 +3,7 @@ import {
   ADMIN_ACCEPT_INVITE_PATH,
   ADMIN_BASE_PATH,
   ADMIN_INSTALL_PATH,
+  ADMIN_JOIN_PATH,
   ADMIN_LOGIN_PATH,
   ADMIN_LOGIN_CALLBACK_PATH,
   ADMIN_SETUP_PATH,
@@ -12,6 +13,7 @@ import {
 /** Staff routes that render without AdminLayout / route guard (auth flows). */
 export const ADMIN_PUBLIC_PATHS = [
   ADMIN_LOGIN_PATH,
+  ADMIN_JOIN_PATH,
   ADMIN_LOGIN_CALLBACK_PATH,
   ADMIN_SETUP_PATH,
   ADMIN_ACCEPT_INVITE_PATH,

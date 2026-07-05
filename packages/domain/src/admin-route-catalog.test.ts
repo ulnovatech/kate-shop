@@ -7,8 +7,8 @@ import {
 } from "./admin-route-catalog";
 
 describe("ADMIN_ROUTE_CATALOG", () => {
-  it("lists 20 staff routes for C14 parity", () => {
-    expect(ADMIN_ROUTE_CATALOG).toHaveLength(20);
+  it("lists 21 staff routes for C14 parity", () => {
+    expect(ADMIN_ROUTE_CATALOG).toHaveLength(21);
   });
 
   it("has unique ids and paths", () => {
@@ -19,7 +19,7 @@ describe("ADMIN_ROUTE_CATALOG", () => {
   });
 
   it("covers all blueprint areas", () => {
-    expect(adminRoutesInArea("auth")).toHaveLength(3);
+    expect(adminRoutesInArea("auth")).toHaveLength(4);
     expect(adminRoutesInArea("home")).toHaveLength(1);
     expect(adminRoutesInArea("catalog")).toHaveLength(4);
     expect(adminRoutesInArea("orders")).toHaveLength(3);
@@ -29,7 +29,7 @@ describe("ADMIN_ROUTE_CATALOG", () => {
   });
 
   it("marks public auth routes", () => {
-    expect(ADMIN_PUBLIC_ROUTE_IDS).toEqual(["login", "setup", "accept-invite"]);
+    expect(ADMIN_PUBLIC_ROUTE_IDS).toEqual(["login", "join", "setup", "accept-invite"]);
     expect(ADMIN_PROTECTED_ROUTE_CATALOG).toHaveLength(17);
   });
 });

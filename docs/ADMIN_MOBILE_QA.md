@@ -1,31 +1,32 @@
 # Kate Admin — mobile parity QA (C10)
 
-APK and mobile browser should match the staff web app across **20 routes**. This doc is the human checklist; automation lives in `e2e/admin-mobile-parity.spec.ts` and `npm run verify:admin-routes`.
+APK and mobile browser should match the staff web app across **21 routes**. This doc is the human checklist; automation lives in `e2e/admin-mobile-parity.spec.ts` and `npm run verify:admin-routes`.
 
 ## Route matrix
 
-| Area        | Route           | Path                     | Mobile notes                     |
-| ----------- | --------------- | ------------------------ | -------------------------------- |
-| **Auth**    | login           | `/login`                 | Sign-in form; 44px targets       |
-|             | setup           | `/setup`                 | Owner bootstrap (once)           |
-|             | accept-invite   | `/accept-invite?token=…` | Invalid token state + happy path |
-| **Home**    | dashboard       | `/`                      | Today + bottom quick nav         |
-|             | insights        | `/insights`              | Charts scroll horizontally       |
-| **Catalog** | products        | `/products`              | Card list; add product CTA       |
-|             | product-new     | `/products/new`          | Sticky save; camera capture      |
-|             | product-edit    | `/products/:id`          | Gallery upload; sticky save      |
-|             | categories      | `/categories`            | Drag reorder; expand tree        |
-| **Orders**  | orders          | `/orders`                | Stacked filters; CSV export      |
-|             | order-detail    | `/orders/:id`            | Status pipeline first            |
-|             | delivery        | `/delivery`              | Zone toggles                     |
-| **Money**   | payments        | `/payments`              | Inline record form               |
-|             | payment-methods | `/payment-methods`       | Toggle methods                   |
-| **Ops**     | notifications   | `/notifications`         | List readable on narrow screens  |
-|             | recycle         | `/recycle`               | Restore / purge actions          |
-|             | audit           | `/audit`                 | Filter + scroll                  |
-| **Team**    | team            | `/team`                  | Invite form                      |
-|             | roles           | `/roles`                 | Permission matrix scroll         |
-|             | settings        | `/settings`              | Store setup sections             |
+| Area        | Route           | Path                     | Mobile notes                       |
+| ----------- | --------------- | ------------------------ | ---------------------------------- |
+| **Auth**    | join            | `/join`                  | New staff entry; paste invite link |
+|             | login           | `/login`                 | Returning staff PIN sign-in        |
+|             | setup           | `/setup`                 | Owner bootstrap (once)             |
+|             | accept-invite   | `/accept-invite?token=…` | Signup wizard after valid invite   |
+| **Home**    | dashboard       | `/`                      | Today + bottom quick nav           |
+|             | insights        | `/insights`              | Charts scroll horizontally         |
+| **Catalog** | products        | `/products`              | Card list; add product CTA         |
+|             | product-new     | `/products/new`          | Sticky save; camera capture        |
+|             | product-edit    | `/products/:id`          | Gallery upload; sticky save        |
+|             | categories      | `/categories`            | Drag reorder; expand tree          |
+| **Orders**  | orders          | `/orders`                | Stacked filters; CSV export        |
+|             | order-detail    | `/orders/:id`            | Status pipeline first              |
+|             | delivery        | `/delivery`              | Zone toggles                       |
+| **Money**   | payments        | `/payments`              | Inline record form                 |
+|             | payment-methods | `/payment-methods`       | Toggle methods                     |
+| **Ops**     | notifications   | `/notifications`         | List readable on narrow screens    |
+|             | recycle         | `/recycle`               | Restore / purge actions            |
+|             | audit           | `/audit`                 | Filter + scroll                    |
+| **Team**    | team            | `/team`                  | Invite form                        |
+|             | roles           | `/roles`                 | Permission matrix scroll           |
+|             | settings        | `/settings`              | Store setup sections               |
 
 Source of truth: [`packages/domain/src/admin-route-catalog.ts`](../packages/domain/src/admin-route-catalog.ts).
 
@@ -57,8 +58,10 @@ Use **Chrome on `admin.yourdomain.com`** and the **Kate Admin APK** (`npm run an
 
 ### Auth & session
 
-- [ ] Password login → dashboard
-- [ ] Logout → login screen
+- [ ] Fresh install / logged out → **Join** screen (not PIN login)
+- [ ] Paste invite link → password + confirm password signup
+- [ ] Returning staff: Join → Sign in → PIN works
+- [ ] Logout → join screen
 - [ ] Session survives app background / resume
 - [ ] Invite link opens accept-invite (web or APK)
 

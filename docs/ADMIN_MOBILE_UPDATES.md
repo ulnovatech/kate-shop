@@ -38,8 +38,10 @@ Optional variable `GITHUB_REPO` (defaults to `ulnovatech/kate-shop`).
 
 After publishing:
 
-1. **Settings → Mobile app** → **Copy install link** (short `…/install` URL — safe to paste in WhatsApp)
-2. Send to new staff (WhatsApp, email)
+1. **Team → Invite staff** — send the **invite link** (required for signup)
+2. **Settings → Mobile app** → **Copy install link** (short `…/install` URL — APK only; safe to paste in WhatsApp)
+
+New staff need **both**: install the APK, then open their **invite link** to create an account (password + PIN). The app opens on **Join** if they launch it before pasting the invite.
 
 ## In-app update (staff)
 

@@ -18,6 +18,7 @@ export function adminUrl(path = ""): string {
 }
 
 export const ADMIN_LOGIN_PATH = adminUrl("/login");
+export const ADMIN_JOIN_PATH = adminUrl("/join");
 export const ADMIN_SETUP_PATH = adminUrl("/setup");
 export const ADMIN_ACCEPT_INVITE_PATH = adminUrl("/accept-invite");
 export const ADMIN_LOGIN_CALLBACK_PATH = adminUrl("/login-callback");

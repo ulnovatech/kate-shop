@@ -3,4 +3,5 @@ export { AdminOnboardingStepper } from "./admin-onboarding-stepper";
 export { SetupWizard } from "./setup-wizard";
 export { AcceptInviteWizard } from "./accept-invite-wizard";
 export { AdminLoginPage } from "./admin-login-page";
+export { StaffJoinPage } from "./staff-join-page";
 export { GoLiveChecklist, StaffWelcomeChecklist } from "./go-live-checklist";

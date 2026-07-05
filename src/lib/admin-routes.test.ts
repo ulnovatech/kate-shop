@@ -20,6 +20,7 @@ describe("isAdminPublicPath", () => {
     expect(isAdminPublicPath("/admin/login-callback")).toBe(true);
     expect(isAdminPublicPath("/admin/setup")).toBe(true);
     expect(isAdminPublicPath("/admin/accept-invite")).toBe(true);
+    expect(isAdminPublicPath("/admin/join")).toBe(true);
     expect(isAdminPublicPath("/admin/install")).toBe(true);
   });
 

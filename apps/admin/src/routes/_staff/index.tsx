@@ -19,6 +19,7 @@ import { buildDashboardActions, dashboardTodaySummary } from "@/lib/admin-dashbo
 import { humanizeError, isUnauthorizedError } from "@/lib/errors";
 import { useAdminNavBadges } from "@/hooks/use-admin-nav-badges";
 import { Button } from "@/components/ui/button";
+import { resolveStaffUnauthenticatedRedirect } from "@/lib/staff-auth-entry";
 
 export const Route = createFileRoute("/_staff/")({
   staticData: { adminPermission: "dashboard" as const, adminRouteHeading: "Today" as const },
@@ -53,7 +54,7 @@ function AdminDashboard() {
   useEffect(() => {
     if (!isError || !error || authLoading) return;
     if (!isUnauthorizedError(error)) return;
-    void signOut().then(() => navigate({ to: "/login", replace: true }));
+    void signOut().then(() => navigate(resolveStaffUnauthenticatedRedirect()));
   }, [isError, error, authLoading, signOut, navigate]);
 
   const actionItems = stats

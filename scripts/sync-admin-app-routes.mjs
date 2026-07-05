@@ -14,6 +14,7 @@ const ROUTE_MAP = [
   ["admin.tsx", "route.tsx"],
   ["admin.index.tsx", "index.tsx"],
   ["admin.login.tsx", "login.tsx"],
+  ["admin.join.tsx", "join.tsx"],
   ["admin.login-callback.tsx", "login-callback.tsx"],
   ["admin.setup.tsx", "setup.tsx"],
   ["admin.accept-invite.tsx", "accept-invite.tsx"],

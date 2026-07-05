@@ -7,6 +7,7 @@ import {
   isStaffAuthCallbackUrl,
 } from "@/integrations/supabase/staff-mobile-auth";
 import { handleStaffDeepLink } from "@/lib/staff-deep-link";
+import { resolveStaffUnauthenticatedRedirect } from "@/lib/staff-auth-entry";
 import { humanizeError } from "@/lib/errors";
 
 /**
@@ -24,7 +25,7 @@ export function StaffMobileAuthBridge() {
       if (cancelled) return;
       if (error) {
         toast.error(humanizeError(error, { fallback: "Could not complete sign-in." }));
-        navigate({ to: "/login", replace: true });
+        navigate(resolveStaffUnauthenticatedRedirect());
         return;
       }
       if (session) {
