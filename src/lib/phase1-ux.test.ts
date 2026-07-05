@@ -24,6 +24,17 @@ describe("humanizeError", () => {
       humanizeError(new Error("supabase internal edge-case"), { fallback: "Try again." }),
     ).toBe("Try again.");
   });
+
+  it("keeps GitHub release token errors out of RBAC copy", () => {
+    expect(
+      humanizeError(
+        new Error(
+          "GitHub release token was rejected (403). Set KATE_GH_RELEASE_TOKEN on the admin Worker with Actions read and write access to ulnovatech/kate-shop, then redeploy. GitHub: Forbidden",
+        ),
+        { action: "publish mobile updates" },
+      ),
+    ).toContain("GitHub release token was rejected");
+  });
 });
 
 describe("human labels", () => {

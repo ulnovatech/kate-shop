@@ -13,6 +13,7 @@ import {
   getAdminMobileReleaseWorkflowRun,
   isAdminMobileReleasePublishConfigured,
   mapGithubRunToJobStatus,
+  verifyAdminMobileReleaseGithubAccess,
 } from "@kate/api/admin-mobile-release-github.server";
 import { suggestNextAdminMobileVersionName } from "@kate/domain/admin-mobile-release-job";
 import { writeAuditLog } from "@kate/api/audit.server";
@@ -42,8 +43,15 @@ export const getAdminMobileReleasePublishPanel = createServerFn({ method: "GET" 
   .handler(async () => {
     const release = await readAdminMobileAndroidRelease();
     const job = await readAdminMobileReleaseJob();
+    const tokenPresent = isAdminMobileReleasePublishConfigured();
+    const github = tokenPresent
+      ? await verifyAdminMobileReleaseGithubAccess()
+      : { ok: false, error: null as string | null };
+
     return {
-      publishConfigured: isAdminMobileReleasePublishConfigured(),
+      publishConfigured: tokenPresent && github.ok,
+      githubTokenPresent: tokenPresent,
+      githubError: github.error,
       release,
       installUrl: release?.apkUrl ?? null,
       suggestedVersionName: suggestNextAdminMobileVersionName(release?.versionName),

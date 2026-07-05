@@ -103,9 +103,16 @@ export function humanizeError(error: unknown, options: HumanizedErrorOptions = {
     message.includes("invalid token") ||
     message.includes("jwt") ||
     message.includes("session") ||
-    message.includes("auth")
+    (message.includes("auth") && !message.includes("github"))
   ) {
     return "Your session needs a refresh. Please sign in again.";
+  }
+
+  if (
+    message.includes("github release token was rejected") ||
+    message.includes("github release trigger failed")
+  ) {
+    return messageOf(error);
   }
 
   if (

@@ -4,7 +4,6 @@ import { requireSupabaseAuth } from "@kate/supabase/auth-middleware";
 import { STAFF_ROLES, type StaffRole } from "@kate/domain/db/contracts";
 import {
   hasMatrixPermission,
-  isShopOwnerAccess,
   permissionsFromStaffAccess,
   type AdminPermissions,
 } from "@kate/domain/rbac";
@@ -71,13 +70,7 @@ export const requireOwnerAuth = createMiddleware({ type: "function" })
   .middleware([requireStaffAuth])
   .server(async ({ next, context }) => {
     const auth = context.auth as AuthContext;
-    if (
-      !isShopOwnerAccess({
-        isLocked: auth.isLockedOwner,
-        roleSlug: auth.roleSlug,
-        permissions: [...auth.permissionKeys],
-      })
-    ) {
+    if (!auth.permissions.canManageSettings) {
       throw new Error("Forbidden: owner access required");
     }
     return next({ context });

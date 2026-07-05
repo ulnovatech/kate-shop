@@ -17,6 +17,47 @@ function resolveGithubRepo(): string {
   return process.env.GITHUB_REPO?.trim() || DEFAULT_REPO;
 }
 
+function parseGithubErrorBody(body: string): string {
+  try {
+    const parsed = JSON.parse(body) as { message?: string };
+    if (parsed.message?.trim()) return parsed.message.trim();
+  } catch {
+    // use raw body
+  }
+  return body.trim().slice(0, 240) || "Unknown GitHub error";
+}
+
+/** User-facing message — avoid "forbidden"/"permission" so RBAC humanizer does not mislabel it. */
+export function formatGithubReleaseError(status: number, body: string): string {
+  const detail = parseGithubErrorBody(body);
+  const repo = resolveGithubRepo();
+
+  if (status === 401 || status === 403) {
+    return `GitHub release token was rejected (${status}). Set KATE_GH_RELEASE_TOKEN on the admin Worker with Actions read and write access to ${repo}, then redeploy. GitHub: ${detail}`;
+  }
+
+  return `GitHub release trigger failed (${status}): ${detail}`;
+}
+
+export async function verifyAdminMobileReleaseGithubAccess(): Promise<{
+  ok: boolean;
+  error: string | null;
+}> {
+  if (!isAdminMobileReleasePublishConfigured()) {
+    return { ok: false, error: null };
+  }
+
+  try {
+    await listRecentAdminMobileReleaseRuns(1);
+    return { ok: true, error: null };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "GitHub release token check failed.",
+    };
+  }
+}
+
 function resolveGithubToken(): string | null {
   return (
     process.env.KATE_GH_RELEASE_TOKEN?.trim() ||
@@ -78,7 +119,7 @@ export async function dispatchAdminMobileReleaseWorkflow(input: {
       "Release workflow not found on GitHub. Push release-admin-apk.yml to main and try again.",
     );
   }
-  throw new Error(`GitHub workflow dispatch failed (${res.status}): ${body.slice(0, 240)}`);
+  throw new Error(formatGithubReleaseError(res.status, body));
 }
 
 export async function listRecentAdminMobileReleaseRuns(limit = 5): Promise<GitHubWorkflowRun[]> {
@@ -87,7 +128,7 @@ export async function listRecentAdminMobileReleaseRuns(limit = 5): Promise<GitHu
   );
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Could not list workflow runs (${res.status}): ${body.slice(0, 240)}`);
+    throw new Error(formatGithubReleaseError(res.status, body));
   }
 
   const json = (await res.json()) as { workflow_runs?: GitHubWorkflowRun[] };

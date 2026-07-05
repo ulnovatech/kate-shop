@@ -73,12 +73,11 @@ export function AdminMobileReleasePublisher() {
       });
     },
     onError: (error) => {
-      toast.error(
-        humanizeError(error, {
-          fallback: "Could not start the release.",
-          action: "publish mobile updates",
-        }),
-      );
+      const raw = humanizeError(error, {
+        fallback: "Could not start the release.",
+        action: "publish mobile updates",
+      });
+      toast.error(raw);
     },
   });
 
@@ -124,21 +123,31 @@ export function AdminMobileReleasePublisher() {
   if (!data?.publishConfigured) {
     return (
       <div className="rounded-xl border border-dashed border-amber-500/40 bg-amber-500/5 p-5">
-        <p className="font-medium text-foreground">One-click publish not wired yet</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Add a GitHub token to the admin Worker so this button can trigger{" "}
-          <code className="text-xs">Release Kate Admin APK</code> for you.
+        <p className="font-medium text-foreground">
+          {data?.githubTokenPresent
+            ? "GitHub token needs fixing"
+            : "One-click publish not wired yet"}
         </p>
+        {data?.githubError ? (
+          <p className="mt-2 text-sm text-destructive">{data.githubError}</p>
+        ) : (
+          <p className="mt-2 text-sm text-muted-foreground">
+            Add a GitHub token to the admin Worker so this button can trigger{" "}
+            <code className="text-xs">Release Kate Admin APK</code> for you.
+          </p>
+        )}
         <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
           <li>
             GitHub → Settings → Developer settings → Personal access tokens → fine-grained token
-            with <strong>Actions: Read and write</strong> on this repo.
+            with <strong>Actions: Read and write</strong> on{" "}
+            <code className="text-xs">ulnovatech/kate-shop</code>.
           </li>
           <li>
-            GitHub repo → Settings → Environments → <strong>production</strong> → Secret{" "}
-            <code className="text-xs">KATE_GH_RELEASE_TOKEN</code>.
+            GitHub repo → Settings → Secrets → add{" "}
+            <code className="text-xs">KATE_GH_RELEASE_TOKEN</code> to the admin Worker (Cloudflare
+            or GitHub production environment).
           </li>
-          <li>Redeploy admin (push to main). Reload this page.</li>
+          <li>Redeploy admin, then reload this page.</li>
         </ol>
       </div>
     );
