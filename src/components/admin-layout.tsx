@@ -34,6 +34,7 @@ import { useAdminKeyboardShortcuts } from "@/hooks/use-admin-keyboard-shortcuts"
 import { NAV_PATH_SETUP_CHECK } from "@/lib/admin-setup-completion";
 import { refreshAdminRouteQueries } from "@/lib/admin-refresh";
 import { clearStaffAppUnlock, staffScreenLockEnabled } from "@/lib/staff-screen-lock";
+import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { StaffScreenLockProvider } from "@/components/staff-screen-lock";
 import { AdminMobileNavOverrideProvider } from "@/components/admin/admin-mobile-nav-override";
 import { cn } from "@/lib/utils";
@@ -283,7 +284,10 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
                   </Button>
                 </div>
               ) : null}
-              <AdminPullToRefresh onRefresh={handlePullRefresh} disabled={navOpen}>
+              <AdminPullToRefresh
+                onRefresh={handlePullRefresh}
+                disabled={navOpen || isNativeStaffApp()}
+              >
                 <AdminRefreshingBar active={refreshing} />
                 {children ?? <Outlet />}
               </AdminPullToRefresh>

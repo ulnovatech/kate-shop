@@ -10,7 +10,7 @@ APK and mobile browser should match the staff web app across **23 routes**. This
 |             | signup          | `/signup`                | Email + PIN signup (invite bound silently) |
 |             | login           | `/login`                 | Returning staff PIN sign-in                |
 |             | setup           | `/setup`                 | Owner bootstrap (once)                     |
-|             | accept-invite   | `/accept-invite?token=…` | Saves token → redirects to signup          |
+|             | accept-invite   | `/accept-invite?token=…` | Probes for APK; install gate or signup     |
 | **Home**    | dashboard       | `/`                      | Today + bottom quick nav                   |
 |             | insights        | `/insights`              | Charts scroll horizontally                 |
 | **Catalog** | products        | `/products`              | Card list; add product CTA                 |
@@ -61,7 +61,9 @@ Use **Chrome on `admin.yourdomain.com`** and the **Kate Admin APK** (`npm run an
 ### Auth & session
 
 - [ ] Fresh install / logged out → **Join** screen (not PIN login)
-- [ ] Paste invite link → password + confirm password signup
+- [ ] **Android browser — APK already installed:** invite link opens app → signup (no download prompt)
+- [ ] **Android browser — no APK:** invite link shows **Download Kate Admin** (not forced re-download if app present)
+- [ ] Invite link → email + PIN signup in browser (Continue in browser escape hatch)
 - [ ] Returning staff: Join → Sign in → PIN works
 - [ ] Logout → join screen
 - [ ] Session survives app background / resume

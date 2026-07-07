@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Download, ExternalLink, Loader2, Smartphone } from "lucide-react";
-import { buildStaffInviteDeepLink } from "@kate/domain/staff-invite-links";
 import { getAdminMobileAndroidRelease } from "@/lib/api/admin-mobile-release.functions";
+import { openStaffInviteInApp } from "@/lib/staff-invite-app-detect";
 import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 import { Button } from "@/components/ui/button";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
@@ -13,6 +13,7 @@ type StaffInviteMobileGateProps = {
   onContinueInBrowser: () => void;
 };
 
+/** Install-only gate — shown when Kate Admin is not detected on the device. */
 export function StaffInviteMobileGate({
   token,
   inviteRole,
@@ -51,8 +52,7 @@ export function StaffInviteMobileGate({
   };
 
   const openInApp = () => {
-    savePendingStaffInviteToken(token);
-    window.location.href = buildStaffInviteDeepLink(token);
+    openStaffInviteInApp(token);
   };
 
   return (
@@ -68,17 +68,17 @@ export function StaffInviteMobileGate({
                 Staff invite
               </p>
               <h1 className="mt-1 font-heading text-2xl font-semibold text-foreground">
-                Join Kate Admin
+                Install Kate Admin
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 {inviteRole ? (
                   <>
                     Role:{" "}
                     <span className="font-medium capitalize text-foreground">{inviteRole}</span>.
-                    You will choose your work email during signup.
+                    Download the app once, then finish signup inside Kate Admin.
                   </>
                 ) : (
-                  "You will choose your work email during signup."
+                  "Download the staff app once, then finish signup inside Kate Admin."
                 )}
               </p>
             </div>
@@ -89,7 +89,8 @@ export function StaffInviteMobileGate({
           {!installStarted ? (
             <>
               <p className="text-sm text-muted-foreground">
-                One link does it all: install the staff app, then finish signup inside Kate Admin.
+                Kate Admin is not on this phone yet. Download it to continue with your invite — your
+                link stays saved.
               </p>
               <Button
                 type="button"
@@ -97,10 +98,17 @@ export function StaffInviteMobileGate({
                 onClick={startInstall}
               >
                 <Download className="size-4" aria-hidden />
-                Install app &amp; continue
+                Download Kate Admin
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Android will ask you to confirm the install. Your invite stays saved.
+                Android will ask you to confirm the install.
+              </p>
+              <Button type="button" variant="outline" className="w-full" onClick={openInApp}>
+                <ExternalLink className="size-4" aria-hidden />
+                Open Kate Admin
+              </Button>
+              <p className="text-center text-xs text-muted-foreground">
+                Already installed? Tap above — no need to download again.
               </p>
             </>
           ) : (

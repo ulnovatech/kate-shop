@@ -1,8 +1,12 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 
+const PULL_ACTIVATION_PX = 16;
 const PULL_THRESHOLD_PX = 72;
 const MAX_PULL_PX = 120;
+/** Treat as “at top” within a couple pixels (sub-pixel / rubber-band). */
+const SCROLL_TOP_EPSILON = 2;
 
 type AdminPullToRefreshProps = {
   children: ReactNode;
@@ -20,6 +24,22 @@ function scrollTop(): number {
   return window.scrollY || document.documentElement.scrollTop || 0;
 }
 
+/** Visible pull distance after activation slack — exported for tests. */
+export function pullDistanceFromDelta(deltaY: number): number {
+  if (deltaY <= PULL_ACTIVATION_PX) return 0;
+  return Math.min((deltaY - PULL_ACTIVATION_PX) * 0.5, MAX_PULL_PX);
+}
+
+export function shouldRefreshFromPullDistance(distance: number): boolean {
+  return distance >= PULL_THRESHOLD_PX;
+}
+
+export function isPullToRefreshEnabled(disabled: boolean): boolean {
+  if (disabled) return false;
+  if (typeof window === "undefined") return false;
+  return !isNativeStaffApp();
+}
+
 export function AdminPullToRefresh({
   children,
   onRefresh,
@@ -28,50 +48,69 @@ export function AdminPullToRefresh({
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const startY = useRef(0);
-  const pulling = useRef(false);
+  const tracking = useRef(false);
+  const pullCommitted = useRef(false);
   const pullDistanceRef = useRef(0);
   const onRefreshRef = useRef(onRefresh);
   onRefreshRef.current = onRefresh;
 
   pullDistanceRef.current = pullDistance;
 
+  const resetGesture = () => {
+    tracking.current = false;
+    pullCommitted.current = false;
+    setPullDistance(0);
+  };
+
   useEffect(() => {
-    if (disabled) return;
+    if (!isPullToRefreshEnabled(disabled)) return;
 
     const main = getScrollRoot();
     if (!main) return;
 
     const onTouchStart = (event: TouchEvent) => {
-      if (refreshing || scrollTop() > 0) return;
+      if (refreshing || scrollTop() > SCROLL_TOP_EPSILON) return;
       if (!main.contains(event.target as Node)) return;
       startY.current = event.touches[0]?.clientY ?? 0;
-      pulling.current = true;
+      tracking.current = true;
+      pullCommitted.current = false;
     };
 
     const onTouchMove = (event: TouchEvent) => {
-      if (!pulling.current || refreshing) return;
-      if (scrollTop() > 0) {
-        pulling.current = false;
-        setPullDistance(0);
+      if (!tracking.current || refreshing) return;
+
+      if (scrollTop() > SCROLL_TOP_EPSILON) {
+        resetGesture();
         return;
       }
+
       const y = event.touches[0]?.clientY ?? 0;
       const delta = y - startY.current;
-      if (delta > 0) {
-        event.preventDefault();
-        setPullDistance(Math.min(delta * 0.45, MAX_PULL_PX));
-      } else {
-        pulling.current = false;
-        setPullDistance(0);
+
+      if (delta <= 0) {
+        resetGesture();
+        return;
       }
+
+      if (delta < PULL_ACTIVATION_PX) {
+        return;
+      }
+
+      pullCommitted.current = true;
+      event.preventDefault();
+      setPullDistance(pullDistanceFromDelta(delta));
     };
 
     const finishPull = async () => {
-      if (!pulling.current) return;
-      pulling.current = false;
-      const shouldRefresh = pullDistanceRef.current >= PULL_THRESHOLD_PX;
+      if (!tracking.current) return;
+
+      const committed = pullCommitted.current;
+      const distance = pullDistanceRef.current;
+      tracking.current = false;
+      pullCommitted.current = false;
       setPullDistance(0);
-      if (!shouldRefresh) return;
+
+      if (!committed || !shouldRefreshFromPullDistance(distance)) return;
 
       setRefreshing(true);
       try {
@@ -99,7 +138,7 @@ export function AdminPullToRefresh({
   }, [disabled, refreshing]);
 
   const indicatorHeight = refreshing ? 48 : pullDistance > 0 ? Math.max(pullDistance, 0) : 0;
-  const releaseReady = pullDistance >= PULL_THRESHOLD_PX;
+  const releaseReady = shouldRefreshFromPullDistance(pullDistance);
 
   return (
     <div className="relative min-h-0 flex-1">

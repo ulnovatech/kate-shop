@@ -415,10 +415,11 @@
     contain-intrinsic-size: auto 4.5rem;
   }
 
-  /* Admin mobile — natural momentum scroll with native overscroll bounce */
+  /* Admin mobile — momentum scroll; contain overscroll inside main (PTR handles top refresh on web). */
   .admin-overscroll {
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
   }
 
   /* Horizontal toolbar — hide scrollbar, enable smooth touch scroll */

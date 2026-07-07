@@ -41,7 +41,7 @@ After publishing:
 1. **Team → Invite staff** — send the **single-use invite link** (includes signup; one person per link)
 2. **Settings → Mobile app** → **Copy install link** (short `…/install` URL — APK only; optional if staff already have the app)
 
-New staff open their **invite link** to create an account (email + PIN). On Android, the link can install the APK first. The app opens on **Join** if launched without a bound invite.
+New staff open their **invite link** to create an account (email + PIN). On Android, the link opens Kate Admin if already installed; otherwise it prompts a one-time APK download first. The app opens on **Join** if launched without a bound invite.
 
 ## In-app update (staff)
 

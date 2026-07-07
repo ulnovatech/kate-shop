@@ -33,6 +33,8 @@ test.describe("Kate Admin staff signup", () => {
     await expect(page).toHaveURL(/\/signup/, { timeout: 10_000 });
     expect(page.url()).not.toContain("token=");
   });
+
+  // Manual APK QA (Android Chrome): installed app → auto-open signup; fresh device → Download Kate Admin gate.
 });
 
 test.describe("Kate Admin public auth", () => {

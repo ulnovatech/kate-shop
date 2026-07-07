@@ -206,7 +206,7 @@ export function TeamInviteWizard({
               <p className="text-sm font-medium">One-time invite link</p>
               <p className="text-xs text-muted-foreground">
                 Single-use link — works for one person, then expires. Send via WhatsApp or any
-                channel. On Android, this link installs the app and walks them through signup.
+                channel. On Android, opens the app if installed; otherwise prompts install once.
               </p>
               <p className="break-all font-mono text-xs text-muted-foreground">{inviteUrl}</p>
               <div className="flex flex-wrap gap-2">
