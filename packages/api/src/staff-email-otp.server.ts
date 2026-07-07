@@ -1,7 +1,11 @@
 import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { supabaseAdmin } from "@kate/supabase/client.server";
 import { loadStaffAccess } from "@kate/api/server/permissions.server";
-import { deliverStaffOtpEmail, isEmailDeliveryEnabled } from "@/lib/email/otp-delivery";
+import {
+  deliverStaffOtpEmail,
+  getEmailOtpProviderId,
+  isEmailOtpDeliveryConfigured,
+} from "@/lib/email/otp-delivery";
 import { allowStaffEmailOtpRequest, allowStaffEmailOtpVerify } from "@/lib/otp-rate-limit";
 import {
   normalizeStaffEmail,
@@ -155,7 +159,12 @@ async function assertCanRequestOtp(
 }
 
 export function getStaffEmailOtpDeliveryStatusImpl() {
-  return { emailEnabled: isEmailDeliveryEnabled() };
+  const provider = getEmailOtpProviderId();
+  const emailEnabled = isEmailOtpDeliveryConfigured();
+  return {
+    emailEnabled,
+    mode: emailEnabled ? provider : ("none" as const),
+  };
 }
 
 export async function requestStaffEmailOtpImpl(data: {
@@ -170,9 +179,9 @@ export async function requestStaffEmailOtpImpl(data: {
     throw new Error("Invalid verification purpose.");
   }
 
-  if (!isEmailDeliveryEnabled()) {
+  if (!isEmailOtpDeliveryConfigured()) {
     throw new Error(
-      "Email verification is not configured. Set EMAIL_OTP_PROVIDER=gmail and Gmail credentials.",
+      "Email verification is not configured. Set EMAIL_OTP_PROVIDER=gmail with Gmail credentials, or EMAIL_OTP_PROVIDER=console for local development.",
     );
   }
 

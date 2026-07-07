@@ -30,11 +30,12 @@ import {
   loadStaffOnboardingOAuth,
   startStaffGoogleOnboarding,
 } from "@/lib/staff-onboarding-oauth";
-import { AdminAuthDivider, AdminGoogleAuthButton } from "./admin-google-auth-button";
+import { StaffGoogleSignInOption } from "./admin-google-auth-button";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminAuthLayout, ADMIN_AUTH_FIELD_CLASS } from "./admin-auth-layout";
 import { AdminEmailVerifyStep } from "./admin-email-verify-step";
 import { AdminOnboardingStepper } from "./admin-onboarding-stepper";
+import { isStaffGoogleAuthEnabled } from "@/lib/staff-google-auth-enabled";
 import { cn } from "@/lib/utils";
 
 const SETUP_STEPS = [
@@ -116,7 +117,7 @@ export function SetupWizard() {
   }, [navigate]);
 
   useEffect(() => {
-    if (checking) return;
+    if (!isStaffGoogleAuthEnabled() || checking) return;
     void (async () => {
       const flow = loadStaffOnboardingOAuth();
       if (flow?.kind !== "bootstrap") return;
@@ -352,8 +353,7 @@ export function SetupWizard() {
               </p>
             </div>
           ) : null}
-          <AdminAuthDivider />
-          <AdminGoogleAuthButton disabled={busy} busy={googleBusy} onClick={onGoogleSetup} />
+          <StaffGoogleSignInOption disabled={busy} busy={googleBusy} onClick={onGoogleSetup} />
         </div>
       ) : null}
 

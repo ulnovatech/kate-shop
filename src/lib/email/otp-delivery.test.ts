@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { isEmailDeliveryEnabled, resetEmailOtpDeliveryForTests } from "@/lib/email/otp-delivery";
+import {
+  deliverStaffOtpEmail,
+  isEmailDeliveryEnabled,
+  isEmailOtpDeliveryConfigured,
+  resetEmailOtpDeliveryForTests,
+} from "@/lib/email/otp-delivery";
 
 describe("email otp-delivery", () => {
   const env = process.env;
@@ -29,5 +34,22 @@ describe("email otp-delivery", () => {
     delete process.env.GMAIL_USER;
     delete process.env.GMAIL_APP_PASSWORD;
     expect(isEmailDeliveryEnabled()).toBe(false);
+  });
+
+  it("is enabled when console provider is selected", () => {
+    process.env.EMAIL_OTP_PROVIDER = "console";
+    expect(isEmailOtpDeliveryConfigured()).toBe(true);
+  });
+
+  it("delivers via console provider without SMTP", async () => {
+    process.env.EMAIL_OTP_PROVIDER = "console";
+    const logSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    const result = await deliverStaffOtpEmail("staff@example.com", "123456", "invite_accept");
+
+    expect(result.delivered).toBe(true);
+    expect(logSpy).toHaveBeenCalledWith(
+      "[Kate Admin OTP] staff@example.com (invite_accept): 123456",
+    );
   });
 });

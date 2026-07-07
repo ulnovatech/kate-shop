@@ -7,6 +7,7 @@ import { humanizeError } from "@/lib/errors";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
 import { ADMIN_JOIN_PATH, ADMIN_SETUP_PATH, ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
 import { loadStaffOnboardingOAuth } from "@/lib/staff-onboarding-oauth";
+import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 
 export const Route = createFileRoute("/admin/login-callback")({
   component: StaffLoginCallback,
@@ -49,6 +50,7 @@ function StaffLoginCallback() {
       }
 
       if (onboarding?.kind === "invite") {
+        savePendingStaffInviteToken(onboarding.token);
         navigate({ to: ADMIN_SIGNUP_PATH, replace: true });
         return;
       }

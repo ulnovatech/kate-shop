@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { AdminEmailOtpInput, isStaffEmailOtpComplete } from "@/components/admin-email-otp-input";
-import { requestStaffEmailOtp, verifyStaffEmailOtp } from "@/lib/api/staff-email-otp.functions";
+import {
+  getStaffEmailOtpDeliveryStatus,
+  requestStaffEmailOtp,
+  verifyStaffEmailOtp,
+} from "@/lib/api/staff-email-otp.functions";
 import { humanizeError } from "@/lib/errors";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
 
@@ -36,6 +40,13 @@ export function AdminEmailVerifyStep({
   const [busy, setBusy] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState("");
+  const [deliveryMode, setDeliveryMode] = useState<"gmail" | "console" | "none" | null>(null);
+
+  useEffect(() => {
+    void getStaffEmailOtpDeliveryStatus()
+      .then((status) => setDeliveryMode(status.mode))
+      .catch(() => setDeliveryMode(null));
+  }, []);
 
   const sendCode = async () => {
     setBusy(true);
@@ -89,6 +100,21 @@ export function AdminEmailVerifyStep({
         We will send a 6-digit code to <span className="font-medium text-foreground">{email}</span>{" "}
         to confirm you own this address.
       </p>
+
+      {deliveryMode === "none" ? (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 type-caption text-destructive">
+          Email verification is not configured on the server. Ask your administrator to set{" "}
+          <span className="font-medium">EMAIL_OTP_PROVIDER=gmail</span> or{" "}
+          <span className="font-medium">EMAIL_OTP_PROVIDER=console</span> for local development.
+        </p>
+      ) : null}
+
+      {deliveryMode === "console" ? (
+        <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 type-caption text-muted-foreground">
+          Development mode: the verification code is printed in the server console after you tap
+          send.
+        </p>
+      ) : null}
 
       {!codeSent ? (
         <Button

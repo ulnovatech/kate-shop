@@ -18,11 +18,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { establishStaffPinSession } from "@/lib/staff-login";
 import {
   clearStaffOnboardingOAuth,
-  getGoogleOnboardingSession,
-  loadStaffOnboardingOAuth,
   startStaffGoogleOnboarding,
+  tryResumeStaffGoogleInviteOnboarding,
 } from "@/lib/staff-onboarding-oauth";
-import { AdminAuthDivider, AdminGoogleAuthButton } from "./admin-google-auth-button";
+import { StaffGoogleSignInOption } from "./admin-google-auth-button";
 import { AdminAuthLayout, ADMIN_AUTH_FIELD_CLASS } from "./admin-auth-layout";
 import { AdminEmailVerifyStep } from "./admin-email-verify-step";
 import { AdminOnboardingStepper } from "./admin-onboarding-stepper";
@@ -32,6 +31,7 @@ import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { isAndroidMobileBrowser } from "@/lib/staff-invite-mobile";
 import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 import { completeStaffInviteOnboarding } from "@/components/staff-invite-resume-bridge";
+import { isStaffGoogleAuthEnabled } from "@/lib/staff-google-auth-enabled";
 import { cn } from "@/lib/utils";
 
 const INVITE_STEPS = [
@@ -110,19 +110,31 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
   }, [token]);
 
   useEffect(() => {
-    if (validating) return;
-    void (async () => {
-      const flow = loadStaffOnboardingOAuth();
-      if (flow?.kind !== "invite" || flow.token !== token) return;
+    if (!isStaffGoogleAuthEnabled() || validating || !token) return;
 
-      const session = await getGoogleOnboardingSession();
-      if (!session) return;
+    let cancelled = false;
+
+    const resumeGoogle = async () => {
+      const session = await tryResumeStaffGoogleInviteOnboarding(token);
+      if (cancelled || !session) return;
 
       setOauthUserId(session.userId);
       setOauthEmail(session.email);
       form.setValue("email", session.email);
+      setGoogleBusy(false);
       setStep("pin");
-    })();
+    };
+
+    void resumeGoogle();
+
+    const { data: authSub } = supabase.auth.onAuthStateChange(() => {
+      void resumeGoogle();
+    });
+
+    return () => {
+      cancelled = true;
+      authSub.subscription.unsubscribe();
+    };
   }, [validating, token, form]);
 
   const stepIndex = INVITE_STEPS.findIndex((s) => s.id === step);
@@ -318,8 +330,7 @@ export function AcceptInviteWizard({ token }: AcceptInviteWizardProps) {
               </p>
             ) : null}
           </div>
-          <AdminAuthDivider />
-          <AdminGoogleAuthButton disabled={busy} busy={googleBusy} onClick={onGoogleInvite} />
+          <StaffGoogleSignInOption disabled={busy} busy={googleBusy} onClick={onGoogleInvite} />
         </div>
       ) : null}
 

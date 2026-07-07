@@ -1,6 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
+import { isStaffGoogleAuthEnabled } from "@/lib/staff-google-auth-enabled";
 
 type AdminGoogleAuthButtonProps = {
   disabled?: boolean;
@@ -39,5 +40,23 @@ export function AdminAuthDivider() {
         or
       </p>
     </div>
+  );
+}
+
+type StaffGoogleSignInOptionProps = {
+  disabled?: boolean;
+  busy?: boolean;
+  onClick: () => void | Promise<void>;
+};
+
+/** Divider + Google button — hidden when staff Google auth is disabled. */
+export function StaffGoogleSignInOption({ disabled, busy, onClick }: StaffGoogleSignInOptionProps) {
+  if (!isStaffGoogleAuthEnabled()) return null;
+
+  return (
+    <>
+      <AdminAuthDivider />
+      <AdminGoogleAuthButton disabled={disabled} busy={busy} onClick={onClick} />
+    </>
   );
 }

@@ -1,6 +1,5 @@
 /**
- * Staff email OTP delivery — Gmail SMTP via nodemailer.
- * Silent until EMAIL_OTP_PROVIDER=gmail and credentials are set.
+ * Staff email OTP delivery — Gmail SMTP (free) or console logging for local dev.
  */
 
 import nodemailer from "nodemailer";
@@ -13,18 +12,32 @@ export type EmailOtpDeliveryResult = {
   messageId?: string;
 };
 
-export type EmailOtpProviderId = "noop" | "gmail";
+export type EmailOtpProviderId = "noop" | "gmail" | "console";
 
 function resolveProviderId(): EmailOtpProviderId {
   const raw = (process.env.EMAIL_OTP_PROVIDER ?? "noop").trim().toLowerCase();
   if (raw === "gmail") return "gmail";
+  if (raw === "console") return "console";
   return "noop";
 }
 
-/** True when Gmail SMTP is configured. */
+export function getEmailOtpProviderId(): EmailOtpProviderId {
+  return resolveProviderId();
+}
+
+/** True when OTP email can be delivered (Gmail SMTP or console provider). */
+export function isEmailOtpDeliveryConfigured(): boolean {
+  const provider = resolveProviderId();
+  if (provider === "console") return true;
+  if (provider === "gmail") {
+    return Boolean(process.env.GMAIL_USER?.trim() && process.env.GMAIL_APP_PASSWORD?.trim());
+  }
+  return false;
+}
+
+/** @deprecated use isEmailOtpDeliveryConfigured */
 export function isEmailDeliveryEnabled(): boolean {
-  if (resolveProviderId() !== "gmail") return false;
-  return Boolean(process.env.GMAIL_USER?.trim() && process.env.GMAIL_APP_PASSWORD?.trim());
+  return isEmailOtpDeliveryConfigured();
 }
 
 let transporter: Transporter | null | undefined;
@@ -51,7 +64,14 @@ export async function deliverStaffOtpEmail(
   code: string,
   purpose: StaffEmailOtpPurpose,
 ): Promise<EmailOtpDeliveryResult> {
-  if (!isEmailDeliveryEnabled()) {
+  const provider = resolveProviderId();
+
+  if (provider === "console") {
+    console.info(`[Kate Admin OTP] ${email} (${purpose}): ${code}`);
+    return { delivered: true, messageId: `console-${Date.now()}` };
+  }
+
+  if (!isEmailOtpDeliveryConfigured()) {
     return { delivered: false };
   }
 

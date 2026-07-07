@@ -35,13 +35,27 @@ vi.mock("@/lib/api/invites.functions", () => ({
 
 vi.mock("@/lib/staff-onboarding-oauth", () => ({
   clearStaffOnboardingOAuth: vi.fn(),
-  getGoogleOnboardingSession: vi.fn(),
-  loadStaffOnboardingOAuth: vi.fn(),
+  tryResumeStaffGoogleInviteOnboarding: vi.fn(),
   startStaffGoogleOnboarding: vi.fn(),
+}));
+
+vi.mock("@/lib/staff-google-auth-enabled", () => ({
+  isStaffGoogleAuthEnabled: () => false,
+}));
+
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: {
+    auth: {
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe: vi.fn() } },
+      }),
+    },
+  },
 }));
 
 vi.mock("@/lib/staff-login", () => ({
   establishStaffPinSession: vi.fn(),
+  finishStaffSignIn: vi.fn(),
 }));
 
 vi.mock("@/components/staff-invite-resume-bridge", () => ({
@@ -87,7 +101,7 @@ describe("StaffSignupPage", () => {
 
     expect(screen.getByLabelText("Create PIN")).toBeInTheDocument();
     expect(screen.getByLabelText("Confirm PIN")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Create account" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Continue" })).toBeInTheDocument();
     expect(screen.queryByLabelText(/invite link/i)).not.toBeInTheDocument();
   });
 });

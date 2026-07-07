@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@kate/supabase/client.server";
+import { userHasGoogleAuthLinkage } from "@kate/domain/staff-google-auth";
 import { normalizeStaffEmail } from "@kate/api/staff-email-otp.shared";
 
 /** Ensure the user signed in with Google and owns the expected email. */
@@ -15,8 +16,7 @@ export async function assertOAuthStaffUser(userId: string, email: string): Promi
     throw new Error("Google account email does not match.");
   }
 
-  const hasGoogle = user.identities?.some((identity) => identity.provider === "google");
-  if (!hasGoogle) {
+  if (!userHasGoogleAuthLinkage(user)) {
     throw new Error("Sign in with Google to continue.");
   }
 }

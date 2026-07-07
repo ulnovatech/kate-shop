@@ -7,6 +7,7 @@ import { storeStaffPin } from "@kate/api/staff-pin-auth.server";
 import { consumeStaffEmailVerificationToken } from "@kate/api/staff-email-otp.server";
 import { normalizeStaffEmail } from "@kate/api/staff-email-otp.shared";
 import { assertOAuthStaffUser } from "@kate/api/staff-oauth.server";
+import { assertStaffGoogleAuthEnabled } from "@kate/api/staff-google-auth.server";
 import { staffPinSchema } from "@kate/api/staff-pin.server";
 import { auditFromServer } from "@kate/api/audit.server";
 import { hasMatrixPermission } from "@kate/domain/rbac";
@@ -113,15 +114,18 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
         const inviteBoundEmail = Boolean(
           data.email && !data.oauthUserId && !data.emailVerificationToken,
         );
+        const verifiedEmailPinPath = Boolean(
+          data.email && data.emailVerificationToken && !data.oauthUserId && !data.password,
+        );
         const legacyEmail = Boolean(
           data.email && data.emailVerificationToken && data.password && !data.oauthUserId,
         );
         const oauthPath = Boolean(data.oauthUserId);
 
-        if (!inviteBoundEmail && !legacyEmail && !oauthPath) {
+        if (!inviteBoundEmail && !verifiedEmailPinPath && !legacyEmail && !oauthPath) {
           ctx.addIssue({
             code: "custom",
-            message: "Provide email and PIN, or sign in with Google first.",
+            message: "Provide email and PIN.",
             path: ["email"],
           });
         }
@@ -133,6 +137,13 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
           });
         }
         if (legacyEmail && !data.emailVerificationToken) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Email verification is required.",
+            path: ["emailVerificationToken"],
+          });
+        }
+        if (verifiedEmailPinPath && !data.emailVerificationToken) {
           ctx.addIssue({
             code: "custom",
             message: "Email verification is required.",
@@ -155,6 +166,7 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
     let userId: string;
 
     if (data.oauthUserId) {
+      assertStaffGoogleAuthEnabled();
       const { data: oauthUser, error: oauthErr } = await supabaseAdmin.auth.admin.getUserById(
         data.oauthUserId,
       );
@@ -181,6 +193,22 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
       const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email,
         password: data.password,
+        email_confirm: true,
+      });
+      if (createErr) throw new Error(createErr.message);
+      if (!created.user) throw new Error("Could not create account.");
+      userId = created.user.id;
+    } else if (data.emailVerificationToken && data.email) {
+      email = normalizeStaffEmail(data.email);
+      await consumeStaffEmailVerificationToken({
+        email,
+        purpose: "invite_accept",
+        verificationToken: data.emailVerificationToken,
+      });
+
+      const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password: newInternalAuthPassword(),
         email_confirm: true,
       });
       if (createErr) throw new Error(createErr.message);

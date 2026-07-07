@@ -10,36 +10,41 @@ import { loadPendingStaffInviteToken } from "@/lib/staff-invite-pending";
 import { completeStaffInviteOnboarding } from "@/components/staff-invite-resume-bridge";
 import { humanizeError } from "@/lib/errors";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
-import { establishStaffPinSession } from "@/lib/staff-login";
+import { establishStaffPinSession, finishStaffSignIn } from "@/lib/staff-login";
 import {
   clearStaffOnboardingOAuth,
-  getGoogleOnboardingSession,
-  loadStaffOnboardingOAuth,
   startStaffGoogleOnboarding,
+  tryResumeStaffGoogleInviteOnboarding,
 } from "@/lib/staff-onboarding-oauth";
+import { supabase } from "@/integrations/supabase/client";
 import { AuthCardSkeleton } from "@/components/loading-states";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AdminPinInput, isStaffPinComplete } from "@/components/admin-pin-input";
 import { useAdminShopName } from "@/components/admin-brand-mark";
-import { AdminAuthDivider, AdminGoogleAuthButton } from "./admin-google-auth-button";
+import { StaffGoogleSignInOption } from "./admin-google-auth-button";
 import { AdminAuthLayout, ADMIN_AUTH_FIELD_CLASS } from "./admin-auth-layout";
+import { AdminEmailVerifyStep } from "./admin-email-verify-step";
 import { StaffWelcomeChecklist } from "./go-live-checklist";
+import { isStaffGoogleAuthEnabled } from "@/lib/staff-google-auth-enabled";
 import { cn } from "@/lib/utils";
 
 type SignupPhase = "loading" | "no_invite" | "invalid" | "form" | "welcome";
+type FormStep = "details" | "verify-email";
 
 export function StaffSignupPage() {
   const shopName = useAdminShopName();
   const navigate = useNavigate();
   const { user, isAdmin, loading, staffRole } = useAuth();
   const [phase, setPhase] = useState<SignupPhase>("loading");
+  const [formStep, setFormStep] = useState<FormStep>("details");
   const [inviteRole, setInviteRole] = useState<string | null>(null);
   const [joinedRole, setJoinedRole] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
+  const [emailVerificationToken, setEmailVerificationToken] = useState<string | null>(null);
   const [oauthUserId, setOauthUserId] = useState<string | null>(null);
   const [googleBusy, setGoogleBusy] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -73,15 +78,6 @@ export function StaffSignupPage() {
 
       setInviteRole(result.role);
       setPhase("form");
-
-      const oauthFlow = loadStaffOnboardingOAuth();
-      if (oauthFlow?.kind === "invite" && oauthFlow.token === token) {
-        const session = await getGoogleOnboardingSession();
-        if (session) {
-          setOauthUserId(session.userId);
-          setEmail(session.email);
-        }
-      }
     })().catch(() => {
       if (!cancelled) setPhase("invalid");
     });
@@ -91,23 +87,33 @@ export function StaffSignupPage() {
     };
   }, []);
 
-  const onGoogleSignup = async () => {
-    const token = inviteToken ?? loadPendingStaffInviteToken();
-    if (!token) {
-      toast.error("Open your invite link from your shop owner first.");
-      return;
-    }
-    setGoogleBusy(true);
-    try {
-      await startStaffGoogleOnboarding({ kind: "invite", token });
-    } catch (error) {
-      toast.error(humanizeError(error, { fallback: "Could not start Google sign-in." }));
-      setGoogleBusy(false);
-    }
-  };
+  useEffect(() => {
+    if (!isStaffGoogleAuthEnabled() || phase !== "form" || !inviteToken) return;
 
-  const onSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+    let cancelled = false;
+
+    const resumeGoogle = async () => {
+      const session = await tryResumeStaffGoogleInviteOnboarding(inviteToken);
+      if (cancelled || !session) return;
+      setOauthUserId(session.userId);
+      setEmail(session.email);
+      setGoogleBusy(false);
+      setFormStep("details");
+    };
+
+    void resumeGoogle();
+
+    const { data: authSub } = supabase.auth.onAuthStateChange(() => {
+      void resumeGoogle();
+    });
+
+    return () => {
+      cancelled = true;
+      authSub.subscription.unsubscribe();
+    };
+  }, [phase, inviteToken]);
+
+  const completeSignup = async (verificationToken?: string | null) => {
     const token = inviteToken ?? loadPendingStaffInviteToken();
     if (!token) {
       toast.error("Open your invite link from your shop owner first.");
@@ -115,28 +121,15 @@ export function StaffSignupPage() {
     }
 
     const trimmedEmail = email.trim();
-    if (!oauthUserId) {
-      if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-        toast.error("Enter a valid work email.");
-        return;
-      }
-    }
-
-    if (!isStaffPinComplete(pin)) {
-      toast.error("PIN must be 5 digits.");
-      return;
-    }
-    if (pin !== confirmPin) {
-      toast.error("PINs do not match.");
-      return;
-    }
-
     setBusy(true);
     try {
       const result = await acceptAdminInvite({
         data: {
           token,
           email: oauthUserId ? undefined : trimmedEmail,
+          emailVerificationToken: oauthUserId
+            ? undefined
+            : (verificationToken ?? emailVerificationToken ?? undefined),
           oauthUserId: oauthUserId ?? undefined,
           pin,
         },
@@ -158,9 +151,61 @@ export function StaffSignupPage() {
     }
   };
 
+  const onGoogleSignup = async () => {
+    const token = inviteToken ?? loadPendingStaffInviteToken();
+    if (!token) {
+      toast.error("Open your invite link from your shop owner first.");
+      return;
+    }
+    setGoogleBusy(true);
+    try {
+      await startStaffGoogleOnboarding({ kind: "invite", token });
+    } catch (error) {
+      toast.error(humanizeError(error, { fallback: "Could not start Google sign-in." }));
+      setGoogleBusy(false);
+    }
+  };
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    const trimmedEmail = email.trim();
+
+    if (!oauthUserId) {
+      if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        toast.error("Enter a valid work email.");
+        return;
+      }
+    }
+
+    if (!isStaffPinComplete(pin)) {
+      toast.error("PIN must be 5 digits.");
+      return;
+    }
+    if (pin !== confirmPin) {
+      toast.error("PINs do not match.");
+      return;
+    }
+
+    if (oauthUserId) {
+      await completeSignup();
+      return;
+    }
+
+    if (!emailVerificationToken) {
+      setFormStep("verify-email");
+      return;
+    }
+
+    await completeSignup(emailVerificationToken);
+  };
+
   const enterAdmin = useCallback(() => {
+    if (oauthUserId) {
+      void finishStaffSignIn(navigate);
+      return;
+    }
     navigate({ to: defaultAdminPath(joinedRole ?? staffRole), replace: true });
-  }, [navigate, joinedRole, staffRole]);
+  }, [navigate, joinedRole, staffRole, oauthUserId]);
 
   if (phase === "loading") {
     return <AuthCardSkeleton />;
@@ -232,6 +277,37 @@ export function StaffSignupPage() {
     );
   }
 
+  if (formStep === "verify-email") {
+    const token = inviteToken ?? loadPendingStaffInviteToken();
+    return (
+      <AdminAuthLayout
+        shopName={shopName}
+        title="Verify your email"
+        description="Confirm you own this address before we create your account."
+      >
+        <AdminEmailVerifyStep
+          email={email.trim()}
+          purpose="invite_accept"
+          inviteToken={token ?? undefined}
+          disabled={busy}
+          onVerified={(tokenValue) => {
+            setEmailVerificationToken(tokenValue);
+            void completeSignup(tokenValue);
+          }}
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={busy}
+          className="mt-4 w-full"
+          onClick={() => setFormStep("details")}
+        >
+          Back
+        </Button>
+      </AdminAuthLayout>
+    );
+  }
+
   return (
     <AdminAuthLayout
       shopName={shopName}
@@ -259,7 +335,9 @@ export function StaffSignupPage() {
             className={cn("mt-1.5", ADMIN_AUTH_FIELD_CLASS)}
           />
           <p className="mt-1 type-caption text-muted-foreground">
-            Use the address you want for daily sign-in.
+            {oauthUserId
+              ? "Signed in with Google. Set your daily PIN below."
+              : "Use the address you want for daily sign-in."}
           </p>
         </div>
 
@@ -291,17 +369,20 @@ export function StaffSignupPage() {
               <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
               Creating account…
             </>
-          ) : (
+          ) : oauthUserId ? (
             "Create account"
+          ) : (
+            "Continue"
           )}
         </Button>
 
-        <AdminAuthDivider />
-        <AdminGoogleAuthButton
-          disabled={busy}
-          busy={googleBusy}
-          onClick={() => void onGoogleSignup()}
-        />
+        {!oauthUserId ? (
+          <StaffGoogleSignInOption
+            disabled={busy}
+            busy={googleBusy}
+            onClick={() => void onGoogleSignup()}
+          />
+        ) : null}
       </form>
 
       <p className="mt-stack type-caption text-muted-foreground">

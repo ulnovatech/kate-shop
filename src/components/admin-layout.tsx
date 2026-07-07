@@ -1,6 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Menu, Store, UserCircle } from "lucide-react";
 import { AdminBrandMark, useAdminShopName } from "@/components/admin-brand-mark";
 import { AdminNavCompletionRing } from "@/components/admin/admin-nav-completion-ring";
@@ -20,7 +19,6 @@ import { defaultAdminPath, displayRoleLabel, hasPermission } from "@/lib/rbac";
 import { Button } from "@/components/ui/button";
 import { AdminMobileNavDrawer } from "@/components/admin-mobile-nav-drawer";
 import { AdminNavBadge } from "@/components/admin-nav-badge";
-import { AdminPullToRefresh } from "@/components/admin-pull-to-refresh";
 import {
   AdminMobileQuickNav,
   adminMobileQuickNavVisible,
@@ -32,9 +30,7 @@ import { useAdminSetupCompletion } from "@/hooks/use-admin-setup-completion";
 import { useAdminFocusMode } from "@/hooks/use-admin-focus-mode";
 import { useAdminKeyboardShortcuts } from "@/hooks/use-admin-keyboard-shortcuts";
 import { NAV_PATH_SETUP_CHECK } from "@/lib/admin-setup-completion";
-import { refreshAdminRouteQueries } from "@/lib/admin-refresh";
 import { clearStaffAppUnlock, staffScreenLockEnabled } from "@/lib/staff-screen-lock";
-import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { StaffScreenLockProvider } from "@/components/staff-screen-lock";
 import { AdminMobileNavOverrideProvider } from "@/components/admin/admin-mobile-nav-override";
 import { cn } from "@/lib/utils";
@@ -83,7 +79,6 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const showSetupCompletion = permissions.canManageSettings || permissions.canManageCatalog;
   const { data: setupCompletion } = useAdminSetupCompletion(showSetupCompletion);
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [navOpen, setNavOpen] = useState(false);
@@ -96,11 +91,6 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
     onOpenShortcuts: () => setShortcutsOpen(true),
     onToggleFocusMode: toggleFocusMode,
   });
-
-  const handlePullRefresh = useCallback(
-    () => refreshAdminRouteQueries(queryClient, path),
-    [queryClient, path],
-  );
 
   const visibleNavSections = useMemo(
     () =>
@@ -275,7 +265,7 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
             <main
               id="main-content"
               tabIndex={-1}
-              className="admin-overscroll admin-scroll-root relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto p-3 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:p-6 md:p-8 md:pb-8"
+              className="admin-overscroll admin-scroll-root relative min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-3 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:p-6 md:p-8 md:pb-8"
             >
               {focusMode ? (
                 <div className="mb-4 flex justify-end">
@@ -284,13 +274,8 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
                   </Button>
                 </div>
               ) : null}
-              <AdminPullToRefresh
-                onRefresh={handlePullRefresh}
-                disabled={navOpen || isNativeStaffApp()}
-              >
-                <AdminRefreshingBar active={refreshing} />
-                {children ?? <Outlet />}
-              </AdminPullToRefresh>
+              <AdminRefreshingBar active={refreshing} />
+              {children ?? <Outlet />}
             </main>
 
             {adminMobileQuickNavVisible(permissions) && !focusMode && (

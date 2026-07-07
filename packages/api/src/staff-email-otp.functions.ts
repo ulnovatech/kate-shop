@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { STAFF_EMAIL_OTP_PURPOSES } from "@kate/api/staff-email-otp.shared";
 
-const purposeSchema = z.enum(["signup", "forgot_pin", "invite_accept"]);
+const purposeSchema = z.enum(STAFF_EMAIL_OTP_PURPOSES);
 
 const requestSchema = z
   .object({
@@ -25,7 +26,7 @@ const verifySchema = z.object({
   code: z.string().trim().length(6),
 });
 
-/** Whether Gmail staff OTP delivery is configured. */
+/** Whether staff OTP email delivery is configured. */
 export const getStaffEmailOtpDeliveryStatus = createServerFn({ method: "GET" }).handler(
   async () => {
     const { getStaffEmailOtpDeliveryStatusImpl } = await import("@kate/api/staff-email-otp.server");

@@ -6,6 +6,7 @@ import { storeStaffPin } from "@kate/api/staff-pin-auth.server";
 import { consumeStaffEmailVerificationToken } from "@kate/api/staff-email-otp.server";
 import { normalizeStaffEmail } from "@kate/api/staff-email-otp.shared";
 import { assertOAuthStaffUser } from "@kate/api/staff-oauth.server";
+import { assertStaffGoogleAuthEnabled } from "@kate/api/staff-google-auth.server";
 import { staffPinSchema } from "@kate/api/staff-pin.server";
 import { writeAuditLog } from "@kate/api/audit.server";
 import { SYSTEM_ROLE_IDS } from "@kate/domain/permissions";
@@ -79,6 +80,7 @@ export const completeBootstrap = createServerFn({ method: "POST" })
     let userId: string;
 
     if (data.oauthUserId) {
+      assertStaffGoogleAuthEnabled();
       await assertOAuthStaffUser(data.oauthUserId, email);
       userId = data.oauthUserId;
       if (data.password) {
