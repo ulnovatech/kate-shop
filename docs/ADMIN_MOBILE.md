@@ -83,6 +83,10 @@ npm run supabase:redirects
 
 Password sign-in works in the WebView. OAuth and magic-link flows return via `/login-callback` (web) or the mobile deep link (APK).
 
+## Staff invite on Android (APK distribution)
+
+When a staff member opens an invite link in **Android Chrome** and the APK is not installed, intent URLs include `browser_fallback_url` back to the web **install gate** (`/accept-invite?…&skip_app_probe=1`) — not the Play Store. Distribution is via the owner-published APK (`/install` or Settings → Mobile app), until Play Store release (C12) is enabled.
+
 ## Troubleshooting
 
 | Issue                   | Fix                                                                                     |

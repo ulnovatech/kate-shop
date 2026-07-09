@@ -12,20 +12,24 @@ import { adminPrimaryTouch } from "@/lib/admin-mobile";
 
 type AcceptInviteRedirectProps = {
   token: string;
+  skipAppProbe?: boolean;
 };
 
 type InviteRedirectPhase = "probing" | "opened" | "install" | "signup";
 
-function resolveInitialPhase(token: string): InviteRedirectPhase {
+function resolveInitialPhase(token: string, skipAppProbe: boolean): InviteRedirectPhase {
   if (!token) return "signup";
   if (isNativeStaffApp() || !isAndroidMobileBrowser()) return "signup";
+  if (skipAppProbe) return "install";
   return "probing";
 }
 
 /** Saves invite token, probes for installed APK on Android, then install gate or signup. */
-export function AcceptInviteRedirect({ token }: AcceptInviteRedirectProps) {
+export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInviteRedirectProps) {
   const navigate = useNavigate();
-  const [phase, setPhase] = useState<InviteRedirectPhase>(() => resolveInitialPhase(token));
+  const [phase, setPhase] = useState<InviteRedirectPhase>(() =>
+    resolveInitialPhase(token, skipAppProbe),
+  );
 
   useEffect(() => {
     if (token) savePendingStaffInviteToken(token);

@@ -1,3 +1,4 @@
+import { ADMIN_ACCEPT_INVITE_PATH } from "@kate/domain/admin-base-path";
 import {
   buildStaffInviteAndroidIntent,
   buildStaffInviteDeepLink,
@@ -5,6 +6,8 @@ import {
 import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 
 export type StaffAppInstallProbeResult = "opened" | "not_installed";
+
+export const STAFF_INVITE_SKIP_APP_PROBE_PARAM = "skip_app_probe";
 
 export type ProbeStaffAppOptions = {
   timeoutMs?: number;
@@ -22,9 +25,33 @@ export function isAndroidChromeBrowser(): boolean {
   return /Android/i.test(ua) && /Chrome/i.test(ua) && !/EdgA|OPR|SamsungBrowser/i.test(ua);
 }
 
+/**
+ * Web URL used when the APK is not installed — avoids Chrome defaulting to Play Store.
+ * Includes skip_app_probe so the fallback page shows the install gate without re-probing.
+ */
+export function resolveStaffInviteIntentFallbackUrl(token: string, origin?: string): string {
+  const baseOrigin =
+    origin?.trim() ||
+    (typeof window !== "undefined" ? window.location.origin : "https://admin.local");
+  const path = ADMIN_ACCEPT_INVITE_PATH.startsWith("/")
+    ? ADMIN_ACCEPT_INVITE_PATH
+    : `/${ADMIN_ACCEPT_INVITE_PATH}`;
+  const url = new URL(path, baseOrigin);
+  url.searchParams.set("token", token);
+  url.searchParams.set(STAFF_INVITE_SKIP_APP_PROBE_PARAM, "1");
+  return url.href;
+}
+
+function resolveBrowserFallbackUrl(token: string, browserFallbackUrl?: string): string | undefined {
+  if (browserFallbackUrl?.trim()) return browserFallbackUrl.trim();
+  if (!isAndroidChromeBrowser()) return undefined;
+  return resolveStaffInviteIntentFallbackUrl(token);
+}
+
 function buildInviteOpenUrl(token: string, browserFallbackUrl?: string): string {
+  const fallback = resolveBrowserFallbackUrl(token, browserFallbackUrl);
   if (isAndroidChromeBrowser()) {
-    return buildStaffInviteAndroidIntent(token, browserFallbackUrl);
+    return buildStaffInviteAndroidIntent(token, fallback);
   }
   return buildStaffInviteDeepLink(token);
 }

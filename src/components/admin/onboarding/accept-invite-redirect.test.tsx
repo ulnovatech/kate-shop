@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { AcceptInviteRedirect } from "@/components/admin/onboarding/accept-invite-redirect";
 
 const navigate = vi.fn();
@@ -39,6 +39,10 @@ describe("AcceptInviteRedirect", () => {
     probeStaffAppForInvite.mockResolvedValue("not_installed");
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   it("redirects to signup on non-Android browser", async () => {
     render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
 
@@ -71,6 +75,18 @@ describe("AcceptInviteRedirect", () => {
     await waitFor(() => {
       expect(screen.getByText("Install gate")).toBeInTheDocument();
     });
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it("shows install gate immediately when skipAppProbe is set on Android", async () => {
+    isAndroidMobileBrowser.mockReturnValue(true);
+
+    render(<AcceptInviteRedirect token="invite-token-abc123456789" skipAppProbe />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Install gate")).toBeInTheDocument();
+    });
+    expect(probeStaffAppForInvite).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
   });
 });

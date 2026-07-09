@@ -54,11 +54,11 @@ Staff push (C12): add `STAFF_PUSH_ENABLED` and `FCM_SERVER_KEY` to the admin Wor
 
 ## Staff email OTP (auth chunk 18)
 
-| Variable             | Where  | Required   | Notes                                      |
-| -------------------- | ------ | ---------- | ------------------------------------------ |
-| `EMAIL_OTP_PROVIDER` | Server | Optional   | `gmail`, `console`, or `noop` (default)    |
-| `GMAIL_USER`         | Server | When Gmail | Gmail address for SMTP                     |
-| `GMAIL_APP_PASSWORD` | Server | When Gmail | Google App Password (not account password) |
+| Variable             | Where                            | Required       | Notes                                   |
+| -------------------- | -------------------------------- | -------------- | --------------------------------------- |
+| `EMAIL_OTP_PROVIDER` | Server (admin Worker)            | When email OTP | `gmail`, `console`, or `noop` (default) |
+| `GMAIL_USER`         | Server (admin Worker vars)       | When Gmail     | Gmail address for SMTP                  |
+| `GMAIL_APP_PASSWORD` | Server (admin Worker **secret**) | When Gmail     | Google App Password (spaces OK in .env) |
 
 ## Admin mobile one-click publish
 
@@ -69,10 +69,26 @@ Staff push (C12): add `STAFF_PUSH_ENABLED` and `FCM_SERVER_KEY` to the admin Wor
 
 Owner UI: **Settings → Mobile app → Publish update to staff**. See [ADMIN_MOBILE_UPDATES.md](ADMIN_MOBILE_UPDATES.md).
 
-Apply migration:
+Apply migrations:
 
 ```bash
 npm run db:chunk18-email
+npm run db:staff-account-otp
+```
+
+Verify Gmail SMTP from `.env`:
+
+```bash
+npm run staff:verify-email-otp
+npm run staff:verify-email-otp -- --send you@example.com
+```
+
+Local `npm run deploy:admin` uploads `GMAIL_APP_PASSWORD` as a Worker secret; `EMAIL_OTP_PROVIDER` and `GMAIL_USER` are Worker vars from `prepare-deploy`.
+
+One-time sync to production without a full redeploy (when `.env` has localhost URLs):
+
+```bash
+npm run staff:sync-email-otp-secrets
 ```
 
 Server functions: `requestStaffEmailOtp`, `verifyStaffEmailOtp`, `getStaffEmailOtpDeliveryStatus`.

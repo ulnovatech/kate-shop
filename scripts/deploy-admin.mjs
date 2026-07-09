@@ -66,6 +66,15 @@ if (
 ) {
   console.log("Uploaded Worker secret KATE_GH_RELEASE_TOKEN.");
 }
+if (
+  putWorkerSecret({
+    distDir,
+    name: "GMAIL_APP_PASSWORD",
+    value: process.env.GMAIL_APP_PASSWORD,
+  })
+) {
+  console.log("Uploaded Worker secret GMAIL_APP_PASSWORD.");
+}
 run("npx", ["wrangler", "deploy", "--config", "wrangler.json"], {
   cwd: path.join(root, distDir, "server"),
 });

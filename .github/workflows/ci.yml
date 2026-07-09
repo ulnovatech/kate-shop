@@ -150,6 +150,8 @@ jobs:
           BOOTSTRAP_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
           CLOUDFLARE_ZONE_NAME: ${{ vars.CLOUDFLARE_ZONE_NAME }}
           GITHUB_REPO: ulnovatech/kate-shop
+          EMAIL_OTP_PROVIDER: ${{ secrets.EMAIL_OTP_PROVIDER }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
 
       - name: Deploy admin Worker
         uses: cloudflare/wrangler-action@v3
@@ -161,9 +163,11 @@ jobs:
           secrets: |
             SUPABASE_SERVICE_ROLE_KEY
             KATE_GH_RELEASE_TOKEN
+            GMAIL_APP_PASSWORD
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           KATE_GH_RELEASE_TOKEN: ${{ secrets.KATE_GH_RELEASE_TOKEN }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
 
   deploy-preview:
     name: Deploy PR preview

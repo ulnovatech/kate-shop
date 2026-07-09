@@ -30,7 +30,9 @@ export function isEmailOtpDeliveryConfigured(): boolean {
   const provider = resolveProviderId();
   if (provider === "console") return true;
   if (provider === "gmail") {
-    return Boolean(process.env.GMAIL_USER?.trim() && process.env.GMAIL_APP_PASSWORD?.trim());
+    return Boolean(
+      process.env.GMAIL_USER?.trim() && process.env.GMAIL_APP_PASSWORD?.trim().replace(/\s+/g, ""),
+    );
   }
   return false;
 }
@@ -46,7 +48,7 @@ function getGmailTransporter(): Transporter | null {
   if (transporter !== undefined) return transporter;
 
   const user = process.env.GMAIL_USER?.trim();
-  const pass = process.env.GMAIL_APP_PASSWORD?.trim();
+  const pass = process.env.GMAIL_APP_PASSWORD?.trim().replace(/\s+/g, "");
   if (!user || !pass) {
     transporter = null;
     return null;

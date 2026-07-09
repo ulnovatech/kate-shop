@@ -29,6 +29,13 @@ describe("email otp-delivery", () => {
     expect(isEmailDeliveryEnabled()).toBe(true);
   });
 
+  it("strips spaces from gmail app password", () => {
+    process.env.EMAIL_OTP_PROVIDER = "gmail";
+    process.env.GMAIL_USER = "bot@example.com";
+    process.env.GMAIL_APP_PASSWORD = "abcd efgh ijkl mnop";
+    expect(isEmailOtpDeliveryConfigured()).toBe(true);
+  });
+
   it("is disabled when gmail provider lacks credentials", () => {
     process.env.EMAIL_OTP_PROVIDER = "gmail";
     delete process.env.GMAIL_USER;

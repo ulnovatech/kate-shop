@@ -4,6 +4,7 @@ import { AcceptInviteRedirect } from "@/components/admin/onboarding/accept-invit
 
 const searchSchema = z.object({
   token: z.string().optional(),
+  skip_app_probe: z.literal("1").optional(),
 });
 
 export const Route = createFileRoute("/admin/accept-invite")({
@@ -13,6 +14,6 @@ export const Route = createFileRoute("/admin/accept-invite")({
 });
 
 function AcceptInvite() {
-  const { token } = Route.useSearch();
-  return <AcceptInviteRedirect token={token ?? ""} />;
+  const { token, skip_app_probe } = Route.useSearch();
+  return <AcceptInviteRedirect token={token ?? ""} skipAppProbe={skip_app_probe === "1"} />;
 }

@@ -36,7 +36,7 @@ if (cfg.assets?.directory) {
 cfg.compatibility_date = process.env.CLOUDFLARE_COMPATIBILITY_DATE?.trim() || "2026-06-10";
 
 const vars = {};
-for (const key of [
+const sharedVarKeys = [
   "NODE_ENV",
   "APP_ORIGIN",
   "ADMIN_ORIGIN",
@@ -48,9 +48,19 @@ for (const key of [
   "VITE_SUPABASE_PROJECT_ID",
   "BOOTSTRAP_TOKEN",
   "GITHUB_REPO",
-]) {
+];
+const adminVarKeys = ["EMAIL_OTP_PROVIDER", "GMAIL_USER"];
+
+for (const key of sharedVarKeys) {
   const value = process.env[key]?.trim();
   if (value) vars[key] = value;
+}
+
+if (target === "admin") {
+  for (const key of adminVarKeys) {
+    const value = process.env[key]?.trim();
+    if (value) vars[key] = value;
+  }
 }
 
 if (Object.keys(vars).length) {

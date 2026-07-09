@@ -27,7 +27,10 @@ Add these **Secrets** (copy values from your local `.env` — same names):
 | `SUPABASE_PUBLISHABLE_KEY`      | ✓ (same as `VITE_SUPABASE_PUBLISHABLE_KEY`)                                                                                                            |
 | `SUPABASE_SERVICE_ROLE_KEY`     | ✓ (service role JWT — **never** `VITE_`)                                                                                                               |
 | `BOOTSTRAP_TOKEN`               | Optional — locks `/admin/setup`                                                                                                                        |
-| `KATE_GH_RELEASE_TOKEN`         | Optional — fine-grained PAT with **Actions: Read and write** on this repo (one-click mobile publish from admin; name cannot start with `GITHUB_`)   |
+| `KATE_GH_RELEASE_TOKEN`         | Optional — fine-grained PAT with **Actions: Read and write** on this repo (one-click mobile publish from admin; name cannot start with `GITHUB_`)      |
+| `EMAIL_OTP_PROVIDER`            | `gmail` (or `console` for staging) — **admin Worker only**                                                                                             |
+| `GMAIL_USER`                    | Gmail address used to send staff OTP emails                                                                                                            |
+| `GMAIL_APP_PASSWORD`            | Google App Password — uploaded as Worker **secret** on deploy (not a plain var)                                                                        |
 
 Add these **Variables** (not secrets — plain text URLs):
 
@@ -77,14 +80,14 @@ Expect HTTP **200** and `"status": "healthy"` or `"degraded"`.
 
 ## Troubleshooting
 
-| Symptom                             | Fix                                                                                                                         |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Deploy job skipped                  | Push must be to `main`, not a branch                                                                                        |
+| Symptom                             | Fix                                                                                                                                                     |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deploy job skipped                  | Push must be to `main`, not a branch                                                                                                                    |
 | **Deploy admin production skipped** | Was caused by `ADMIN_ORIGIN` gate — admin now deploys on every `main` push. Set `ADMIN_ORIGIN` in **production** variables to override the default URL. |
-| Deploy job missing                  | `check` job failed — open the run and fix lint/test/build                                                                   |
-| Worker still 500 after green deploy | Open Cloudflare → Worker → **Logs** (enabled by `prepare-deploy.mjs`)                                                       |
-| `CLOUDFLARE_API_TOKEN` invalid      | Token needs **Account → Workers Scripts → Edit**                                                                            |
-| Secrets not found                   | Secrets must be on the **`production`** environment, not only repo-level (both work, but CI uses `environment: production`) |
+| Deploy job missing                  | `check` job failed — open the run and fix lint/test/build                                                                                               |
+| Worker still 500 after green deploy | Open Cloudflare → Worker → **Logs** (enabled by `prepare-deploy.mjs`)                                                                                   |
+| `CLOUDFLARE_API_TOKEN` invalid      | Token needs **Account → Workers Scripts → Edit**                                                                                                        |
+| Secrets not found                   | Secrets must be on the **`production`** environment, not only repo-level (both work, but CI uses `environment: production`)                             |
 
 ## What CI does (you don’t run this manually)
 
