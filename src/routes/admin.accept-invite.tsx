@@ -1,15 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
 import { AcceptInviteRedirect } from "@/components/admin/onboarding/accept-invite-redirect";
-
-const searchSchema = z.object({
-  token: z.string().optional(),
-  skip_app_probe: z.literal("1").optional(),
-});
+import { acceptInviteSearchSchema } from "@/lib/accept-invite-search";
 
 export const Route = createFileRoute("/admin/accept-invite")({
   staticData: { adminRouteHeading: "Accept staff invite" as const },
-  validateSearch: (search) => searchSchema.parse(search),
+  validateSearch: (search) => acceptInviteSearchSchema.parse(search),
   component: AcceptInvite,
 });
 

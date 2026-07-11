@@ -15,25 +15,41 @@ type AcceptInviteRedirectProps = {
   skipAppProbe?: boolean;
 };
 
-type InviteRedirectPhase = "probing" | "opened" | "install" | "signup";
+type InviteRedirectPhase = "checking" | "probing" | "opened" | "install" | "signup";
 
-function resolveInitialPhase(token: string, skipAppProbe: boolean): InviteRedirectPhase {
+function resolveClientPhase(token: string, skipAppProbe: boolean): InviteRedirectPhase {
   if (!token) return "signup";
   if (isNativeStaffApp() || !isAndroidMobileBrowser()) return "signup";
   if (skipAppProbe) return "install";
   return "probing";
 }
 
-/** Saves invite token, probes for installed APK on Android, then install gate or signup. */
+function InviteBusyMessage({ message }: { message: string }) {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2 px-4 type-body-sm text-muted-foreground">
+      <Loader2 className="size-5 animate-spin" aria-hidden />
+      <p>{message}</p>
+    </div>
+  );
+}
+
+/**
+ * Saves invite token, probes for installed APK on Android, then install gate or signup.
+ *
+ * Initial phase is always `checking` so SSR and client hydrate the same markup
+ * (navigator/UA checks differ on Android and previously crashed the page).
+ */
 export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInviteRedirectProps) {
   const navigate = useNavigate();
-  const [phase, setPhase] = useState<InviteRedirectPhase>(() =>
-    resolveInitialPhase(token, skipAppProbe),
-  );
+  const [phase, setPhase] = useState<InviteRedirectPhase>("checking");
 
   useEffect(() => {
     if (token) savePendingStaffInviteToken(token);
   }, [token]);
+
+  useEffect(() => {
+    setPhase(resolveClientPhase(token, skipAppProbe));
+  }, [token, skipAppProbe]);
 
   useEffect(() => {
     if (phase !== "signup") return;
@@ -58,12 +74,11 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
     return null;
   }
 
-  if (phase === "probing") {
+  if (phase === "checking" || phase === "probing") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-2 px-4 type-body-sm text-muted-foreground">
-        <Loader2 className="size-5 animate-spin" aria-hidden />
-        <p>Opening Kate Admin…</p>
-      </div>
+      <InviteBusyMessage
+        message={phase === "checking" ? "Preparing your invite…" : "Opening Kate Admin…"}
+      />
     );
   }
 
@@ -109,10 +124,5 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
     );
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center type-body-sm text-muted-foreground">
-      <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
-      Preparing signup…
-    </div>
-  );
+  return <InviteBusyMessage message="Preparing signup…" />;
 }
