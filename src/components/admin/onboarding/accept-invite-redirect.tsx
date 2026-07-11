@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Download, ExternalLink, Loader2 } from "lucide-react";
 import { StaffInviteMobileGate } from "@/components/admin/onboarding/staff-invite-mobile-gate";
 import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { probeStaffAppForInvite, openStaffInviteInApp } from "@/lib/staff-invite-app-detect";
 import { isAndroidMobileBrowser } from "@/lib/staff-invite-mobile";
-import { ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
+import { ADMIN_INSTALL_PATH, ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
 import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
+import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
 import { Button } from "@/components/ui/button";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
 
@@ -18,6 +19,13 @@ type AcceptInviteRedirectProps = {
 type InviteRedirectPhase = "checking" | "probing" | "opened" | "install" | "signup";
 
 function resolveClientPhase(token: string, skipAppProbe: boolean): InviteRedirectPhase {
+  // Hibernated invite flow: Android → install gate, otherwise → signup.
+  if (!isStaffInviteFlowEnabled()) {
+    if (isNativeStaffApp()) return "signup";
+    if (isAndroidMobileBrowser()) return "install";
+    return "signup";
+  }
+
   if (!token) return "signup";
   if (isNativeStaffApp() || !isAndroidMobileBrowser()) return "signup";
   if (skipAppProbe) return "install";
@@ -34,18 +42,17 @@ function InviteBusyMessage({ message }: { message: string }) {
 }
 
 /**
- * Saves invite token, probes for installed APK on Android, then install gate or signup.
- *
- * Initial phase is always `checking` so SSR and client hydrate the same markup
- * (navigator/UA checks differ on Android and previously crashed the page).
+ * Invite entry — full probe/install flow when invites are enabled.
+ * When hibernated: install gate (Android) or signup only; invite token is ignored.
  */
 export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInviteRedirectProps) {
   const navigate = useNavigate();
+  const inviteFlow = isStaffInviteFlowEnabled();
   const [phase, setPhase] = useState<InviteRedirectPhase>("checking");
 
   useEffect(() => {
-    if (token) savePendingStaffInviteToken(token);
-  }, [token]);
+    if (inviteFlow && token) savePendingStaffInviteToken(token);
+  }, [inviteFlow, token]);
 
   useEffect(() => {
     setPhase(resolveClientPhase(token, skipAppProbe));
@@ -57,7 +64,7 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
   }, [phase, navigate]);
 
   useEffect(() => {
-    if (phase !== "probing" || !token) return;
+    if (!inviteFlow || phase !== "probing" || !token) return;
 
     let cancelled = false;
     void probeStaffAppForInvite(token).then((result) => {
@@ -68,11 +75,7 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
     return () => {
       cancelled = true;
     };
-  }, [phase, token]);
-
-  if (!token) {
-    return null;
-  }
+  }, [inviteFlow, phase, token]);
 
   if (phase === "checking" || phase === "probing") {
     return (
@@ -115,6 +118,32 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
   }
 
   if (phase === "install") {
+    if (!inviteFlow) {
+      return (
+        <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-4 px-4 py-8">
+          <div className="rounded-2xl border bg-card p-6 text-center shadow-elevated">
+            <h1 className="font-heading text-xl font-semibold text-foreground">
+              Install Kate Admin
+            </h1>
+            <p className="mt-2 type-body-sm text-muted-foreground">
+              Download the app, then create your account with email and PIN.
+            </p>
+            <div className="mt-6 flex flex-col gap-2">
+              <Button asChild className={adminPrimaryTouch}>
+                <a href={ADMIN_INSTALL_PATH}>
+                  <Download className="size-4" aria-hidden />
+                  Download Kate Admin
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <Link to={ADMIN_SIGNUP_PATH}>Continue to sign up</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <StaffInviteMobileGate
         token={token}

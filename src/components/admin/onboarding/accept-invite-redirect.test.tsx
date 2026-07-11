@@ -6,6 +6,9 @@ const navigate = vi.fn();
 const isAndroidMobileBrowser = vi.fn(() => false);
 
 vi.mock("@tanstack/react-router", () => ({
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
+    <a href={to}>{children}</a>
+  ),
   useNavigate: () => navigate,
 }));
 
@@ -21,6 +24,10 @@ vi.mock("@/lib/staff-invite-mobile", () => ({
   isAndroidMobileBrowser: () => isAndroidMobileBrowser(),
 }));
 
+vi.mock("@/lib/staff-onboarding-mode", () => ({
+  isStaffInviteFlowEnabled: vi.fn(() => false),
+}));
+
 const probeStaffAppForInvite = vi.fn();
 
 vi.mock("@/lib/staff-invite-app-detect", () => ({
@@ -32,9 +39,14 @@ vi.mock("@/components/admin/onboarding/staff-invite-mobile-gate", () => ({
   StaffInviteMobileGate: () => <div>Install gate</div>,
 }));
 
+import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
+
+const inviteFlowEnabled = vi.mocked(isStaffInviteFlowEnabled);
+
 describe("AcceptInviteRedirect", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    inviteFlowEnabled.mockReturnValue(false);
     isAndroidMobileBrowser.mockReturnValue(false);
     probeStaffAppForInvite.mockResolvedValue("not_installed");
   });
@@ -43,7 +55,7 @@ describe("AcceptInviteRedirect", () => {
     cleanup();
   });
 
-  it("redirects to signup on non-Android browser", async () => {
+  it("hibernated: redirects to signup without probing or saving invite", async () => {
     render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
 
     await waitFor(() => {
@@ -53,7 +65,32 @@ describe("AcceptInviteRedirect", () => {
     expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
   });
 
-  it("shows opened state without install gate when probe opens app", async () => {
+  it("hibernated Android: shows simple install UI without invite gate", async () => {
+    isAndroidMobileBrowser.mockReturnValue(true);
+
+    render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: /install kate admin/i })).toBeInTheDocument();
+    });
+    expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
+    expect(probeStaffAppForInvite).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it("enabled: redirects to signup on non-Android browser", async () => {
+    inviteFlowEnabled.mockReturnValue(true);
+    render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
+
+    await waitFor(() => {
+      expect(navigate).toHaveBeenCalledWith({ to: "/admin/signup", replace: true });
+    });
+    expect(probeStaffAppForInvite).not.toHaveBeenCalled();
+    expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
+  });
+
+  it("enabled: shows opened state without install gate when probe opens app", async () => {
+    inviteFlowEnabled.mockReturnValue(true);
     isAndroidMobileBrowser.mockReturnValue(true);
     probeStaffAppForInvite.mockResolvedValue("opened");
 
@@ -66,7 +103,8 @@ describe("AcceptInviteRedirect", () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it("shows install gate when probe finds app not installed on Android", async () => {
+  it("enabled: shows install gate when probe finds app not installed on Android", async () => {
+    inviteFlowEnabled.mockReturnValue(true);
     isAndroidMobileBrowser.mockReturnValue(true);
     probeStaffAppForInvite.mockResolvedValue("not_installed");
 
@@ -78,7 +116,8 @@ describe("AcceptInviteRedirect", () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it("shows install gate immediately when skipAppProbe is set on Android", async () => {
+  it("enabled: shows install gate immediately when skipAppProbe is set on Android", async () => {
+    inviteFlowEnabled.mockReturnValue(true);
     isAndroidMobileBrowser.mockReturnValue(true);
 
     render(<AcceptInviteRedirect token="invite-token-abc123456789" skipAppProbe />);

@@ -3,10 +3,16 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
 import { defaultAdminPath } from "@/lib/rbac";
-import { ADMIN_LOGIN_PATH, ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
+import {
+  ADMIN_INSTALL_PATH,
+  ADMIN_LOGIN_PATH,
+  ADMIN_SETUP_PATH,
+  ADMIN_SIGNUP_PATH,
+} from "@/lib/admin-base-path";
 import { withTimeout } from "@/lib/with-timeout";
 import { isNativeStaffApp } from "@/integrations/supabase/staff-mobile-auth";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
+import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
 import { AuthCardSkeleton } from "@/components/loading-states";
 import { Button } from "@/components/ui/button";
 import { useAdminShopName } from "@/components/admin-brand-mark";
@@ -18,6 +24,7 @@ export function StaffJoinPage() {
   const shopName = useAdminShopName();
   const navigate = useNavigate();
   const { user, isAdmin, loading, staffRole } = useAuth();
+  const inviteFlow = isStaffInviteFlowEnabled();
   const [ready, setReady] = useState(false);
   const [bootstrapRequired, setBootstrapRequired] = useState(false);
 
@@ -38,6 +45,43 @@ export function StaffJoinPage() {
 
   if (!ready) {
     return <AuthCardSkeleton />;
+  }
+
+  if (!inviteFlow) {
+    return (
+      <AdminAuthLayout
+        shopName={shopName}
+        title="Join your team"
+        description="Install Kate Admin, then create your account with email and a 5-digit PIN."
+      >
+        <div className="space-y-4">
+          {!isNativeStaffApp() ? (
+            <Button asChild variant="default" className={`w-full ${adminPrimaryTouch}`}>
+              <a href={ADMIN_INSTALL_PATH}>Install Kate Admin</a>
+            </Button>
+          ) : null}
+          <Button
+            asChild
+            variant={isNativeStaffApp() ? "default" : "outline"}
+            className={`w-full ${adminPrimaryTouch}`}
+          >
+            <Link to={ADMIN_SIGNUP_PATH}>Sign up</Link>
+          </Button>
+          <Button asChild variant="ghost" className="w-full">
+            <Link to={ADMIN_LOGIN_PATH}>Sign in</Link>
+          </Button>
+        </div>
+
+        {bootstrapRequired && !isNativeStaffApp() ? (
+          <p className="mt-stack type-caption text-muted-foreground">
+            Setting up a new shop?{" "}
+            <Link to={ADMIN_SETUP_PATH} className="font-medium text-primary hover:underline">
+              Run shop setup
+            </Link>
+          </p>
+        ) : null}
+      </AdminAuthLayout>
+    );
   }
 
   return (

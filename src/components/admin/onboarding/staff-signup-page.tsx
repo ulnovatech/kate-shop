@@ -3,9 +3,13 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { acceptAdminInvite, validateInviteToken } from "@/lib/api/invites.functions";
+import {
+  acceptAdminInvite,
+  registerStaffAccount,
+  validateInviteToken,
+} from "@/lib/api/invites.functions";
 import { defaultAdminPath } from "@/lib/rbac";
-import { ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
+import { ADMIN_INSTALL_PATH, ADMIN_LOGIN_PATH } from "@/lib/admin-base-path";
 import { loadPendingStaffInviteToken } from "@/lib/staff-invite-pending";
 import { completeStaffInviteOnboarding } from "@/components/staff-invite-resume-bridge";
 import { humanizeError } from "@/lib/errors";
@@ -28,6 +32,10 @@ import { AdminAuthLayout, ADMIN_AUTH_FIELD_CLASS } from "./admin-auth-layout";
 import { AdminEmailVerifyStep } from "./admin-email-verify-step";
 import { StaffWelcomeChecklist } from "./go-live-checklist";
 import { isStaffGoogleAuthEnabled } from "@/lib/staff-google-auth-enabled";
+import {
+  isStaffInviteFlowEnabled,
+  isStaffSignupEmailOtpRequired,
+} from "@/lib/staff-onboarding-mode";
 import { cn } from "@/lib/utils";
 
 type SignupPhase = "loading" | "no_invite" | "invalid" | "form" | "welcome";
@@ -37,6 +45,8 @@ export function StaffSignupPage() {
   const shopName = useAdminShopName();
   const navigate = useNavigate();
   const { user, isAdmin, loading, staffRole } = useAuth();
+  const inviteFlow = isStaffInviteFlowEnabled();
+  const otpRequired = inviteFlow && isStaffSignupEmailOtpRequired();
   const [phase, setPhase] = useState<SignupPhase>("loading");
   const [formStep, setFormStep] = useState<FormStep>("details");
   const [inviteRole, setInviteRole] = useState<string | null>(null);
@@ -60,6 +70,11 @@ export function StaffSignupPage() {
     let cancelled = false;
 
     void (async () => {
+      if (!inviteFlow) {
+        if (!cancelled) setPhase("form");
+        return;
+      }
+
       const token = loadPendingStaffInviteToken();
       if (!token) {
         if (!cancelled) setPhase("no_invite");
@@ -79,16 +94,16 @@ export function StaffSignupPage() {
       setInviteRole(result.role);
       setPhase("form");
     })().catch(() => {
-      if (!cancelled) setPhase("invalid");
+      if (!cancelled) setPhase(inviteFlow ? "invalid" : "form");
     });
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [inviteFlow]);
 
   useEffect(() => {
-    if (!isStaffGoogleAuthEnabled() || phase !== "form" || !inviteToken) return;
+    if (!inviteFlow || !isStaffGoogleAuthEnabled() || phase !== "form" || !inviteToken) return;
 
     let cancelled = false;
 
@@ -111,9 +126,29 @@ export function StaffSignupPage() {
       cancelled = true;
       authSub.subscription.unsubscribe();
     };
-  }, [phase, inviteToken]);
+  }, [inviteFlow, phase, inviteToken]);
 
-  const completeSignup = async (verificationToken?: string | null) => {
+  const completeSimpleSignup = async () => {
+    const trimmedEmail = email.trim();
+    setBusy(true);
+    try {
+      const result = await registerStaffAccount({
+        data: { email: trimmedEmail, pin },
+      });
+      await establishStaffPinSession(trimmedEmail, pin);
+      clearStaffOnboardingOAuth();
+      completeStaffInviteOnboarding();
+      setJoinedRole(result.role);
+      toast.success(`Welcome! You joined as ${result.role}.`);
+      setPhase("welcome");
+    } catch (error) {
+      toast.error(humanizeError(error, { fallback: "Could not create your account." }));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const completeInviteSignup = async (verificationToken?: string | null) => {
     const token = inviteToken ?? loadPendingStaffInviteToken();
     if (!token) {
       toast.error("Open your invite link from your shop owner first.");
@@ -129,7 +164,9 @@ export function StaffSignupPage() {
           email: oauthUserId ? undefined : trimmedEmail,
           emailVerificationToken: oauthUserId
             ? undefined
-            : (verificationToken ?? emailVerificationToken ?? undefined),
+            : otpRequired
+              ? (verificationToken ?? emailVerificationToken ?? undefined)
+              : undefined,
           oauthUserId: oauthUserId ?? undefined,
           pin,
         },
@@ -152,6 +189,10 @@ export function StaffSignupPage() {
   };
 
   const onGoogleSignup = async () => {
+    if (!inviteFlow) {
+      toast.message("Google sign-in is paused. Use email and PIN.");
+      return;
+    }
     const token = inviteToken ?? loadPendingStaffInviteToken();
     if (!token) {
       toast.error("Open your invite link from your shop owner first.");
@@ -186,17 +227,22 @@ export function StaffSignupPage() {
       return;
     }
 
-    if (oauthUserId) {
-      await completeSignup();
+    if (!inviteFlow) {
+      await completeSimpleSignup();
       return;
     }
 
-    if (!emailVerificationToken) {
+    if (oauthUserId) {
+      await completeInviteSignup();
+      return;
+    }
+
+    if (otpRequired && !emailVerificationToken) {
       setFormStep("verify-email");
       return;
     }
 
-    await completeSignup(emailVerificationToken);
+    await completeInviteSignup(emailVerificationToken);
   };
 
   const enterAdmin = useCallback(() => {
@@ -277,7 +323,7 @@ export function StaffSignupPage() {
     );
   }
 
-  if (formStep === "verify-email") {
+  if (formStep === "verify-email" && otpRequired) {
     const token = inviteToken ?? loadPendingStaffInviteToken();
     return (
       <AdminAuthLayout
@@ -292,7 +338,7 @@ export function StaffSignupPage() {
           disabled={busy}
           onVerified={(tokenValue) => {
             setEmailVerificationToken(tokenValue);
-            void completeSignup(tokenValue);
+            void completeInviteSignup(tokenValue);
           }}
         />
         <Button
@@ -322,6 +368,15 @@ export function StaffSignupPage() {
         )
       }
     >
+      {!inviteFlow ? (
+        <p className="mb-4 rounded-lg border border-border bg-muted/40 px-3 py-2 type-caption text-muted-foreground">
+          Install Kate Admin if you haven&apos;t, then create your account here.{" "}
+          <a href={ADMIN_INSTALL_PATH} className="font-medium text-primary hover:underline">
+            Get the app
+          </a>
+        </p>
+      ) : null}
+
       <form onSubmit={(e) => void onSubmit(e)} className="space-y-4">
         <div>
           <Label htmlFor="signup-email">Work email</Label>
@@ -369,14 +424,14 @@ export function StaffSignupPage() {
               <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
               Creating account…
             </>
-          ) : oauthUserId ? (
+          ) : !inviteFlow || oauthUserId || !otpRequired ? (
             "Create account"
           ) : (
             "Continue"
           )}
         </Button>
 
-        {!oauthUserId ? (
+        {inviteFlow && !oauthUserId ? (
           <StaffGoogleSignInOption
             disabled={busy}
             busy={googleBusy}

@@ -12,5 +12,6 @@ export * from "./admin-route-catalog";
 export * from "./staff-mobile-links";
 export * from "./staff-invite-links";
 export * from "./staff-google-auth";
+export * from "./staff-onboarding-mode";
 export * from "./admin-mobile-release";
 export * from "./admin-mobile-release-job";

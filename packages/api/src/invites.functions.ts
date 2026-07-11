@@ -8,16 +8,21 @@ import { consumeStaffEmailVerificationToken } from "@kate/api/staff-email-otp.se
 import { normalizeStaffEmail } from "@kate/api/staff-email-otp.shared";
 import { assertOAuthStaffUser } from "@kate/api/staff-oauth.server";
 import { assertStaffGoogleAuthEnabled } from "@kate/api/staff-google-auth.server";
+import {
+  assertStaffInviteFlowEnabled,
+  isStaffInviteFlowEnabled,
+} from "@kate/api/staff-onboarding-mode.server";
 import { staffPinSchema } from "@kate/api/staff-pin.server";
 import { auditFromServer } from "@kate/api/audit.server";
 import { hasMatrixPermission } from "@kate/domain/rbac";
+import { SYSTEM_ROLE_IDS } from "@kate/domain/permissions";
+import { loadStaffAccess } from "@kate/api/server/permissions.server";
 import {
   assertOpenInviteToken,
   consumeAdminInvite,
   getOpenInviteByToken,
   hashInviteToken,
 } from "@kate/api/invites.server";
-
 import { buildStaffInviteUrl } from "./staff-urls";
 
 function newInviteToken() {
@@ -32,6 +37,8 @@ export const createAdminInvite = createServerFn({ method: "POST" })
   .middleware([requireOwnerAuth])
   .inputValidator(inviteSchema)
   .handler(async ({ data, context }) => {
+    assertStaffInviteFlowEnabled();
+
     const auth = context.auth as { userId: string; permissionKeys: Set<string> };
     if (!hasMatrixPermission(auth.permissionKeys, "team", "manage")) {
       throw new Error("Forbidden: team access required");
@@ -83,6 +90,9 @@ export const createAdminInvite = createServerFn({ method: "POST" })
 export const validateInviteToken = createServerFn({ method: "POST" })
   .inputValidator(z.object({ token: z.string().min(16) }))
   .handler(async ({ data }) => {
+    if (!isStaffInviteFlowEnabled()) {
+      return { valid: false as const, reason: "invalid" as const };
+    }
     const invite = await getOpenInviteByToken(data.token);
     if (!invite) {
       return { valid: false as const, reason: "invalid" as const };
@@ -160,6 +170,7 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
       }),
   )
   .handler(async ({ data }) => {
+    assertStaffInviteFlowEnabled();
     const invite = await assertOpenInviteToken(data.token);
 
     let email: string;
@@ -252,6 +263,72 @@ export const acceptAdminInvite = createServerFn({ method: "POST" })
     });
 
     return { email, role: invite.role };
+  });
+
+/**
+ * Simple onboarding (invite flow hibernated): email + PIN → staff role.
+ * Requires shop setup to already be complete.
+ */
+export const registerStaffAccount = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      email: z.string().trim().email(),
+      pin: staffPinSchema,
+    }),
+  )
+  .handler(async ({ data }) => {
+    if (isStaffInviteFlowEnabled()) {
+      throw new Error("Open signup is disabled while invite links are enabled.");
+    }
+
+    const { data: bootstrapNeeded, error: bootErr } =
+      await supabaseAdmin.rpc("is_bootstrap_required");
+    if (bootErr) throw new Error(bootErr.message);
+    if (bootstrapNeeded) {
+      throw new Error("Shop setup is not complete yet. Ask the owner to finish setup first.");
+    }
+
+    const email = normalizeStaffEmail(data.email);
+
+    let page = 1;
+    const perPage = 200;
+    while (true) {
+      const { data: listed, error: listErr } = await supabaseAdmin.auth.admin.listUsers({
+        page,
+        perPage,
+      });
+      if (listErr) throw new Error(listErr.message);
+      const existing = listed.users.find((user) => user.email?.toLowerCase() === email);
+      if (existing) {
+        const access = await loadStaffAccess(existing.id);
+        if (access) {
+          throw new Error("This email already has a staff account. Sign in instead.");
+        }
+        throw new Error("This email is already registered. Sign in or use a different email.");
+      }
+      if (listed.users.length < perPage) break;
+      page += 1;
+    }
+
+    const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password: newInternalAuthPassword(),
+      email_confirm: true,
+    });
+    if (createErr) throw new Error(createErr.message);
+    if (!created.user) throw new Error("Could not create account.");
+
+    const userId = created.user.id;
+    await assignStaffRole(userId, SYSTEM_ROLE_IDS.staff);
+    await storeStaffPin(userId, data.pin);
+
+    await auditFromServer(userId, "role_assigned", "user", userId, null, {
+      email,
+      role: "staff",
+      via: "open_signup",
+    });
+
+    return { email, role: "staff" as const };
   });
 
 export const listAdminInvites = createServerFn({ method: "GET" })

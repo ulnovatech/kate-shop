@@ -12,6 +12,7 @@ import { createAdminInvite } from "@/lib/api/invites.functions";
 import { listInvitableRoles } from "@/lib/api/roles.functions";
 import { humanizeError } from "@/lib/errors";
 import { TEAM_INVITE_STEPS, type TeamInviteStepId } from "@/lib/team-invite-steps";
+import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
 
 const schema = z.object({
   role_id: z.string().uuid("Select a role"),
@@ -98,6 +99,13 @@ export function TeamInviteWizard({
   };
 
   const createInviteLink = async () => {
+    if (!isStaffInviteFlowEnabled()) {
+      toast.message(
+        "Invite links are paused. Share the install link — teammates sign up with email and PIN.",
+      );
+      return;
+    }
+
     const valid = await form.trigger();
     if (!valid) return;
 
@@ -118,6 +126,8 @@ export function TeamInviteWizard({
     }
   };
 
+  const inviteHibernated = !isStaffInviteFlowEnabled();
+
   if (invitableRoles.length === 0) {
     return (
       <p className="rounded-lg border bg-card p-4 type-body-sm text-muted-foreground">
@@ -132,18 +142,29 @@ export function TeamInviteWizard({
       steps={[...TEAM_INVITE_STEPS]}
       currentStep={step}
       title="Invite teammate"
-      subtitle="Single-use link — works for one person, then expires."
+      subtitle={
+        inviteHibernated
+          ? "Invite links are paused — UI kept for later. Share install + signup for now."
+          : "Single-use link — works for one person, then expires."
+      }
       isFirstStep={step === "role"}
       isLastStep={step === "link"}
       onBack={step !== "role" && !inviteUrl ? goBack : undefined}
       onNext={step === "role" ? goNext : undefined}
       onFinish={inviteUrl ? onComplete : createInviteLink}
       onCancel={onCancel}
-      finishLabel={inviteUrl ? "Done" : "Create invite link"}
+      finishLabel={inviteUrl ? "Done" : inviteHibernated ? "Invites paused" : "Create invite link"}
       nextDisabled={step === "role" ? !values.role_id : false}
-      finishDisabled={busy}
+      finishDisabled={busy || (inviteHibernated && !inviteUrl)}
       busy={busy}
     >
+      {inviteHibernated ? (
+        <p className="mb-3 rounded-lg border border-border bg-muted/40 px-3 py-2 type-caption text-muted-foreground">
+          Team invites are hibernated. Teammates should install Kate Admin, then use{" "}
+          <span className="font-medium text-foreground">Sign up</span> with email and PIN. Role
+          selection below is inactive for now.
+        </p>
+      ) : null}
       {step === "role" ? (
         <div className="space-y-3">
           <AdminWizardStepGuide>
@@ -157,8 +178,11 @@ export function TeamInviteWizard({
                 <li key={role.id}>
                   <button
                     type="button"
+                    disabled={inviteHibernated}
                     onClick={() => handleRoleSelect(role.id)}
                     className={`w-full rounded-lg border p-3 text-left text-sm transition-colors ${
+                      inviteHibernated ? "cursor-not-allowed opacity-60" : ""
+                    } ${
                       active
                         ? "border-primary bg-primary/5"
                         : "hover:border-primary/30 hover:bg-secondary/40"

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
 import { defaultAdminPath } from "@/lib/rbac";
 import { ADMIN_JOIN_PATH, ADMIN_SETUP_PATH } from "@/lib/admin-base-path";
+import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
 import { withTimeout } from "@/lib/with-timeout";
 import { signInWithStaffPinAndFinish } from "@/lib/staff-login";
 import { AuthCardSkeleton } from "@/components/loading-states";
@@ -181,7 +182,7 @@ export function AdminLoginPage() {
         <p className="mt-stack type-caption text-muted-foreground">
           New team member?{" "}
           <Link to={ADMIN_JOIN_PATH} className="font-medium text-primary hover:underline">
-            Join with invite link
+            {isStaffInviteFlowEnabled() ? "Join with invite link" : "Install app & sign up"}
           </Link>
           {bootstrapRequired ? (
             <>
