@@ -13,6 +13,8 @@ import { listInvitableRoles } from "@/lib/api/roles.functions";
 import { humanizeError } from "@/lib/errors";
 import { TEAM_INVITE_STEPS, type TeamInviteStepId } from "@/lib/team-invite-steps";
 import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
+import { buildOpenRoleEntryUrl, isStaffOpenMode } from "@/lib/staff-open-mode";
+import { coerceStaffRole } from "@kate/domain/staff-auth-mode";
 
 const schema = z.object({
   role_id: z.string().uuid("Select a role"),
@@ -24,6 +26,7 @@ type InvitableRole = {
   id: string;
   name: string;
   description: string | null;
+  slug?: string;
 };
 
 type TeamInviteWizardProps = {
@@ -48,6 +51,11 @@ export function TeamInviteWizard({
   const [busy, setBusy] = useState(false);
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [roleName, setRoleName] = useState<string | null>(null);
+  const openMode = isStaffOpenMode();
+  const inviteFlow = isStaffInviteFlowEnabled();
+  /** Full one-time invite accounts are paused unless invite flow is on and auth is required. */
+  const inviteAccountsHibernated = !inviteFlow && !openMode;
+  const roleLinksActive = openMode || inviteFlow;
 
   const { data: fetchedRoles = [] } = useQuery({
     queryKey: ["invitable-roles"],
@@ -99,7 +107,18 @@ export function TeamInviteWizard({
   };
 
   const createInviteLink = async () => {
-    if (!isStaffInviteFlowEnabled()) {
+    if (openMode) {
+      const valid = await form.trigger();
+      if (!valid) return;
+      const role = coerceStaffRole(selectedRole?.slug ?? selectedRole?.name ?? "staff");
+      setInviteUrl(buildOpenRoleEntryUrl(role));
+      setRoleName(selectedRole?.name ?? role);
+      toast.success("Role link ready — share it to open that workspace.");
+      onInviteCreated?.();
+      return;
+    }
+
+    if (!inviteFlow) {
       toast.message(
         "Invite links are paused. Share the install link — teammates sign up with email and PIN.",
       );
@@ -126,8 +145,6 @@ export function TeamInviteWizard({
     }
   };
 
-  const inviteHibernated = !isStaffInviteFlowEnabled();
-
   if (invitableRoles.length === 0) {
     return (
       <p className="rounded-lg border bg-card p-4 type-body-sm text-muted-foreground">
@@ -143,9 +160,11 @@ export function TeamInviteWizard({
       currentStep={step}
       title="Invite teammate"
       subtitle={
-        inviteHibernated
-          ? "Invite links are paused — UI kept for later. Share install + signup for now."
-          : "Single-use link — works for one person, then expires."
+        openMode
+          ? "Role link (auth paused) — opens admin as that role."
+          : inviteAccountsHibernated
+            ? "Invite links are paused — UI kept for later. Share install + signup for now."
+            : "Single-use link — works for one person, then expires."
       }
       isFirstStep={step === "role"}
       isLastStep={step === "link"}
@@ -153,23 +172,37 @@ export function TeamInviteWizard({
       onNext={step === "role" ? goNext : undefined}
       onFinish={inviteUrl ? onComplete : createInviteLink}
       onCancel={onCancel}
-      finishLabel={inviteUrl ? "Done" : inviteHibernated ? "Invites paused" : "Create invite link"}
+      finishLabel={
+        inviteUrl
+          ? "Done"
+          : openMode
+            ? "Create role link"
+            : inviteAccountsHibernated
+              ? "Invites paused"
+              : "Create invite link"
+      }
       nextDisabled={step === "role" ? !values.role_id : false}
-      finishDisabled={busy || (inviteHibernated && !inviteUrl)}
+      finishDisabled={busy || (inviteAccountsHibernated && !inviteUrl)}
       busy={busy}
     >
-      {inviteHibernated ? (
+      {inviteAccountsHibernated ? (
         <p className="mb-3 rounded-lg border border-border bg-muted/40 px-3 py-2 type-caption text-muted-foreground">
           Team invites are hibernated. Teammates should install Kate Admin, then use{" "}
           <span className="font-medium text-foreground">Sign up</span> with email and PIN. Role
           selection below is inactive for now.
         </p>
       ) : null}
+      {openMode ? (
+        <p className="mb-3 rounded-lg border border-border bg-muted/40 px-3 py-2 type-caption text-muted-foreground">
+          Sign-in is paused. Share a role link — opening it enters that role in the browser or app.
+        </p>
+      ) : null}
       {step === "role" ? (
         <div className="space-y-3">
           <AdminWizardStepGuide>
-            Choose what this teammate can access. They will pick their own work email when they open
-            the link.
+            {openMode
+              ? "Choose the workspace role this link should open."
+              : "Choose what this teammate can access. They will pick their own work email when they open the link."}
           </AdminWizardStepGuide>
           <ul className="grid gap-2 sm:grid-cols-2">
             {invitableRoles.map((role) => {
@@ -178,10 +211,10 @@ export function TeamInviteWizard({
                 <li key={role.id}>
                   <button
                     type="button"
-                    disabled={inviteHibernated}
+                    disabled={!roleLinksActive}
                     onClick={() => handleRoleSelect(role.id)}
                     className={`w-full rounded-lg border p-3 text-left text-sm transition-colors ${
-                      inviteHibernated ? "cursor-not-allowed opacity-60" : ""
+                      !roleLinksActive ? "cursor-not-allowed opacity-60" : ""
                     } ${
                       active
                         ? "border-primary bg-primary/5"
@@ -207,11 +240,23 @@ export function TeamInviteWizard({
         <div className="space-y-3">
           {!inviteUrl ? (
             <AdminWizardStepGuide>
-              We will generate a one-time link for{" "}
-              <span className="font-medium text-foreground">
-                {selectedRole?.name ?? "this role"}
-              </span>
-              . Share it privately — it expires in 7 days and works once.
+              {openMode ? (
+                <>
+                  We will create a role entry link for{" "}
+                  <span className="font-medium text-foreground">
+                    {selectedRole?.name ?? "this role"}
+                  </span>
+                  . Anyone with the link can open that workspace while auth is paused.
+                </>
+              ) : (
+                <>
+                  We will generate a one-time link for{" "}
+                  <span className="font-medium text-foreground">
+                    {selectedRole?.name ?? "this role"}
+                  </span>
+                  . Share it privately — it expires in 7 days and works once.
+                </>
+              )}
             </AdminWizardStepGuide>
           ) : null}
 
@@ -221,16 +266,21 @@ export function TeamInviteWizard({
               <span className="font-medium">{roleName ?? selectedRole?.name ?? "—"}</span>
             </p>
             <p className="mt-2 text-muted-foreground">
-              Staff choose their own email during signup. No need to collect it here.
+              {openMode
+                ? "No account or PIN required while staff auth is hibernated."
+                : "Staff choose their own email during signup. No need to collect it here."}
             </p>
           </div>
 
           {inviteUrl ? (
             <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
-              <p className="text-sm font-medium">One-time invite link</p>
+              <p className="text-sm font-medium">
+                {openMode ? "Role link (auth paused)" : "One-time invite link"}
+              </p>
               <p className="text-xs text-muted-foreground">
-                Single-use link — works for one person, then expires. Send via WhatsApp or any
-                channel. On Android, opens the app if installed; otherwise prompts install once.
+                {openMode
+                  ? "Opens Kate Admin as this role in the browser or app."
+                  : "Single-use link — works for one person, then expires. Send via WhatsApp or any channel. On Android, opens the app if installed; otherwise prompts install once."}
               </p>
               <p className="break-all font-mono text-xs text-muted-foreground">{inviteUrl}</p>
               <div className="flex flex-wrap gap-2">

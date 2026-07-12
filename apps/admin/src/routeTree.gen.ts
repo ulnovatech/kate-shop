@@ -13,6 +13,7 @@ import { Route as ManifestDotwebmanifestRouteImport } from './routes/manifest[.]
 import { Route as StaffRouteRouteImport } from './routes/_staff/route'
 import { Route as StaffIndexRouteImport } from './routes/_staff/index'
 import { Route as StaffTeamRouteImport } from './routes/_staff/team'
+import { Route as StaffSignupRouteImport } from './routes/_staff/signup'
 import { Route as StaffSetupRouteImport } from './routes/_staff/setup'
 import { Route as StaffSettingsRouteImport } from './routes/_staff/settings'
 import { Route as StaffRolesRouteImport } from './routes/_staff/roles'
@@ -30,8 +31,10 @@ import { Route as StaffInsightsRouteImport } from './routes/_staff/insights'
 import { Route as StaffDeliveryRouteImport } from './routes/_staff/delivery'
 import { Route as StaffCategoriesRouteImport } from './routes/_staff/categories'
 import { Route as StaffAuditRouteImport } from './routes/_staff/audit'
+import { Route as StaffAccountRouteImport } from './routes/_staff/account'
 import { Route as StaffAcceptInviteRouteImport } from './routes/_staff/accept-invite'
 import { Route as StaffProductsIndexRouteImport } from './routes/_staff/products/index'
+import { Route as StaffRRoleRouteImport } from './routes/_staff/r.$role'
 import { Route as StaffProductsNewRouteImport } from './routes/_staff/products/new'
 import { Route as StaffProductsIdRouteImport } from './routes/_staff/products/$id'
 import { Route as StaffOrdersIdRouteImport } from './routes/_staff/orders.$id'
@@ -53,6 +56,11 @@ const StaffIndexRoute = StaffIndexRouteImport.update({
 const StaffTeamRoute = StaffTeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => StaffRouteRoute,
+} as any)
+const StaffSignupRoute = StaffSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => StaffRouteRoute,
 } as any)
 const StaffSetupRoute = StaffSetupRouteImport.update({
@@ -140,6 +148,11 @@ const StaffAuditRoute = StaffAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => StaffRouteRoute,
 } as any)
+const StaffAccountRoute = StaffAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => StaffRouteRoute,
+} as any)
 const StaffAcceptInviteRoute = StaffAcceptInviteRouteImport.update({
   id: '/accept-invite',
   path: '/accept-invite',
@@ -148,6 +161,11 @@ const StaffAcceptInviteRoute = StaffAcceptInviteRouteImport.update({
 const StaffProductsIndexRoute = StaffProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
+  getParentRoute: () => StaffRouteRoute,
+} as any)
+const StaffRRoleRoute = StaffRRoleRouteImport.update({
+  id: '/r/$role',
+  path: '/r/$role',
   getParentRoute: () => StaffRouteRoute,
 } as any)
 const StaffProductsNewRoute = StaffProductsNewRouteImport.update({
@@ -170,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/': typeof StaffIndexRoute
   '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/accept-invite': typeof StaffAcceptInviteRoute
+  '/account': typeof StaffAccountRoute
   '/audit': typeof StaffAuditRoute
   '/categories': typeof StaffCategoriesRoute
   '/delivery': typeof StaffDeliveryRoute
@@ -187,15 +206,18 @@ export interface FileRoutesByFullPath {
   '/roles': typeof StaffRolesRoute
   '/settings': typeof StaffSettingsRoute
   '/setup': typeof StaffSetupRoute
+  '/signup': typeof StaffSignupRoute
   '/team': typeof StaffTeamRoute
   '/orders/$id': typeof StaffOrdersIdRoute
   '/products/$id': typeof StaffProductsIdRoute
   '/products/new': typeof StaffProductsNewRoute
+  '/r/$role': typeof StaffRRoleRoute
   '/products/': typeof StaffProductsIndexRoute
 }
 export interface FileRoutesByTo {
   '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/accept-invite': typeof StaffAcceptInviteRoute
+  '/account': typeof StaffAccountRoute
   '/audit': typeof StaffAuditRoute
   '/categories': typeof StaffCategoriesRoute
   '/delivery': typeof StaffDeliveryRoute
@@ -213,11 +235,13 @@ export interface FileRoutesByTo {
   '/roles': typeof StaffRolesRoute
   '/settings': typeof StaffSettingsRoute
   '/setup': typeof StaffSetupRoute
+  '/signup': typeof StaffSignupRoute
   '/team': typeof StaffTeamRoute
   '/': typeof StaffIndexRoute
   '/orders/$id': typeof StaffOrdersIdRoute
   '/products/$id': typeof StaffProductsIdRoute
   '/products/new': typeof StaffProductsNewRoute
+  '/r/$role': typeof StaffRRoleRoute
   '/products': typeof StaffProductsIndexRoute
 }
 export interface FileRoutesById {
@@ -225,6 +249,7 @@ export interface FileRoutesById {
   '/_staff': typeof StaffRouteRouteWithChildren
   '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/_staff/accept-invite': typeof StaffAcceptInviteRoute
+  '/_staff/account': typeof StaffAccountRoute
   '/_staff/audit': typeof StaffAuditRoute
   '/_staff/categories': typeof StaffCategoriesRoute
   '/_staff/delivery': typeof StaffDeliveryRoute
@@ -242,11 +267,13 @@ export interface FileRoutesById {
   '/_staff/roles': typeof StaffRolesRoute
   '/_staff/settings': typeof StaffSettingsRoute
   '/_staff/setup': typeof StaffSetupRoute
+  '/_staff/signup': typeof StaffSignupRoute
   '/_staff/team': typeof StaffTeamRoute
   '/_staff/': typeof StaffIndexRoute
   '/_staff/orders/$id': typeof StaffOrdersIdRoute
   '/_staff/products/$id': typeof StaffProductsIdRoute
   '/_staff/products/new': typeof StaffProductsNewRoute
+  '/_staff/r/$role': typeof StaffRRoleRoute
   '/_staff/products/': typeof StaffProductsIndexRoute
 }
 export interface FileRouteTypes {
@@ -255,6 +282,7 @@ export interface FileRouteTypes {
     | '/'
     | '/manifest.webmanifest'
     | '/accept-invite'
+    | '/account'
     | '/audit'
     | '/categories'
     | '/delivery'
@@ -272,15 +300,18 @@ export interface FileRouteTypes {
     | '/roles'
     | '/settings'
     | '/setup'
+    | '/signup'
     | '/team'
     | '/orders/$id'
     | '/products/$id'
     | '/products/new'
+    | '/r/$role'
     | '/products/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/manifest.webmanifest'
     | '/accept-invite'
+    | '/account'
     | '/audit'
     | '/categories'
     | '/delivery'
@@ -298,17 +329,20 @@ export interface FileRouteTypes {
     | '/roles'
     | '/settings'
     | '/setup'
+    | '/signup'
     | '/team'
     | '/'
     | '/orders/$id'
     | '/products/$id'
     | '/products/new'
+    | '/r/$role'
     | '/products'
   id:
     | '__root__'
     | '/_staff'
     | '/manifest.webmanifest'
     | '/_staff/accept-invite'
+    | '/_staff/account'
     | '/_staff/audit'
     | '/_staff/categories'
     | '/_staff/delivery'
@@ -326,11 +360,13 @@ export interface FileRouteTypes {
     | '/_staff/roles'
     | '/_staff/settings'
     | '/_staff/setup'
+    | '/_staff/signup'
     | '/_staff/team'
     | '/_staff/'
     | '/_staff/orders/$id'
     | '/_staff/products/$id'
     | '/_staff/products/new'
+    | '/_staff/r/$role'
     | '/_staff/products/'
   fileRoutesById: FileRoutesById
 }
@@ -367,6 +403,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof StaffTeamRouteImport
+      parentRoute: typeof StaffRouteRoute
+    }
+    '/_staff/signup': {
+      id: '/_staff/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof StaffSignupRouteImport
       parentRoute: typeof StaffRouteRoute
     }
     '/_staff/setup': {
@@ -488,6 +531,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffAuditRouteImport
       parentRoute: typeof StaffRouteRoute
     }
+    '/_staff/account': {
+      id: '/_staff/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof StaffAccountRouteImport
+      parentRoute: typeof StaffRouteRoute
+    }
     '/_staff/accept-invite': {
       id: '/_staff/accept-invite'
       path: '/accept-invite'
@@ -500,6 +550,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products/'
       preLoaderRoute: typeof StaffProductsIndexRouteImport
+      parentRoute: typeof StaffRouteRoute
+    }
+    '/_staff/r/$role': {
+      id: '/_staff/r/$role'
+      path: '/r/$role'
+      fullPath: '/r/$role'
+      preLoaderRoute: typeof StaffRRoleRouteImport
       parentRoute: typeof StaffRouteRoute
     }
     '/_staff/products/new': {
@@ -540,6 +597,7 @@ const StaffOrdersRouteWithChildren = StaffOrdersRoute._addFileChildren(
 
 interface StaffRouteRouteChildren {
   StaffAcceptInviteRoute: typeof StaffAcceptInviteRoute
+  StaffAccountRoute: typeof StaffAccountRoute
   StaffAuditRoute: typeof StaffAuditRoute
   StaffCategoriesRoute: typeof StaffCategoriesRoute
   StaffDeliveryRoute: typeof StaffDeliveryRoute
@@ -557,15 +615,18 @@ interface StaffRouteRouteChildren {
   StaffRolesRoute: typeof StaffRolesRoute
   StaffSettingsRoute: typeof StaffSettingsRoute
   StaffSetupRoute: typeof StaffSetupRoute
+  StaffSignupRoute: typeof StaffSignupRoute
   StaffTeamRoute: typeof StaffTeamRoute
   StaffIndexRoute: typeof StaffIndexRoute
   StaffProductsIdRoute: typeof StaffProductsIdRoute
   StaffProductsNewRoute: typeof StaffProductsNewRoute
+  StaffRRoleRoute: typeof StaffRRoleRoute
   StaffProductsIndexRoute: typeof StaffProductsIndexRoute
 }
 
 const StaffRouteRouteChildren: StaffRouteRouteChildren = {
   StaffAcceptInviteRoute: StaffAcceptInviteRoute,
+  StaffAccountRoute: StaffAccountRoute,
   StaffAuditRoute: StaffAuditRoute,
   StaffCategoriesRoute: StaffCategoriesRoute,
   StaffDeliveryRoute: StaffDeliveryRoute,
@@ -583,10 +644,12 @@ const StaffRouteRouteChildren: StaffRouteRouteChildren = {
   StaffRolesRoute: StaffRolesRoute,
   StaffSettingsRoute: StaffSettingsRoute,
   StaffSetupRoute: StaffSetupRoute,
+  StaffSignupRoute: StaffSignupRoute,
   StaffTeamRoute: StaffTeamRoute,
   StaffIndexRoute: StaffIndexRoute,
   StaffProductsIdRoute: StaffProductsIdRoute,
   StaffProductsNewRoute: StaffProductsNewRoute,
+  StaffRRoleRoute: StaffRRoleRoute,
   StaffProductsIndexRoute: StaffProductsIndexRoute,
 }
 

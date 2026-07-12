@@ -31,6 +31,7 @@ import { useAdminFocusMode } from "@/hooks/use-admin-focus-mode";
 import { useAdminKeyboardShortcuts } from "@/hooks/use-admin-keyboard-shortcuts";
 import { NAV_PATH_SETUP_CHECK } from "@/lib/admin-setup-completion";
 import { clearStaffAppUnlock, staffScreenLockEnabled } from "@/lib/staff-screen-lock";
+import { isStaffOpenMode } from "@/lib/staff-open-mode";
 import { StaffScreenLockProvider } from "@/components/staff-screen-lock";
 import { AdminMobileNavOverrideProvider } from "@/components/admin/admin-mobile-nav-override";
 import { cn } from "@/lib/utils";
@@ -85,7 +86,7 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   const shortcutsEnabled = !ADMIN_PUBLIC_PATHS.some((p) => path.startsWith(p));
 
   useAdminKeyboardShortcuts({
-    enabled: shortcutsEnabled && Boolean(user),
+    enabled: shortcutsEnabled && (Boolean(user) || isStaffOpenMode()),
     permissions,
     onOpenPalette: () => setPaletteOpen(true),
     onOpenShortcuts: () => setShortcutsOpen(true),
@@ -103,9 +104,10 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
 
   useEffect(() => {
     if (ADMIN_PUBLIC_PATHS.some((p) => path.startsWith(p))) return;
-    if (!initialLoading && (!user || !permissions.canAccessAdmin)) {
-      navigate(resolveStaffUnauthenticatedRedirect());
-    }
+    if (initialLoading) return;
+    if (permissions.canAccessAdmin) return;
+    if (isStaffOpenMode()) return;
+    navigate(resolveStaffUnauthenticatedRedirect());
   }, [user, permissions.canAccessAdmin, initialLoading, navigate, path]);
 
   useEffect(() => {
@@ -131,7 +133,7 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
     return <AdminShellSkeleton />;
   }
 
-  if (!user || !permissions.canAccessAdmin) {
+  if (!permissions.canAccessAdmin) {
     return <AdminShellSkeleton />;
   }
 

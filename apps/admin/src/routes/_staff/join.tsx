@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StaffJoinPage } from "@/components/admin/onboarding";
+import { StaffAuthHibernateGate } from "@/components/admin/onboarding/staff-auth-hibernate-gate";
 
 export const Route = createFileRoute("/_staff/join")({
   staticData: { adminRouteHeading: "Join your team" as const },
@@ -7,5 +8,9 @@ export const Route = createFileRoute("/_staff/join")({
 });
 
 function AdminJoin() {
-  return <StaffJoinPage />;
+  return (
+    <StaffAuthHibernateGate>
+      <StaffJoinPage />
+    </StaffAuthHibernateGate>
+  );
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SetupWizard } from "@/components/admin/onboarding";
+import { StaffAuthHibernateGate } from "@/components/admin/onboarding/staff-auth-hibernate-gate";
 
 export const Route = createFileRoute("/_staff/setup")({
   staticData: { adminRouteHeading: "Create owner account" as const },
@@ -7,5 +8,9 @@ export const Route = createFileRoute("/_staff/setup")({
 });
 
 function AdminSetup() {
-  return <SetupWizard />;
+  return (
+    <StaffAuthHibernateGate>
+      <SetupWizard />
+    </StaffAuthHibernateGate>
+  );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { resolveStaffUnauthenticatedRedirect } from "@/lib/staff-auth-entry";
 import { defaultAdminPath, hasPermission, type AdminPermission } from "@/lib/rbac";
+import { isStaffOpenMode } from "@/lib/staff-open-mode";
 
 type Props = {
   permission: AdminPermission;
@@ -17,6 +18,10 @@ export function AdminRouteGuard({ permission, children }: Props) {
   useEffect(() => {
     if (initialLoading) return;
     if (!permissions.canAccessAdmin) {
+      if (isStaffOpenMode()) {
+        navigate({ to: defaultAdminPath(permissions.role), replace: true });
+        return;
+      }
       navigate(resolveStaffUnauthenticatedRedirect());
       return;
     }

@@ -56,7 +56,7 @@ describe("AdminLoginPage", () => {
     expect(screen.queryByLabelText(/password/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Forgot or change PIN?" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Join with invite link" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Install app & sign up" })).toHaveAttribute(
       "href",
       "/admin/join",
     );

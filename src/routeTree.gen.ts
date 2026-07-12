@@ -27,6 +27,7 @@ import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
 import { Route as AdminTeamRouteImport } from './routes/admin.team'
+import { Route as AdminSignupRouteImport } from './routes/admin.signup'
 import { Route as AdminSetupRouteImport } from './routes/admin.setup'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
@@ -38,15 +39,18 @@ import { Route as AdminNotificationsRouteImport } from './routes/admin.notificat
 import { Route as AdminMobileAppRouteImport } from './routes/admin.mobile-app'
 import { Route as AdminLoginCallbackRouteImport } from './routes/admin.login-callback'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminJoinRouteImport } from './routes/admin.join'
 import { Route as AdminInventoryRouteImport } from './routes/admin.inventory'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminDeliveryRouteImport } from './routes/admin.delivery'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminAccountRouteImport } from './routes/admin.account'
 import { Route as AdminAcceptInviteRouteImport } from './routes/admin.accept-invite'
 import { Route as AccountSignupRouteImport } from './routes/account.signup'
 import { Route as AccountLoginRouteImport } from './routes/account.login'
 import { Route as AdminProductsIndexRouteImport } from './routes/admin.products.index'
+import { Route as AdminRRoleRouteImport } from './routes/admin.r.$role'
 import { Route as AdminProductsNewRouteImport } from './routes/admin.products.new'
 import { Route as AdminProductsIdRouteImport } from './routes/admin.products.$id'
 import { Route as AdminOrdersIdRouteImport } from './routes/admin.orders.$id'
@@ -142,6 +146,11 @@ const AdminTeamRoute = AdminTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSignupRoute = AdminSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSetupRoute = AdminSetupRouteImport.update({
   id: '/setup',
   path: '/setup',
@@ -197,6 +206,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminJoinRoute = AdminJoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInventoryRoute = AdminInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
@@ -222,6 +236,11 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAccountRoute = AdminAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAcceptInviteRoute = AdminAcceptInviteRouteImport.update({
   id: '/accept-invite',
   path: '/accept-invite',
@@ -240,6 +259,11 @@ const AccountLoginRoute = AccountLoginRouteImport.update({
 const AdminProductsIndexRoute = AdminProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRRoleRoute = AdminRRoleRouteImport.update({
+  id: '/r/$role',
+  path: '/r/$role',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminProductsNewRoute = AdminProductsNewRouteImport.update({
@@ -275,11 +299,13 @@ export interface FileRoutesByFullPath {
   '/account/login': typeof AccountLoginRoute
   '/account/signup': typeof AccountSignupRoute
   '/admin/accept-invite': typeof AdminAcceptInviteRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/delivery': typeof AdminDeliveryRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/inventory': typeof AdminInventoryRoute
+  '/admin/join': typeof AdminJoinRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/login-callback': typeof AdminLoginCallbackRoute
   '/admin/mobile-app': typeof AdminMobileAppRoute
@@ -291,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/setup': typeof AdminSetupRoute
+  '/admin/signup': typeof AdminSignupRoute
   '/admin/team': typeof AdminTeamRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -299,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/admin/orders/$id': typeof AdminOrdersIdRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/r/$role': typeof AdminRRoleRoute
   '/admin/products/': typeof AdminProductsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -317,11 +345,13 @@ export interface FileRoutesByTo {
   '/account/login': typeof AccountLoginRoute
   '/account/signup': typeof AccountSignupRoute
   '/admin/accept-invite': typeof AdminAcceptInviteRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/delivery': typeof AdminDeliveryRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/inventory': typeof AdminInventoryRoute
+  '/admin/join': typeof AdminJoinRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/login-callback': typeof AdminLoginCallbackRoute
   '/admin/mobile-app': typeof AdminMobileAppRoute
@@ -333,6 +363,7 @@ export interface FileRoutesByTo {
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/setup': typeof AdminSetupRoute
+  '/admin/signup': typeof AdminSignupRoute
   '/admin/team': typeof AdminTeamRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -341,6 +372,7 @@ export interface FileRoutesByTo {
   '/admin/orders/$id': typeof AdminOrdersIdRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/r/$role': typeof AdminRRoleRoute
   '/admin/products': typeof AdminProductsIndexRoute
 }
 export interface FileRoutesById {
@@ -361,11 +393,13 @@ export interface FileRoutesById {
   '/account/login': typeof AccountLoginRoute
   '/account/signup': typeof AccountSignupRoute
   '/admin/accept-invite': typeof AdminAcceptInviteRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/delivery': typeof AdminDeliveryRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/inventory': typeof AdminInventoryRoute
+  '/admin/join': typeof AdminJoinRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/login-callback': typeof AdminLoginCallbackRoute
   '/admin/mobile-app': typeof AdminMobileAppRoute
@@ -377,6 +411,7 @@ export interface FileRoutesById {
   '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/setup': typeof AdminSetupRoute
+  '/admin/signup': typeof AdminSignupRoute
   '/admin/team': typeof AdminTeamRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/product/$slug': typeof ProductSlugRoute
@@ -385,6 +420,7 @@ export interface FileRoutesById {
   '/admin/orders/$id': typeof AdminOrdersIdRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/r/$role': typeof AdminRRoleRoute
   '/admin/products/': typeof AdminProductsIndexRoute
 }
 export interface FileRouteTypes {
@@ -406,11 +442,13 @@ export interface FileRouteTypes {
     | '/account/login'
     | '/account/signup'
     | '/admin/accept-invite'
+    | '/admin/account'
     | '/admin/audit'
     | '/admin/categories'
     | '/admin/delivery'
     | '/admin/insights'
     | '/admin/inventory'
+    | '/admin/join'
     | '/admin/login'
     | '/admin/login-callback'
     | '/admin/mobile-app'
@@ -422,6 +460,7 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/setup'
+    | '/admin/signup'
     | '/admin/team'
     | '/order/$reference'
     | '/product/$slug'
@@ -430,6 +469,7 @@ export interface FileRouteTypes {
     | '/admin/orders/$id'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/admin/r/$role'
     | '/admin/products/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -448,11 +488,13 @@ export interface FileRouteTypes {
     | '/account/login'
     | '/account/signup'
     | '/admin/accept-invite'
+    | '/admin/account'
     | '/admin/audit'
     | '/admin/categories'
     | '/admin/delivery'
     | '/admin/insights'
     | '/admin/inventory'
+    | '/admin/join'
     | '/admin/login'
     | '/admin/login-callback'
     | '/admin/mobile-app'
@@ -464,6 +506,7 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/setup'
+    | '/admin/signup'
     | '/admin/team'
     | '/order/$reference'
     | '/product/$slug'
@@ -472,6 +515,7 @@ export interface FileRouteTypes {
     | '/admin/orders/$id'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/admin/r/$role'
     | '/admin/products'
   id:
     | '__root__'
@@ -491,11 +535,13 @@ export interface FileRouteTypes {
     | '/account/login'
     | '/account/signup'
     | '/admin/accept-invite'
+    | '/admin/account'
     | '/admin/audit'
     | '/admin/categories'
     | '/admin/delivery'
     | '/admin/insights'
     | '/admin/inventory'
+    | '/admin/join'
     | '/admin/login'
     | '/admin/login-callback'
     | '/admin/mobile-app'
@@ -507,6 +553,7 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/settings'
     | '/admin/setup'
+    | '/admin/signup'
     | '/admin/team'
     | '/order/$reference'
     | '/product/$slug'
@@ -515,6 +562,7 @@ export interface FileRouteTypes {
     | '/admin/orders/$id'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/admin/r/$role'
     | '/admin/products/'
   fileRoutesById: FileRoutesById
 }
@@ -667,6 +715,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTeamRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/signup': {
+      id: '/admin/signup'
+      path: '/signup'
+      fullPath: '/admin/signup'
+      preLoaderRoute: typeof AdminSignupRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/setup': {
       id: '/admin/setup'
       path: '/setup'
@@ -744,6 +799,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/join': {
+      id: '/admin/join'
+      path: '/join'
+      fullPath: '/admin/join'
+      preLoaderRoute: typeof AdminJoinRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/inventory': {
       id: '/admin/inventory'
       path: '/inventory'
@@ -779,6 +841,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/account': {
+      id: '/admin/account'
+      path: '/account'
+      fullPath: '/admin/account'
+      preLoaderRoute: typeof AdminAccountRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/accept-invite': {
       id: '/admin/accept-invite'
       path: '/accept-invite'
@@ -805,6 +874,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/admin/products/'
       preLoaderRoute: typeof AdminProductsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/r/$role': {
+      id: '/admin/r/$role'
+      path: '/r/$role'
+      fullPath: '/admin/r/$role'
+      preLoaderRoute: typeof AdminRRoleRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/products/new': {
@@ -845,11 +921,13 @@ const AdminOrdersRouteWithChildren = AdminOrdersRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminAcceptInviteRoute: typeof AdminAcceptInviteRoute
+  AdminAccountRoute: typeof AdminAccountRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminDeliveryRoute: typeof AdminDeliveryRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
   AdminInventoryRoute: typeof AdminInventoryRoute
+  AdminJoinRoute: typeof AdminJoinRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminLoginCallbackRoute: typeof AdminLoginCallbackRoute
   AdminMobileAppRoute: typeof AdminMobileAppRoute
@@ -861,20 +939,24 @@ interface AdminRouteChildren {
   AdminRolesRoute: typeof AdminRolesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSetupRoute: typeof AdminSetupRoute
+  AdminSignupRoute: typeof AdminSignupRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductsIdRoute: typeof AdminProductsIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
+  AdminRRoleRoute: typeof AdminRRoleRoute
   AdminProductsIndexRoute: typeof AdminProductsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAcceptInviteRoute: AdminAcceptInviteRoute,
+  AdminAccountRoute: AdminAccountRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminDeliveryRoute: AdminDeliveryRoute,
   AdminInsightsRoute: AdminInsightsRoute,
   AdminInventoryRoute: AdminInventoryRoute,
+  AdminJoinRoute: AdminJoinRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminLoginCallbackRoute: AdminLoginCallbackRoute,
   AdminMobileAppRoute: AdminMobileAppRoute,
@@ -886,10 +968,12 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminRolesRoute: AdminRolesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSetupRoute: AdminSetupRoute,
+  AdminSignupRoute: AdminSignupRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProductsIdRoute: AdminProductsIdRoute,
   AdminProductsNewRoute: AdminProductsNewRoute,
+  AdminRRoleRoute: AdminRRoleRoute,
   AdminProductsIndexRoute: AdminProductsIndexRoute,
 }
 
@@ -918,13 +1002,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

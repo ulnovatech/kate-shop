@@ -27,6 +27,11 @@ export const ADMIN_LOGIN_CALLBACK_PATH = adminUrl("/login-callback");
 export const ADMIN_INSTALL_PATH = adminUrl("/install");
 export const ADMIN_DASHBOARD_PATH = adminUrl("/");
 
+/** Open-mode role entry (`/admin/r/staff`). */
+export function adminOpenRolePath(role: string): string {
+  return adminUrl(`/r/${role}`);
+}
+
 /** TanStack Router target for product edit (monolith + standalone). */
 export function adminProductEditTarget(id: string) {
   return { to: adminUrl("/products/$id"), params: { id } } as const;

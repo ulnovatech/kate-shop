@@ -8,6 +8,9 @@ import { isAndroidMobileBrowser } from "@/lib/staff-invite-mobile";
 import { ADMIN_INSTALL_PATH, ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
 import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
+import { isStaffOpenMode, openStaffHomePath, setOpenStaffRole } from "@/lib/staff-open-mode";
+import { validateInviteToken } from "@/lib/api/invites.functions";
+import { coerceStaffRole } from "@kate/domain/staff-auth-mode";
 import { Button } from "@/components/ui/button";
 import { adminPrimaryTouch } from "@/lib/admin-mobile";
 
@@ -16,9 +19,13 @@ type AcceptInviteRedirectProps = {
   skipAppProbe?: boolean;
 };
 
-type InviteRedirectPhase = "checking" | "probing" | "opened" | "install" | "signup";
+type InviteRedirectPhase = "checking" | "probing" | "opened" | "install" | "signup" | "open_enter";
 
 function resolveClientPhase(token: string, skipAppProbe: boolean): InviteRedirectPhase {
+  if (isStaffOpenMode()) {
+    return "open_enter";
+  }
+
   // Hibernated invite flow: Android → install gate, otherwise → signup.
   if (!isStaffInviteFlowEnabled()) {
     if (isNativeStaffApp()) return "signup";
@@ -43,7 +50,7 @@ function InviteBusyMessage({ message }: { message: string }) {
 
 /**
  * Invite entry — full probe/install flow when invites are enabled.
- * When hibernated: install gate (Android) or signup only; invite token is ignored.
+ * Open mode: set role from token (when present) and enter admin without signup.
  */
 export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInviteRedirectProps) {
   const navigate = useNavigate();
@@ -57,6 +64,32 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
   useEffect(() => {
     setPhase(resolveClientPhase(token, skipAppProbe));
   }, [token, skipAppProbe]);
+
+  useEffect(() => {
+    if (phase !== "open_enter") return;
+
+    let cancelled = false;
+    void (async () => {
+      let role = "staff";
+      if (token.length >= 16) {
+        try {
+          const result = await validateInviteToken({ data: { token } });
+          if (result.valid && result.role) {
+            role = result.role;
+          }
+        } catch {
+          // Fall back to staff when token lookup fails.
+        }
+      }
+      if (cancelled) return;
+      const next = setOpenStaffRole(coerceStaffRole(role));
+      navigate({ to: openStaffHomePath(next), replace: true });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [phase, token, navigate]);
 
   useEffect(() => {
     if (phase !== "signup") return;
@@ -77,10 +110,16 @@ export function AcceptInviteRedirect({ token, skipAppProbe = false }: AcceptInvi
     };
   }, [inviteFlow, phase, token]);
 
-  if (phase === "checking" || phase === "probing") {
+  if (phase === "checking" || phase === "probing" || phase === "open_enter") {
     return (
       <InviteBusyMessage
-        message={phase === "checking" ? "Preparing your invite…" : "Opening Kate Admin…"}
+        message={
+          phase === "open_enter"
+            ? "Opening your workspace…"
+            : phase === "checking"
+              ? "Preparing your invite…"
+              : "Opening Kate Admin…"
+        }
       />
     );
   }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StaffSignupPage } from "@/components/admin/onboarding";
+import { StaffAuthHibernateGate } from "@/components/admin/onboarding/staff-auth-hibernate-gate";
 
 export const Route = createFileRoute("/_staff/signup")({
   staticData: { adminRouteHeading: "Sign up" as const },
@@ -7,5 +8,9 @@ export const Route = createFileRoute("/_staff/signup")({
 });
 
 function AdminSignup() {
-  return <StaffSignupPage />;
+  return (
+    <StaffAuthHibernateGate>
+      <StaffSignupPage />
+    </StaffAuthHibernateGate>
+  );
 }

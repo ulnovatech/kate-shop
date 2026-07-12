@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { completeStaffAuthFromUrl } from "@/integrations/supabase/staff-mobile-auth";
 import { AuthCardSkeleton } from "@/components/loading-states";
+import { StaffAuthHibernateGate } from "@/components/admin/onboarding/staff-auth-hibernate-gate";
 import { humanizeError } from "@/lib/errors";
 import { getBootstrapStatus } from "@/lib/api/bootstrap.functions";
 import { ADMIN_JOIN_PATH, ADMIN_SETUP_PATH, ADMIN_SIGNUP_PATH } from "@/lib/admin-base-path";
@@ -10,8 +11,16 @@ import { loadStaffOnboardingOAuth } from "@/lib/staff-onboarding-oauth";
 import { savePendingStaffInviteToken } from "@/lib/staff-invite-pending";
 
 export const Route = createFileRoute("/admin/login-callback")({
-  component: StaffLoginCallback,
+  component: StaffLoginCallbackRoute,
 });
+
+function StaffLoginCallbackRoute() {
+  return (
+    <StaffAuthHibernateGate>
+      <StaffLoginCallback />
+    </StaffAuthHibernateGate>
+  );
+}
 
 function StaffLoginCallback() {
   const navigate = Route.useNavigate();

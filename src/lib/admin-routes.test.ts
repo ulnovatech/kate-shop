@@ -24,6 +24,7 @@ describe("isAdminPublicPath", () => {
     expect(isAdminPublicPath("/admin/signup")).toBe(true);
     expect(isAdminPublicPath("/admin/account")).toBe(false);
     expect(isAdminPublicPath("/admin/install")).toBe(true);
+    expect(isAdminPublicPath("/admin/r/staff")).toBe(true);
   });
 
   it("requires guard for operational routes", () => {

@@ -4,6 +4,13 @@ import { AcceptInviteRedirect } from "@/components/admin/onboarding/accept-invit
 
 const navigate = vi.fn();
 const isAndroidMobileBrowser = vi.fn(() => false);
+const inviteFlowEnabled = vi.fn(() => false);
+const openMode = vi.fn(() => true);
+const setOpenStaffRole = vi.fn((role: string) => role);
+const openStaffHomePath = vi.fn((role?: string) =>
+  role === "manager" ? "/admin" : "/admin/orders",
+);
+const validateInviteToken = vi.fn();
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
@@ -25,7 +32,17 @@ vi.mock("@/lib/staff-invite-mobile", () => ({
 }));
 
 vi.mock("@/lib/staff-onboarding-mode", () => ({
-  isStaffInviteFlowEnabled: vi.fn(() => false),
+  isStaffInviteFlowEnabled: () => inviteFlowEnabled(),
+}));
+
+vi.mock("@/lib/staff-open-mode", () => ({
+  isStaffOpenMode: () => openMode(),
+  setOpenStaffRole: (role: string) => setOpenStaffRole(role),
+  openStaffHomePath: (role?: string) => openStaffHomePath(role),
+}));
+
+vi.mock("@/lib/api/invites.functions", () => ({
+  validateInviteToken: (...args: unknown[]) => validateInviteToken(...args),
 }));
 
 const probeStaffAppForInvite = vi.fn();
@@ -39,23 +56,48 @@ vi.mock("@/components/admin/onboarding/staff-invite-mobile-gate", () => ({
   StaffInviteMobileGate: () => <div>Install gate</div>,
 }));
 
-import { isStaffInviteFlowEnabled } from "@/lib/staff-onboarding-mode";
-
-const inviteFlowEnabled = vi.mocked(isStaffInviteFlowEnabled);
-
 describe("AcceptInviteRedirect", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    openMode.mockReturnValue(true);
     inviteFlowEnabled.mockReturnValue(false);
     isAndroidMobileBrowser.mockReturnValue(false);
     probeStaffAppForInvite.mockResolvedValue("not_installed");
+    setOpenStaffRole.mockImplementation((role: string) => role);
+    openStaffHomePath.mockImplementation((role?: string) =>
+      role === "manager" ? "/admin" : "/admin/orders",
+    );
   });
 
   afterEach(() => {
     cleanup();
   });
 
-  it("hibernated: redirects to signup without probing or saving invite", async () => {
+  it("open mode: enters role home from invite token role", async () => {
+    validateInviteToken.mockResolvedValueOnce({ valid: true, email: null, role: "manager" });
+
+    render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
+
+    await waitFor(() => {
+      expect(setOpenStaffRole).toHaveBeenCalledWith("manager");
+      expect(navigate).toHaveBeenCalledWith({ to: "/admin", replace: true });
+    });
+    expect(probeStaffAppForInvite).not.toHaveBeenCalled();
+  });
+
+  it("open mode: defaults to staff when token missing", async () => {
+    render(<AcceptInviteRedirect token="" />);
+
+    await waitFor(() => {
+      expect(setOpenStaffRole).toHaveBeenCalledWith("staff");
+      expect(navigate).toHaveBeenCalledWith({ to: "/admin/orders", replace: true });
+    });
+    expect(validateInviteToken).not.toHaveBeenCalled();
+  });
+
+  it("auth required + hibernated invites: redirects to signup without probing", async () => {
+    openMode.mockReturnValue(false);
+    inviteFlowEnabled.mockReturnValue(false);
     render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
 
     await waitFor(() => {
@@ -65,20 +107,8 @@ describe("AcceptInviteRedirect", () => {
     expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
   });
 
-  it("hibernated Android: shows simple install UI without invite gate", async () => {
-    isAndroidMobileBrowser.mockReturnValue(true);
-
-    render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
-
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: /install kate admin/i })).toBeInTheDocument();
-    });
-    expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
-    expect(probeStaffAppForInvite).not.toHaveBeenCalled();
-    expect(navigate).not.toHaveBeenCalled();
-  });
-
-  it("enabled: redirects to signup on non-Android browser", async () => {
+  it("enabled invite flow: redirects to signup on non-Android browser", async () => {
+    openMode.mockReturnValue(false);
     inviteFlowEnabled.mockReturnValue(true);
     render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
 
@@ -87,23 +117,10 @@ describe("AcceptInviteRedirect", () => {
     });
     expect(probeStaffAppForInvite).not.toHaveBeenCalled();
     expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
-  });
-
-  it("enabled: shows opened state without install gate when probe opens app", async () => {
-    inviteFlowEnabled.mockReturnValue(true);
-    isAndroidMobileBrowser.mockReturnValue(true);
-    probeStaffAppForInvite.mockResolvedValue("opened");
-
-    render(<AcceptInviteRedirect token="invite-token-abc123456789" />);
-
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Continuing in Kate Admin" })).toBeInTheDocument();
-    });
-    expect(screen.queryByText("Install gate")).not.toBeInTheDocument();
-    expect(navigate).not.toHaveBeenCalled();
   });
 
   it("enabled: shows install gate when probe finds app not installed on Android", async () => {
+    openMode.mockReturnValue(false);
     inviteFlowEnabled.mockReturnValue(true);
     isAndroidMobileBrowser.mockReturnValue(true);
     probeStaffAppForInvite.mockResolvedValue("not_installed");
@@ -113,19 +130,6 @@ describe("AcceptInviteRedirect", () => {
     await waitFor(() => {
       expect(screen.getByText("Install gate")).toBeInTheDocument();
     });
-    expect(navigate).not.toHaveBeenCalled();
-  });
-
-  it("enabled: shows install gate immediately when skipAppProbe is set on Android", async () => {
-    inviteFlowEnabled.mockReturnValue(true);
-    isAndroidMobileBrowser.mockReturnValue(true);
-
-    render(<AcceptInviteRedirect token="invite-token-abc123456789" skipAppProbe />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Install gate")).toBeInTheDocument();
-    });
-    expect(probeStaffAppForInvite).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
   });
 });

@@ -12,6 +12,7 @@ import {
   assertStaffInviteFlowEnabled,
   isStaffInviteFlowEnabled,
 } from "@kate/api/staff-onboarding-mode.server";
+import { isStaffAuthRequired } from "@kate/api/staff-auth-mode.server";
 import { staffPinSchema } from "@kate/api/staff-pin.server";
 import { auditFromServer } from "@kate/api/audit.server";
 import { hasMatrixPermission } from "@kate/domain/rbac";
@@ -90,7 +91,8 @@ export const createAdminInvite = createServerFn({ method: "POST" })
 export const validateInviteToken = createServerFn({ method: "POST" })
   .inputValidator(z.object({ token: z.string().min(16) }))
   .handler(async ({ data }) => {
-    if (!isStaffInviteFlowEnabled()) {
+    // Open mode may still resolve role from an existing invite token.
+    if (!isStaffInviteFlowEnabled() && isStaffAuthRequired()) {
       return { valid: false as const, reason: "invalid" as const };
     }
     const invite = await getOpenInviteByToken(data.token);

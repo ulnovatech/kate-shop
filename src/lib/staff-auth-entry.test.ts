@@ -1,34 +1,38 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { resolveStaffUnauthenticatedRedirect } from "./staff-auth-entry";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const loadPending = vi.fn(() => null);
+const openMode = vi.fn(() => true);
+const openHome = vi.fn(() => "/admin/orders");
 
 vi.mock("@/lib/staff-invite-pending", () => ({
-  loadPendingStaffInviteToken: vi.fn(),
+  loadPendingStaffInviteToken: () => loadPending(),
 }));
 
-import { loadPendingStaffInviteToken } from "@/lib/staff-invite-pending";
+vi.mock("@/lib/staff-open-mode", () => ({
+  isStaffOpenMode: () => openMode(),
+  openStaffHomePath: () => openHome(),
+}));
 
-const loadPending = vi.mocked(loadPendingStaffInviteToken);
+import { resolveStaffUnauthenticatedRedirect } from "@/lib/staff-auth-entry";
 
 describe("resolveStaffUnauthenticatedRedirect", () => {
   beforeEach(() => {
     loadPending.mockReturnValue(null);
+    openMode.mockReturnValue(true);
+    openHome.mockReturnValue("/admin/orders");
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it("sends users to join when no pending invite", () => {
+  it("sends open-mode users to admin home instead of join", () => {
     expect(resolveStaffUnauthenticatedRedirect()).toEqual({
-      to: "/admin/join",
+      to: "/admin/orders",
       replace: true,
     });
   });
 
-  it("resumes signup when a pending token exists", () => {
-    loadPending.mockReturnValue("invite-token-abc123456");
+  it("sends gated users to join when no pending invite", () => {
+    openMode.mockReturnValue(false);
     expect(resolveStaffUnauthenticatedRedirect()).toEqual({
-      to: "/admin/signup",
+      to: "/admin/join",
       replace: true,
     });
   });

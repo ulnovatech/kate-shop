@@ -5,6 +5,12 @@ import type { StaffRole } from "@/lib/db/contracts";
 import { permissionsFromStaffAccess, permissionsForRole, type AdminPermissions } from "@/lib/rbac";
 import { fetchStaffAccess } from "@/lib/api/roles.functions";
 import { withTimeout } from "@/lib/with-timeout";
+import {
+  getOpenStaffRole,
+  isStaffAuthRequired,
+  OPEN_STAFF_ROLE_CHANGED_EVENT,
+  setOpenStaffRole,
+} from "@/lib/staff-open-mode";
 
 const AUTH_TIMEOUT_MS = 8_000;
 
@@ -45,14 +51,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [initialLoading, setInitialLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const accessResolved = useRef(false);
+  const sessionRef = useRef<Session | null>(null);
 
   const isAdmin = permissions.canAccessAdmin;
   const isOwner = permissions.canManageSettings;
   const staffRole = permissions.role;
 
+  const applyOpenFallback = () => {
+    setPermissions(permissionsForRole(getOpenStaffRole()));
+    accessResolved.current = true;
+    setInitialLoading(false);
+    setRefreshing(false);
+  };
+
   const applyAccess = (access: Awaited<ReturnType<typeof fetchStaffAccess>>) => {
     if (access) {
       setPermissions(permissionsFromStaffAccess(access));
+    } else if (!isStaffAuthRequired()) {
+      setPermissions(permissionsForRole(getOpenStaffRole()));
     } else {
       setPermissions(emptyPerms);
     }
@@ -60,6 +76,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setInitialLoading(false);
     setRefreshing(false);
   };
+
+  useEffect(() => {
+    const mounted = true;
+    sessionRef.current = session;
+  }, [session]);
 
   useEffect(() => {
     let mounted = true;
@@ -80,6 +101,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(s);
       if (s?.user) {
         await loadAccess(accessResolved.current);
+      } else if (!isStaffAuthRequired()) {
+        applyOpenFallback();
       } else {
         applyAccess(null);
       }
@@ -91,17 +114,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(data.session);
         if (data.session?.user) {
           await loadAccess(false);
+        } else if (!isStaffAuthRequired()) {
+          applyOpenFallback();
         } else {
           applyAccess(null);
         }
       })
       .catch(() => {
-        if (mounted) applyAccess(null);
+        if (!mounted) return;
+        if (!isStaffAuthRequired()) {
+          applyOpenFallback();
+        } else {
+          applyAccess(null);
+        }
       });
+
+    const onOpenRoleChange = () => {
+      if (isStaffAuthRequired()) return;
+      if (sessionRef.current?.user) return;
+      setPermissions(permissionsForRole(getOpenStaffRole()));
+    };
+    window.addEventListener(OPEN_STAFF_ROLE_CHANGED_EVENT, onOpenRoleChange);
 
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();
+      window.removeEventListener(OPEN_STAFF_ROLE_CHANGED_EVENT, onOpenRoleChange);
     };
   }, []);
 
@@ -119,9 +157,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading: initialLoading,
         signOut: async () => {
           await supabase.auth.signOut();
-          setPermissions(emptyPerms);
           setSession(null);
           setRefreshing(false);
+          if (!isStaffAuthRequired()) {
+            setOpenStaffRole("staff");
+            setPermissions(permissionsForRole("staff"));
+          } else {
+            setPermissions(emptyPerms);
+          }
         },
       }}
     >

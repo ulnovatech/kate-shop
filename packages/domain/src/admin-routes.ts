@@ -20,6 +20,7 @@ export const ADMIN_PUBLIC_PATHS = [
   ADMIN_SETUP_PATH,
   ADMIN_ACCEPT_INVITE_PATH,
   ADMIN_INSTALL_PATH,
+  adminUrl("/r"),
 ] as const;
 
 export type AdminRouteStatic = {

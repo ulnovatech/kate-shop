@@ -2,6 +2,7 @@ import { createStart, createMiddleware } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
 import { attachSupabaseAuth } from "./integrations/supabase/auth-attacher";
+import { attachStaffOpenRole } from "./lib/staff-open-mode-attacher";
 import { renderErrorPage } from "./lib/error-page";
 
 function isServerFnRequest(): boolean {
@@ -32,5 +33,5 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 
 export const startInstance = createStart(() => ({
   requestMiddleware: [errorMiddleware],
-  functionMiddleware: [attachSupabaseAuth],
+  functionMiddleware: [attachSupabaseAuth, attachStaffOpenRole],
 }));
